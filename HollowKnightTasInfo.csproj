@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net40</TargetFramework>
+        <LangVersion>9</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="lib-stripped\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="lib-stripped\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="lib-stripped\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <Private>true</Private>
+        <HintPath>lib-stripped\Assembly-CSharp.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>lib-stripped\UnityEngine.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>
