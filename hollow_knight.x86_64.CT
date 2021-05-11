@@ -102,7 +102,7 @@
           <VariableType>Float</VariableType>
           <Address>"hollow_knight.x86_64"+01B31468</Address>
           <Offsets>
-            <Offset>28</Offset>
+            <Offset>20</Offset>
             <Offset>280</Offset>
             <Offset>100</Offset>
             <Offset>18</Offset>
@@ -118,7 +118,7 @@
           <VariableType>Float</VariableType>
           <Address>"hollow_knight.x86_64"+01B31468</Address>
           <Offsets>
-            <Offset>2C</Offset>
+            <Offset>24</Offset>
             <Offset>280</Offset>
             <Offset>100</Offset>
             <Offset>18</Offset>
@@ -173,6 +173,21 @@
           </Offsets>
         </CheatEntry>
       </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>17</ID>
+      <Description>"Info"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+01B1CF60</Address>
+      <Offsets>
+        <Offset>10</Offset>
+        <Offset>7E0</Offset>
+        <Offset>A0</Offset>
+        <Offset>10</Offset>
+        <Offset>0</Offset>
+      </Offsets>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>

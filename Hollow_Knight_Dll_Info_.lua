@@ -1,16 +1,17 @@
 function onPaint()
-    local infoAddress = memory.readu64(0x400000 + 0x1B1CF60)
-    infoAddress = memory.readu64(infoAddress + 0x0)
-    infoAddress = memory.readu64(infoAddress + 0x10)
-    infoAddress = memory.readu64(infoAddress + 0x50)
-    infoAddress = memory.readu64(infoAddress + 0xD08)
+    local gameManagerClass = memory.readu64(0x400000 + 0x1B1CF60)
+    gameManagerClass = memory.readu64(gameManagerClass + 0x0)
+    gameManagerClass = memory.readu64(gameManagerClass + 0x10)
+    gameManagerClass = memory.readu64(gameManagerClass + 0xA0)
+    gameManagerClass = memory.readu64(gameManagerClass + 0x7E0)
+
+    local infoAddress = memory.readu64(gameManagerClass + 0x10)
 
     if infoAddress == 0 then
-        return
+        return;
     end
 
     local textArray = {}
-
     local infoText = readString(infoAddress)
     for line in infoText:gmatch("[^\r\n]+") do
         table.insert(textArray, line)
