@@ -1,21 +1,13 @@
 function onPaint()
-    local gameManagerClass = memory.readu64(0x400000 + 0x1B1CF60)
-    gameManagerClass = memory.readu64(gameManagerClass + 0x0)
-    gameManagerClass = memory.readu64(gameManagerClass + 0x10)
-    gameManagerClass = memory.readu64(gameManagerClass + 0xA0)
-    gameManagerClass = memory.readu64(gameManagerClass + 0x7E0)
+    local gameManagerClass = memory.readu64(0x400000 + 0x1B317A8)
+    gameManagerClass = memory.readu64(0x400000 + 0x1B317A8)
+    gameManagerClass = memory.readu64(gameManagerClass + 0x20)
+    gameManagerClass = memory.readu64(gameManagerClass + 0xF0)
+    gameManagerClass = memory.readu64(gameManagerClass + 0x8)
+    gameManagerClass = memory.readu64(gameManagerClass + 0x18)
 
-    local infoAddress = memory.readu64(gameManagerClass + 0x10)
+    local infoAddress = memory.readu64(gameManagerClass + 0x70)
 
-    if memory.readu64(gameManagerClass + 0x8) ~= 1234567890 then
-        gameManagerClass = memory.readu64(0x400000 + 0x1B317A8)
-        gameManagerClass = memory.readu64(gameManagerClass + 0x20)
-        gameManagerClass = memory.readu64(gameManagerClass + 0xF0)
-        gameManagerClass = memory.readu64(gameManagerClass + 0x8)
-        gameManagerClass = memory.readu64(gameManagerClass + 0x18)
-        infoAddress = memory.readu64(gameManagerClass + 0x70)
-    end
-    
     if infoAddress == 0 then
         return;
     end
