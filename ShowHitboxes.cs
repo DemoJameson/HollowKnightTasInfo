@@ -137,7 +137,7 @@ namespace HollowKnightTasInfo {
                     mat = greenMat;
                 }
 
-                GameObject obj = new GameObject("Mod Hitbox");
+                GameObject obj = new("Mod Hitbox");
                 obj.transform.SetParent(col.transform);
                 obj.transform.position = Vector3.zero;
 

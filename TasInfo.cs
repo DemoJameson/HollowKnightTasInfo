@@ -42,7 +42,8 @@ namespace HollowKnightTasInfo {
 
         public static void OnGameManagerLateUpdate() {
             if (GameManager._instance is { } gameManager) {
-                ShowHitboxes.Instance.Initialize();
+                // Random.State randomState = Random.state;
+                // ShowHitboxes.Instance.Initialize();
 
                 StringBuilder infoBuilder = new();
                 if (gameManager.hero_ctrl is { } heroController) {
@@ -61,8 +62,8 @@ namespace HollowKnightTasInfo {
                     timeStart = true;
                 }
 
-                if (timeStart && !timeEnd && nextScene.StartsWith("Cinematic_Ending", StringComparison.OrdinalIgnoreCase) ||
-                    nextScene == "GG_End_Sequence") {
+                if (timeStart && !timeEnd && (nextScene.StartsWith("Cinematic_Ending", StringComparison.OrdinalIgnoreCase) ||
+                    nextScene == "GG_End_Sequence")) {
                     timeEnd = true;
                 }
 
@@ -93,7 +94,7 @@ namespace HollowKnightTasInfo {
                         (loadingMenu || uiState != UIState.PAUSED && (!string.IsNullOrEmpty(nextScene) || currentScene == "_test_charms")) &&
                         nextScene != currentScene
                         || (bool) TilemapDirtyFieldInfo.GetValue(gameManager);
-                } catch (Exception) {
+                } catch {
                     // ignore
                 }
 
@@ -105,6 +106,7 @@ namespace HollowKnightTasInfo {
 
                 infoBuilder.AppendLine(FormattedTime);
                 GameManager.Info = infoBuilder.ToString();
+                // Random.state = randomState;
             }
         }
     }
