@@ -42,6 +42,8 @@ namespace HollowKnightTasInfo {
 
         public static void OnGameManagerLateUpdate() {
             if (GameManager._instance is { } gameManager) {
+                ShowHitboxes.Instance.Initialize();
+
                 StringBuilder infoBuilder = new();
                 if (gameManager.hero_ctrl is { } heroController) {
                     Vector3 position = heroController.transform.position;
@@ -66,6 +68,7 @@ namespace HollowKnightTasInfo {
 
                 bool timePaused = false;
 
+                // thanks ShootMe, in game time logic copy from https://github.com/ShootMe/LiveSplit.HollowKnight
                 try {
                     UIState uiState = gameManager.ui.uiState;
                     bool loadingMenu = currentScene != "Menu_Title" && string.IsNullOrEmpty(nextScene) ||
