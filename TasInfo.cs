@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 using GlobalEnums;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 // ReSharper disable Unity.NoNullPropagation
 
@@ -42,12 +44,21 @@ namespace HollowKnightTasInfo {
 
         public static void OnGameManagerLateUpdate() {
             if (GameManager._instance is { } gameManager) {
+                HpInfo.Init(gameManager);
+
                 StringBuilder infoBuilder = new();
                 if (gameManager.hero_ctrl is { } heroController) {
                     Vector3 position = heroController.transform.position;
                     infoBuilder.AppendLine($"pos: {position.ToSimpleString(5)}");
                     infoBuilder.AppendLine($"vel: {heroController.current_velocity.ToSimpleString(3)}");
                     infoBuilder.AppendLine(heroController.hero_state.ToString());
+
+                    if (gameManager.gameState == GameState.PLAYING) {
+                        string hpInfo = HpInfo.GetInfo();
+                        if (!string.IsNullOrEmpty(hpInfo)) {
+                            infoBuilder.AppendLine(hpInfo);
+                        }
+                    }
                 }
 
                 string currentScene = gameManager.sceneName;
@@ -60,7 +71,7 @@ namespace HollowKnightTasInfo {
                 }
 
                 if (timeStart && !timeEnd && (nextScene.StartsWith("Cinematic_Ending", StringComparison.OrdinalIgnoreCase) ||
-                    nextScene == "GG_End_Sequence")) {
+                                              nextScene == "GG_End_Sequence")) {
                     timeEnd = true;
                 }
 
@@ -101,7 +112,10 @@ namespace HollowKnightTasInfo {
                     inGameTime += Time.unscaledDeltaTime;
                 }
 
-                infoBuilder.AppendLine(FormattedTime);
+                if (inGameTime > 0) {
+                    infoBuilder.AppendLine(FormattedTime);
+                }
+
                 GameManager.Info = infoBuilder.ToString();
             }
         }

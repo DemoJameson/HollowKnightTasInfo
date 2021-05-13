@@ -22,6 +22,9 @@
         <Private>true</Private>
         <HintPath>lib-stripped\Assembly-CSharp.dll</HintPath>
       </Reference>
+      <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>lib-stripped\PlayMaker.dll</HintPath>
+      </Reference>
       <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>lib-stripped\UnityEngine.dll</HintPath>
       </Reference>

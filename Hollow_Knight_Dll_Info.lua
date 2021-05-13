@@ -1,3 +1,9 @@
+local showPos = true
+local showVel = true
+local showGameState = true
+local showInGameTime = true
+local showHp = true
+
 function onPaint()
     local gameManagerClass = memory.readu64(0x400000 + 0x1B317A8)
     gameManagerClass = memory.readu64(0x400000 + 0x1B317A8)
@@ -9,13 +15,20 @@ function onPaint()
     local infoAddress = memory.readu64(gameManagerClass + 0x70)
 
     if infoAddress == 0 then
-        return;
+        return ;
     end
 
     local textArray = {}
     local infoText = readString(infoAddress)
     for line in infoText:gmatch("[^\r\n]+") do
-        table.insert(textArray, line)
+        if line:find("^HP:") ~= nil then
+            local hpData = splitString(line:sub(4), ",")
+            for i = 1, #hpData, 3 do
+                gui.text(hpData[i], hpData[i + 1], hpData[i + 2])
+            end
+        else
+            table.insert(textArray, line)
+        end
     end
 
     guiText(textArray)
@@ -35,4 +48,15 @@ function readString(address)
         text = text .. string.char(memory.readu16(address + 0x12 + i * 2))
     end
     return text;
+end
+
+function splitString(text, sep)
+    if sep == nil then
+        sep = "%s"
+    end
+    local t = {}
+    for str in string.gmatch(text, "([^" .. sep .. "]+)") do
+        table.insert(t, str)
+    end
+    return t
 end
