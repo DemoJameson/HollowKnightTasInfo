@@ -4,13 +4,12 @@
     <CheatEntry>
       <ID>3</ID>
       <Description>"GameManager"</Description>
-      <LastState Value="00007FE51F5AC260" RealAddress="7FE5211BD380"/>
+      <LastState Value="00007F6ADDF801C0" RealAddress="7F6ADCF05360"/>
       <ShowAsHex>1</ShowAsHex>
       <ShowAsSigned>0</ShowAsSigned>
       <VariableType>8 Bytes</VariableType>
       <Address>"hollow_knight.x86_64"+01B31468</Address>
       <Offsets>
-        <Offset>0</Offset>
         <Offset>18</Offset>
         <Offset>20</Offset>
         <Offset>10</Offset>
@@ -19,12 +18,144 @@
       <CheatEntries>
         <CheatEntry>
           <ID>1</ID>
+          <Description>"currentScene"</Description>
+          <LastState Value="00007F6AD28824B0" RealAddress="7F6ADDF801D8"/>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>8 Bytes</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>18</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>21</ID>
+          <Description>"nextScene"</Description>
+          <LastState Value="00007F6ADD01E450" RealAddress="7F6ADDF801E0"/>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>8 Bytes</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>20</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>20</ID>
           <Description>"gameState"</Description>
-          <LastState Value="4" RealAddress="7FE5211BD4BC"/>
+          <LastState Value="5" RealAddress="7F6ADDF802FC"/>
           <VariableType>4 Bytes</VariableType>
           <Address>"hollow_knight.x86_64"+01B31468</Address>
           <Offsets>
             <Offset>13C</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>35</ID>
+          <Description>"tilemapDirty"</Description>
+          <LastState Value="0" RealAddress="7F6ADDF8032F"/>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>16F</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>24</ID>
+      <Description>"InputHandler"</Description>
+      <LastState Value="00007F6B3C6CA958" RealAddress="7F6ADDF80298"/>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+01B31468</Address>
+      <Offsets>
+        <Offset>D8</Offset>
+        <Offset>18</Offset>
+        <Offset>20</Offset>
+        <Offset>10</Offset>
+        <Offset>0</Offset>
+      </Offsets>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>25</ID>
+          <Description>"acceptingInput"</Description>
+          <LastState Value="1" RealAddress="7F6B3C6CA9F0"/>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>98</Offset>
+            <Offset>D8</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>29</ID>
+          <Description>"cState"</Description>
+          <LastState Value="00007F6AC8823510" RealAddress="7F6B3C6CA9A0"/>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>8 Bytes</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>48</Offset>
+            <Offset>D8</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>23</ID>
+      <Description>"UiManager"</Description>
+      <LastState Value="00007F6ADD5747F8" RealAddress="7F6ADDF802D8"/>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+01B31468</Address>
+      <Offsets>
+        <Offset>118</Offset>
+        <Offset>18</Offset>
+        <Offset>20</Offset>
+        <Offset>10</Offset>
+        <Offset>0</Offset>
+      </Offsets>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>22</ID>
+          <Description>"uiState"</Description>
+          <LastState Value="5" RealAddress="7F6ADD574A58"/>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>260</Offset>
+            <Offset>118</Offset>
             <Offset>18</Offset>
             <Offset>20</Offset>
             <Offset>10</Offset>
@@ -36,7 +167,7 @@
     <CheatEntry>
       <ID>4</ID>
       <Description>"PlayerData"</Description>
-      <LastState Value="00007FE518745000" RealAddress="7FE5211BD3E0"/>
+      <LastState Value="00007F6AD1821000" RealAddress="7F6ADDF80220"/>
       <ShowAsHex>1</ShowAsHex>
       <ShowAsSigned>0</ShowAsSigned>
       <VariableType>8 Bytes</VariableType>
@@ -52,7 +183,7 @@
         <CheatEntry>
           <ID>5</ID>
           <Description>"geo"</Description>
-          <LastState Value="00000000" RealAddress="7FE518745108"/>
+          <LastState Value="00000000" RealAddress="7F6AD1821108"/>
           <ShowAsHex>1</ShowAsHex>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
@@ -71,7 +202,7 @@
     <CheatEntry>
       <ID>6</ID>
       <Description>"HeroController"</Description>
-      <LastState Value="00007FE518F28800" RealAddress="7FE5211BD480"/>
+      <LastState Value="00007F6AC88FE800" RealAddress="7F6ADDF802C0"/>
       <ShowAsHex>1</ShowAsHex>
       <ShowAsSigned>0</ShowAsSigned>
       <VariableType>8 Bytes</VariableType>
@@ -87,7 +218,7 @@
         <CheatEntry>
           <ID>7</ID>
           <Description>"gm"</Description>
-          <LastState Value="00007FE5211BD380" RealAddress="7FE518F289E8"/>
+          <LastState Value="00007F6ADDF801C0" RealAddress="7F6AC88FE9E8"/>
           <ShowAsHex>1</ShowAsHex>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
@@ -104,7 +235,7 @@
         <CheatEntry>
           <ID>10</ID>
           <Description>"positionHistory[0].x"</Description>
-          <LastState Value="137.8363647" RealAddress="7FE50D3DDEC0"/>
+          <LastState Value="35.45999908" RealAddress="7F6AC9209F80"/>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Float</VariableType>
           <Address>"hollow_knight.x86_64"+01B31468</Address>
@@ -121,7 +252,7 @@
         <CheatEntry>
           <ID>11</ID>
           <Description>"positionHistory[0].y"</Description>
-          <LastState Value="21.76178741" RealAddress="7FE50D3DDEC4"/>
+          <LastState Value="11.40562248" RealAddress="7F6AC9209F84"/>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Float</VariableType>
           <Address>"hollow_knight.x86_64"+01B31468</Address>
@@ -138,7 +269,7 @@
         <CheatEntry>
           <ID>8</ID>
           <Description>"current_velocity.x"</Description>
-          <LastState Value="-8.300000191" RealAddress="7FE518F28D94"/>
+          <LastState Value="0" RealAddress="7F6AC88FED94"/>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Float</VariableType>
           <Address>"hollow_knight.x86_64"+01B31468</Address>
@@ -154,7 +285,7 @@
         <CheatEntry>
           <ID>9</ID>
           <Description>"current_velocity.y"</Description>
-          <LastState Value="0" RealAddress="7FE518F28D98"/>
+          <LastState Value="0" RealAddress="7F6AC88FED98"/>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>Float</VariableType>
           <Address>"hollow_knight.x86_64"+01B31468</Address>
@@ -170,7 +301,7 @@
         <CheatEntry>
           <ID>12</ID>
           <Description>"hero_state"</Description>
-          <LastState Value="2" RealAddress="7FE518F28D78"/>
+          <LastState Value="1" RealAddress="7F6AC88FED78"/>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>"hollow_knight.x86_64"+01B31468</Address>
@@ -183,12 +314,117 @@
             <Offset>0</Offset>
           </Offsets>
         </CheatEntry>
+        <CheatEntry>
+          <ID>33</ID>
+          <Description>"transitionState"</Description>
+          <LastState Value="0" RealAddress="7F6AC88FED80"/>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>580</Offset>
+            <Offset>100</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>30</ID>
+      <Description>"HeroControllerStates"</Description>
+      <LastState Value="00007F6AC8823510" RealAddress="7F6AC88FEA18"/>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+01B31468</Address>
+      <Offsets>
+        <Offset>218</Offset>
+        <Offset>100</Offset>
+        <Offset>18</Offset>
+        <Offset>20</Offset>
+        <Offset>10</Offset>
+        <Offset>0</Offset>
+      </Offsets>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>31</ID>
+          <Description>"hazardRespawning"</Description>
+          <LastState Value="00" RealAddress="7F6AC882353E"/>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>2E</Offset>
+            <Offset>218</Offset>
+            <Offset>100</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>32</ID>
+          <Description>"dead"</Description>
+          <LastState Value="00" RealAddress="7F6AC882353C"/>
+          <ShowAsHex>1</ShowAsHex>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>2C</Offset>
+            <Offset>218</Offset>
+            <Offset>100</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>26</ID>
+      <Description>"CameraController"</Description>
+      <LastState Value="00007F6B702DFCF0" RealAddress="7F6ADDF802B8"/>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+01B31468</Address>
+      <Offsets>
+        <Offset>F8</Offset>
+        <Offset>18</Offset>
+        <Offset>20</Offset>
+        <Offset>10</Offset>
+        <Offset>0</Offset>
+      </Offsets>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>28</ID>
+          <Description>"teleporting"</Description>
+          <LastState Value="1" RealAddress="7F6B702DFD6E"/>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>"hollow_knight.x86_64"+01B31468</Address>
+          <Offsets>
+            <Offset>7E</Offset>
+            <Offset>F8</Offset>
+            <Offset>18</Offset>
+            <Offset>20</Offset>
+            <Offset>10</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
       <ID>19</ID>
       <Description>"Info"</Description>
-      <LastState Value="00007FE4C52ED460" RealAddress="7FE6644E1E10"/>
+      <LastState Value="00007F6AD139D798" RealAddress="7F6BCF90BE10"/>
       <ShowAsHex>1</ShowAsHex>
       <ShowAsSigned>0</ShowAsSigned>
       <VariableType>8 Bytes</VariableType>

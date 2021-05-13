@@ -42,9 +42,6 @@ namespace HollowKnightTasInfo {
 
         public static void OnGameManagerLateUpdate() {
             if (GameManager._instance is { } gameManager) {
-                // Random.State randomState = Random.state;
-                // ShowHitboxes.Instance.Initialize();
-
                 StringBuilder infoBuilder = new();
                 if (gameManager.hero_ctrl is { } heroController) {
                     Vector3 position = heroController.transform.position;
@@ -79,7 +76,7 @@ namespace HollowKnightTasInfo {
                     }
 
                     bool teleporting = (bool) TeleportingFieldInfo.GetValue(gameManager.cameraCtrl);
-                    if (lookForTeleporting && (teleporting || (gameState != GameState.PLAYING && gameState != GameState.ENTERING_LEVEL))) {
+                    if (lookForTeleporting && (teleporting || gameState != GameState.PLAYING && gameState != GameState.ENTERING_LEVEL)) {
                         lookForTeleporting = false;
                     }
 
@@ -106,34 +103,17 @@ namespace HollowKnightTasInfo {
 
                 infoBuilder.AppendLine(FormattedTime);
                 GameManager.Info = infoBuilder.ToString();
-                // Random.state = randomState;
             }
         }
     }
 
-    internal static class Vector2Extension {
+    internal static class VectorExtension {
         public static string ToSimpleString(this Vector2 vector2, int precision) {
             return $"{vector2.x.ToString($"F{precision}")}, {vector2.y.ToString($"F{precision}")}";
         }
 
         public static string ToSimpleString(this Vector3 vector3, int precision) {
             return $"{vector3.x.ToString($"F{precision}")}, {vector3.y.ToString($"F{precision}")}";
-        }
-
-        public static Vector3 Add(this Vector3 vector, Vector3 otherVector) {
-            return new Vector3(vector.x + otherVector.x, vector.y + otherVector.y, vector.z + otherVector.z);
-        }
-
-        public static Vector3 Sub(this Vector3 vector, Vector3 otherVector) {
-            return new Vector3(vector.x - otherVector.x, vector.y - otherVector.y, vector.z - otherVector.z);
-        }
-
-        public static Vector3 Mul(this Vector3 vector, float scaleFactor) {
-            return new Vector3(vector.x * scaleFactor, vector.y * scaleFactor, vector.z * scaleFactor);
-        }
-
-        public static Vector3 Div(this Vector3 vector, float scaleFactor) {
-            return new Vector3(vector.x / scaleFactor, vector.y / scaleFactor, vector.z / scaleFactor);
         }
     }
 }
