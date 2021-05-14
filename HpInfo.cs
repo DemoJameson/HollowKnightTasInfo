@@ -5,7 +5,7 @@ using GlobalEnums;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
-    public record HpData {
+    internal record HpData {
         private readonly GameObject gameObject;
         private readonly PlayMakerFSM fsm;
         private readonly int maxHp;
@@ -18,15 +18,15 @@ namespace HollowKnightTasInfo {
         }
 
         public override string ToString() {
-            if (Camera.main == null || !gameObject.activeSelf || Hp <= 0) {
+            if (Camera.main == null || !gameObject.activeInHierarchy || Hp <= 0) {
                 return string.Empty;
             }
 
             Vector2 enemyPos = Camera.main.WorldToScreenPoint(gameObject.transform.position);
             enemyPos.y = Screen.height - enemyPos.y;
 
-            int x = (int)enemyPos.x;
-            int y = (int)enemyPos.y;
+            int x = (int) enemyPos.x;
+            int y = (int) enemyPos.y;
 
             if (x < 0 || x > Screen.width || y < 0 || y > Screen.height) {
                 return string.Empty;
@@ -54,18 +54,21 @@ namespace HollowKnightTasInfo {
                     return;
                 }
 
-                GameObject[] rootGameObjects = nextScene.GetRootGameObjects();
-                if (rootGameObjects != null) {
+                try {
+                    GameObject[] rootGameObjects = nextScene.GetRootGameObjects();
                     foreach (GameObject gameObject in rootGameObjects) {
                         TryAddEnemy(gameObject);
                     }
+                } catch (Exception e) {
+                    Debug.Log(e);
                 }
             };
         }
 
         private static void TryAddEnemy(GameObject gameObject) {
-            if (((PhysLayers) gameObject.layer is PhysLayers.ENEMIES or PhysLayers.HERO_ATTACK || gameObject.CompareTag("Boss")) &&
-                !IgnoreObject(gameObject.name) && !EnemyPool.ContainsKey(gameObject)) {
+            if (!EnemyPool.ContainsKey(gameObject)
+                && ((PhysLayers) gameObject.layer is PhysLayers.ENEMIES or PhysLayers.HERO_ATTACK || gameObject.tag == "Boss")
+                && !IgnoreObject(gameObject)) {
                 PlayMakerFSM playMakerFsm = FSMUtility.LocateFSM(gameObject, "health_manager_enemy");
                 if (playMakerFsm == null) {
                     playMakerFsm = FSMUtility.LocateFSM(gameObject, "health_manager");
@@ -76,16 +79,13 @@ namespace HollowKnightTasInfo {
                 }
             }
 
-            EnemyDescendants(gameObject.transform);
-        }
-
-        private static void EnemyDescendants(Transform transform) {
-            foreach (Transform childTransform in transform) {
+            foreach (Transform childTransform in gameObject.transform) {
                 TryAddEnemy(childTransform.gameObject);
             }
         }
 
-        private static bool IgnoreObject(string name) {
+        private static bool IgnoreObject(GameObject gameObject) {
+            string name = gameObject.name;
             if (name.IndexOf("Hornet Barb", StringComparison.OrdinalIgnoreCase) >= 0) return true;
             if (name.IndexOf("Needle Tink", StringComparison.OrdinalIgnoreCase) >= 0) return true;
             if (name.IndexOf("worm", StringComparison.OrdinalIgnoreCase) >= 0) return true;
@@ -95,29 +95,32 @@ namespace HollowKnightTasInfo {
             return false;
         }
 
-        public static string GetInfo() {
+        private static string GetInfo() {
             StringBuilder result = new();
 
-            if (EnemyPool.Count > 0) {
-                foreach (HpData hpData in EnemyPool.Values) {
-                    string hpInfo = hpData.ToString();
-                    if (string.IsNullOrEmpty(hpInfo)) {
-                        continue;
-                    }
-
-                    if (result.Length == 0) {
-                        result.Append("HP:");
-                    }
-
-                    result.Append($"{hpData},");
+            foreach (HpData hpData in EnemyPool.Values) {
+                string hpInfo = hpData.ToString();
+                if (string.IsNullOrEmpty(hpInfo)) {
+                    continue;
                 }
 
-                if (result.Length > 0) {
-                    result.Remove(result.Length - 1, 1);
-                }
+                result.Append(result.Length > 0 ? $",{hpData}" : $"HP:{hpData}");
             }
 
             return result.ToString();
+        }
+
+        public static void TryAppendHpInfo(GameManager gameManager, StringBuilder infoBuilder) {
+            if (gameManager.gameState == GameState.PLAYING) {
+                try {
+                    string hpInfo = GetInfo();
+                    if (!string.IsNullOrEmpty(hpInfo)) {
+                        infoBuilder.AppendLine(hpInfo);
+                    }
+                } catch (Exception e) {
+                    Debug.Log(e);
+                }
+            }
         }
     }
 }

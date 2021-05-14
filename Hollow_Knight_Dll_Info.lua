@@ -2,7 +2,7 @@ local showPos = true
 local showVel = true
 local showGameState = true
 local showInGameTime = true
-local showHp = true
+local showHP = true
 
 function onPaint()
     local gameManagerClass = memory.readu64(0x400000 + 0x1B317A8)
@@ -18,23 +18,25 @@ function onPaint()
         return ;
     end
 
-    local textArray = {}
     local infoText = readString(infoAddress)
+    local gameInfo = {}
     for line in infoText:gmatch("[^\r\n]+") do
         if line:find("^HP:") ~= nil then
-            local hpData = splitString(line:sub(4), ",")
-            for i = 1, #hpData, 3 do
-                gui.text(hpData[i], hpData[i + 1], hpData[i + 2])
+            if showHP then
+                local hpData = splitString(line:sub(4), ",")
+                for i = 1, #hpData, 3 do
+                    gui.text(hpData[i], hpData[i + 1], hpData[i + 2])
+                end
             end
         else
-            table.insert(textArray, line)
+            table.insert(gameInfo, line)
         end
     end
 
-    guiText(textArray)
+    drawGameInfo(gameInfo)
 end
 
-function guiText(textArray)
+function drawGameInfo(textArray)
     local width, _ = gui.resolution()
     for i, v in ipairs(textArray) do
         gui.text(width, 23 * (i - 1), v)

@@ -5,6 +5,10 @@
         <LangVersion>9</LangVersion>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DebugType>none</DebugType>
+    </PropertyGroup>
+
     <ItemGroup>
       <Compile Remove="lib-stripped\**" />
     </ItemGroup>
@@ -19,14 +23,28 @@
 
     <ItemGroup>
       <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <Private>true</Private>
+        <Private>True</Private>
         <HintPath>lib-stripped\Assembly-CSharp.dll</HintPath>
       </Reference>
+      <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <Private>False</Private>
+        <HintPath>lib-stripped\Assembly-CSharp-firstpass.dll</HintPath>
+      </Reference>
+      <Reference Include="Mono.Security, Version=2.0.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+        <Private>False</Private>
+        <HintPath>lib-stripped\Mono.Security.dll</HintPath>
+      </Reference>
       <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
+        <Private>False</Private>
         <HintPath>lib-stripped\PlayMaker.dll</HintPath>
       </Reference>
       <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <Private>False</Private>
         <HintPath>lib-stripped\UnityEngine.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <Private>False</Private>
+        <HintPath>lib-stripped\UnityEngine.UI.dll</HintPath>
       </Reference>
     </ItemGroup>
 

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 using GlobalEnums;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 // ReSharper disable Unity.NoNullPropagation
 
@@ -41,82 +39,96 @@ namespace HollowKnightTasInfo {
 
         private static GameState lastGameState;
         private static bool lookForTeleporting;
-
+        
         public static void OnGameManagerLateUpdate() {
             if (GameManager._instance is { } gameManager) {
-                HpInfo.Init(gameManager);
-
                 StringBuilder infoBuilder = new();
+                
+                BeforeUpdate(gameManager, infoBuilder);
+                
                 if (gameManager.hero_ctrl is { } heroController) {
-                    Vector3 position = heroController.transform.position;
-                    infoBuilder.AppendLine($"pos: {position.ToSimpleString(5)}");
-                    infoBuilder.AppendLine($"vel: {heroController.current_velocity.ToSimpleString(3)}");
-                    infoBuilder.AppendLine(heroController.hero_state.ToString());
-
-                    if (gameManager.gameState == GameState.PLAYING) {
-                        string hpInfo = HpInfo.GetInfo();
-                        if (!string.IsNullOrEmpty(hpInfo)) {
-                            infoBuilder.AppendLine(hpInfo);
-                        }
-                    }
+                    HandleHeroInfo(heroController, infoBuilder);
+                    HpInfo.TryAppendHpInfo(gameManager, infoBuilder);
                 }
 
-                string currentScene = gameManager.sceneName;
-                string nextScene = gameManager.nextSceneName;
-                GameState gameState = gameManager.gameState;
-
-                if (!timeStart && (nextScene.Equals("Tutorial_01", StringComparison.OrdinalIgnoreCase) && gameState == GameState.ENTERING_LEVEL ||
-                                   nextScene is "GG_Vengefly_V" or "GG_Boss_Door_Entrance" or "GG_Entrance_Cutscene")) {
-                    timeStart = true;
-                }
-
-                if (timeStart && !timeEnd && (nextScene.StartsWith("Cinematic_Ending", StringComparison.OrdinalIgnoreCase) ||
-                                              nextScene == "GG_End_Sequence")) {
-                    timeEnd = true;
-                }
-
-                bool timePaused = false;
-
-                // thanks ShootMe, in game time logic copy from https://github.com/ShootMe/LiveSplit.HollowKnight
-                try {
-                    UIState uiState = gameManager.ui.uiState;
-                    bool loadingMenu = currentScene != "Menu_Title" && string.IsNullOrEmpty(nextScene) ||
-                                       currentScene != "Menu_Title" && nextScene == "Menu_Title";
-                    if (gameState == GameState.PLAYING && lastGameState == GameState.MAIN_MENU) {
-                        lookForTeleporting = true;
-                    }
-
-                    bool teleporting = (bool) TeleportingFieldInfo.GetValue(gameManager.cameraCtrl);
-                    if (lookForTeleporting && (teleporting || gameState != GameState.PLAYING && gameState != GameState.ENTERING_LEVEL)) {
-                        lookForTeleporting = false;
-                    }
-
-                    timePaused =
-                        gameState == GameState.PLAYING && teleporting && gameManager.hero_ctrl?.cState.hazardRespawning == false
-                        || lookForTeleporting
-                        || gameState is GameState.PLAYING or GameState.ENTERING_LEVEL && uiState != UIState.PLAYING
-                        || gameState != GameState.PLAYING && !gameManager.inputHandler.acceptingInput
-                        || gameState is GameState.EXITING_LEVEL or GameState.LOADING
-                        || gameManager.hero_ctrl?.transitionState == HeroTransitionState.WAITING_TO_ENTER_LEVEL
-                        || uiState != UIState.PLAYING &&
-                        (loadingMenu || uiState != UIState.PAUSED && (!string.IsNullOrEmpty(nextScene) || currentScene == "_test_charms")) &&
-                        nextScene != currentScene
-                        || (bool) TilemapDirtyFieldInfo.GetValue(gameManager);
-                } catch {
-                    // ignore
-                }
-
-                lastGameState = gameState;
-
-                if (timeStart && !timePaused && !timeEnd) {
-                    inGameTime += Time.unscaledDeltaTime;
-                }
-
-                if (inGameTime > 0) {
-                    infoBuilder.AppendLine(FormattedTime);
-                }
-
+                HandleInGameTime(gameManager, infoBuilder);
+                
+                AfterUpdate(gameManager, infoBuilder);
+                
                 GameManager.Info = infoBuilder.ToString();
+            }
+        }
+
+        private static void BeforeUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+            HpInfo.Init(gameManager);
+            DesyncChecker.BeforeUpdate(gameManager, infoBuilder);
+        }
+
+        private static void AfterUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+            DesyncChecker.AfterUpdate(gameManager, infoBuilder);
+        }
+
+        private static void HandleHeroInfo(HeroController heroController, StringBuilder infoBuilder) {
+            Vector3 position = heroController.transform.position;
+            infoBuilder.AppendLine($"pos: {position.ToSimpleString(5)}");
+            infoBuilder.AppendLine($"vel: {heroController.current_velocity.ToSimpleString(3)}");
+            infoBuilder.AppendLine(heroController.hero_state.ToString());
+        }
+
+        private static void HandleInGameTime(GameManager gameManager, StringBuilder infoBuilder) {
+            string currentScene = gameManager.sceneName;
+            string nextScene = gameManager.nextSceneName;
+            GameState gameState = gameManager.gameState;
+
+            if (!timeStart && (nextScene.Equals("Tutorial_01", StringComparison.OrdinalIgnoreCase) && gameState == GameState.ENTERING_LEVEL ||
+                               nextScene is "GG_Vengefly_V" or "GG_Boss_Door_Entrance" or "GG_Entrance_Cutscene")) {
+                timeStart = true;
+            }
+
+            if (timeStart && !timeEnd && (nextScene.StartsWith("Cinematic_Ending", StringComparison.OrdinalIgnoreCase) ||
+                                          nextScene == "GG_End_Sequence")) {
+                timeEnd = true;
+            }
+
+            bool timePaused = false;
+
+            // thanks ShootMe, in game time logic copy from https://github.com/ShootMe/LiveSplit.HollowKnight
+            try {
+                UIState uiState = gameManager.ui.uiState;
+                bool loadingMenu = currentScene != "Menu_Title" && string.IsNullOrEmpty(nextScene) ||
+                                   currentScene != "Menu_Title" && nextScene == "Menu_Title";
+                if (gameState == GameState.PLAYING && lastGameState == GameState.MAIN_MENU) {
+                    lookForTeleporting = true;
+                }
+
+                bool teleporting = (bool) TeleportingFieldInfo.GetValue(gameManager.cameraCtrl);
+                if (lookForTeleporting && (teleporting || gameState != GameState.PLAYING && gameState != GameState.ENTERING_LEVEL)) {
+                    lookForTeleporting = false;
+                }
+
+                timePaused =
+                    gameState == GameState.PLAYING && teleporting && gameManager.hero_ctrl?.cState.hazardRespawning == false
+                    || lookForTeleporting
+                    || gameState is GameState.PLAYING or GameState.ENTERING_LEVEL && uiState != UIState.PLAYING
+                    || gameState != GameState.PLAYING && !gameManager.inputHandler.acceptingInput
+                    || gameState is GameState.EXITING_LEVEL or GameState.LOADING
+                    || gameManager.hero_ctrl?.transitionState == HeroTransitionState.WAITING_TO_ENTER_LEVEL
+                    || uiState != UIState.PLAYING &&
+                    (loadingMenu || uiState != UIState.PAUSED && (!string.IsNullOrEmpty(nextScene) || currentScene == "_test_charms")) &&
+                    nextScene != currentScene
+                    || (bool) TilemapDirtyFieldInfo.GetValue(gameManager);
+            } catch {
+                // ignore
+            }
+
+            lastGameState = gameState;
+
+            if (timeStart && !timePaused && !timeEnd) {
+                inGameTime += Time.unscaledDeltaTime;
+            }
+            
+            if (inGameTime > 0) {
+                infoBuilder.AppendLine(FormattedTime);
             }
         }
     }

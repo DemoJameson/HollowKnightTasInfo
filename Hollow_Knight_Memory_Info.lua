@@ -40,10 +40,10 @@ function onPaint()
         table.insert(textArray, ActorStates[heroState + 1])
     end
 
-    guiText(textArray)
+    drawGameInfo(textArray)
 end
 
-function guiText(textArray)
+function drawGameInfo(textArray)
     local width, _ = gui.resolution()
     for i, v in ipairs(textArray) do
         gui.text(width, 23 * (i - 1), v)

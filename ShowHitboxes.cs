@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using GlobalEnums;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -77,7 +76,7 @@ namespace HollowKnightTasInfo {
                 return;
             }
 
-            foreach (Collider2D col in lines.Keys.ToArray()) {
+            foreach (Collider2D col in lines.Keys) {
                 if (col != null && lines[col] != null) {
                     Object.Destroy(lines[col].gameObject);
                 }
