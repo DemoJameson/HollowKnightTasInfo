@@ -8,13 +8,11 @@ namespace HollowKnightTasInfo {
     internal class HpData {
         private readonly GameObject gameObject;
         private readonly PlayMakerFSM fsm;
-        private readonly int maxHp;
         private int Hp => fsm.FsmVariables.GetFsmInt("HP").Value;
 
         public HpData(GameObject gameObject, PlayMakerFSM fsm) {
             this.gameObject = gameObject;
             this.fsm = fsm;
-            maxHp = Hp;
         }
 
         public override string ToString() {
@@ -32,7 +30,7 @@ namespace HollowKnightTasInfo {
                 return string.Empty;
             }
 
-            return $"{x},{y},{Hp}/{maxHp}";
+            return $"{x},{y},{Hp}";
         }
     }
 
