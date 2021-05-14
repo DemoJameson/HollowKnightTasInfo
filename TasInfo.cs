@@ -18,6 +18,8 @@ namespace HollowKnightTasInfo {
         private static bool timeEnd = false;
         private static float inGameTime = 0f;
 
+        private static bool init;
+
         private static string FormattedTime {
             get {
                 if (inGameTime == 0) {
@@ -40,15 +42,20 @@ namespace HollowKnightTasInfo {
         private static GameState lastGameState;
         private static bool lookForTeleporting;
         
+        // ReSharper disable once UnusedMember.Global
         public static void OnGameManagerLateUpdate() {
             if (GameManager._instance is { } gameManager) {
                 StringBuilder infoBuilder = new();
+
+                if (!init) {
+                    init = true;
+                    Init(gameManager);
+                }
                 
                 BeforeUpdate(gameManager, infoBuilder);
                 
                 if (gameManager.hero_ctrl is { } heroController) {
                     HandleHeroInfo(heroController, infoBuilder);
-                    HpInfo.TryAppendHpInfo(gameManager, infoBuilder);
                 }
 
                 HandleInGameTime(gameManager, infoBuilder);
@@ -59,13 +66,17 @@ namespace HollowKnightTasInfo {
             }
         }
 
-        private static void BeforeUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+        private static void Init(GameManager gameManager) {
             HpInfo.Init(gameManager);
+        }
+
+        private static void BeforeUpdate(GameManager gameManager, StringBuilder infoBuilder) {
             DesyncChecker.BeforeUpdate(gameManager, infoBuilder);
         }
 
         private static void AfterUpdate(GameManager gameManager, StringBuilder infoBuilder) {
             DesyncChecker.AfterUpdate(gameManager, infoBuilder);
+            HpInfo.AfterUpdate(gameManager, infoBuilder);
         }
 
         private static void HandleHeroInfo(HeroController heroController, StringBuilder infoBuilder) {

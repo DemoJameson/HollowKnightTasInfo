@@ -5,7 +5,7 @@ using GlobalEnums;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
-    internal record HpData {
+    internal class HpData {
         private readonly GameObject gameObject;
         private readonly PlayMakerFSM fsm;
         private readonly int maxHp;
@@ -18,7 +18,7 @@ namespace HollowKnightTasInfo {
         }
 
         public override string ToString() {
-            if (Camera.main == null || !gameObject.activeInHierarchy || Hp <= 0) {
+            if (Camera.main == null || gameObject == null || !gameObject.activeInHierarchy || Hp <= 0) {
                 return string.Empty;
             }
 
@@ -37,37 +37,54 @@ namespace HollowKnightTasInfo {
     }
 
     public static class HpInfo {
-        private static bool init;
         private static readonly Dictionary<GameObject, HpData> EnemyPool = new();
+        private static readonly HashSet<GameObject> KnownGameObjects = new();
 
         public static void Init(GameManager gameManager) {
-            if (init) {
-                return;
-            }
-
-            init = true;
-
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (scene, nextScene) => {
                 EnemyPool.Clear();
+                KnownGameObjects.Clear();
 
                 if (gameManager.IsNonGameplayScene()) {
                     return;
                 }
 
-                try {
-                    GameObject[] rootGameObjects = nextScene.GetRootGameObjects();
-                    foreach (GameObject gameObject in rootGameObjects) {
-                        TryAddEnemy(gameObject);
-                    }
-                } catch (Exception e) {
-                    Debug.Log(e);
+                GameObject[] rootGameObjects = nextScene.GetRootGameObjects();
+                foreach (GameObject gameObject in rootGameObjects) {
+                    TryAddEnemy(gameObject);
                 }
             };
         }
+        
+        public static void AfterUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+            if (gameManager.gameState == GameState.PLAYING) {
+                UpdateEnemy(gameManager);
+
+                string hpInfo = GetInfo();
+                if (!string.IsNullOrEmpty(hpInfo)) {
+                    infoBuilder.AppendLine(hpInfo);
+                }
+            }
+        }
+
+        private static void UpdateEnemy(GameManager gameManager) {
+            if (gameManager.IsNonGameplayScene()) {
+                return;
+            }
+
+            GameObject[] rootGameObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (GameObject gameObject in rootGameObjects) {
+                TryAddEnemy(gameObject);
+            }
+        }
 
         private static void TryAddEnemy(GameObject gameObject) {
+            if (gameObject == null || KnownGameObjects.Contains(gameObject)) {
+                return;
+            }
+
             if (!EnemyPool.ContainsKey(gameObject)
-                && ((PhysLayers) gameObject.layer is PhysLayers.ENEMIES or PhysLayers.HERO_ATTACK || gameObject.tag == "Boss")
+                && ((PhysLayers) gameObject.layer is PhysLayers.ENEMIES or PhysLayers.HERO_ATTACK || gameObject.CompareTag("Boss"))
                 && !IgnoreObject(gameObject)) {
                 PlayMakerFSM playMakerFsm = FSMUtility.LocateFSM(gameObject, "health_manager_enemy");
                 if (playMakerFsm == null) {
@@ -82,6 +99,8 @@ namespace HollowKnightTasInfo {
             foreach (Transform childTransform in gameObject.transform) {
                 TryAddEnemy(childTransform.gameObject);
             }
+            
+            KnownGameObjects.Add(gameObject);
         }
 
         private static bool IgnoreObject(GameObject gameObject) {
@@ -108,19 +127,6 @@ namespace HollowKnightTasInfo {
             }
 
             return result.ToString();
-        }
-
-        public static void TryAppendHpInfo(GameManager gameManager, StringBuilder infoBuilder) {
-            if (gameManager.gameState == GameState.PLAYING) {
-                try {
-                    string hpInfo = GetInfo();
-                    if (!string.IsNullOrEmpty(hpInfo)) {
-                        infoBuilder.AppendLine(hpInfo);
-                    }
-                } catch (Exception e) {
-                    Debug.Log(e);
-                }
-            }
         }
     }
 }

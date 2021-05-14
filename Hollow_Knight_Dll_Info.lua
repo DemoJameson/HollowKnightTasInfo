@@ -44,12 +44,12 @@ function drawGameInfo(textArray)
 end
 
 function readString(address)
-    local text = ""
+    local text ={} 
     local len = memory.readu16(address + 0x10)
     for i = 1, len do
-        text = text .. string.char(memory.readu16(address + 0x12 + i * 2))
+        text[i] = string.char(memory.readu16(address + 0x12 + i * 2))
     end
-    return text;
+    return table.concat(text);
 end
 
 function splitString(text, sep)
