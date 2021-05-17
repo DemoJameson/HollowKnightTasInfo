@@ -17,18 +17,10 @@ namespace HollowKnightTasInfo {
         private Dictionary<Collider2D, LineRenderer> lines = new();
         private List<Collider2D> colliders = new();
 
-        private bool initialized;
 
         public static ShowHitboxes Instance { get; } = new();
 
         public void Initialize() {
-            if (initialized) {
-                UpdateHitboxes();
-                return;
-            }
-
-            initialized = true;
-
             greenMat = new Material(Shader.Find("Diffuse"));
             greenMat.renderQueue = 4000;
             greenMat.color = Color.green;
@@ -92,27 +84,25 @@ namespace HollowKnightTasInfo {
 
                 if (col.gameObject.layer == (int) PhysLayers.TERRAIN) {
                     lines.Add(col, SetupLineRenderer(col, null, greenMat));
-                } else if (col.GetComponent<TransitionPoint>()) {
+                } else if (col.GetComponent<TransitionPoint>() || col.GetComponent<HazardRespawnTrigger>()) {
                     lines.Add(col, SetupLineRenderer(col, null, blueMat));
+#if V1028
+                } else if (col.gameObject.LocateMyFSM("damages_hero")) {
+#elif V1221
                 } else if (col.GetComponent<DamageHero>()) {
+#endif
                     colliders.Add(col);
                     lines.Add(col, SetupLineRenderer(col, null, redMat));
                 } else if (col.gameObject == HeroController.instance.gameObject && !col.isTrigger) {
                     colliders.Add(col);
                     lines.Add(col, SetupLineRenderer(col, null, yellowMat));
-                } else if (col.GetComponent<Breakable>()) {
-                    NonBouncer bounce = col.GetComponent<NonBouncer>();
-                    if (bounce == null || !bounce.active) {
-                        colliders.Add(col);
-                        lines.Add(col, SetupLineRenderer(col, null, blueMat));
-                    }
                 }
             }
         }
 
         private void SpawnHitboxes(Scene from, Scene to) => SpawnHitboxes();
 
-        private void UpdateHitboxes() {
+        public void UpdateHitboxes() {
             if (colliders == null || lines == null) {
                 return;
             }
@@ -142,8 +132,6 @@ namespace HollowKnightTasInfo {
 
                 line = obj.AddComponent<LineRenderer>();
                 line.SetWidth(.05f, .05f);
-                // line.startWidth = .05f;
-                // line.endWidth = .05f;
                 line.sharedMaterial = mat;
             }
 
@@ -201,24 +189,6 @@ namespace HollowKnightTasInfo {
             }
 
             return line;
-        }
-
-        private bool IsChildOf(GameObject child, GameObject parent) {
-            if (child == null || parent == null) {
-                return false;
-            }
-
-            Transform t = child.transform;
-
-            while (t != null) {
-                if (t.gameObject == parent) {
-                    return true;
-                }
-
-                t = t.parent;
-            }
-
-            return false;
         }
     }
 }

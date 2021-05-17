@@ -2,23 +2,17 @@
 using System.Reflection;
 using System.Text;
 using GlobalEnums;
+using HollowKnightTasInfo.Extensions;
 using UnityEngine;
 
-// ReSharper disable Unity.NoNullPropagation
-
 namespace HollowKnightTasInfo {
-    public static class TasInfo {
-        private static readonly FieldInfo TeleportingFieldInfo =
-            typeof(CameraController).GetField("teleporting", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private static readonly FieldInfo TilemapDirtyFieldInfo =
-            typeof(GameManager).GetField("tilemapDirty", BindingFlags.NonPublic | BindingFlags.Instance);
+    public static class TimeInfo {
+        private static readonly FieldInfo TeleportingFieldInfo = typeof(CameraController).GetFieldInfo("teleporting");
+        private static readonly FieldInfo TilemapDirtyFieldInfo = typeof(GameManager).GetFieldInfo("tilemapDirty");
 
         private static bool timeStart = false;
         private static bool timeEnd = false;
-        private static float inGameTime = 0f;
-
-        private static bool init;
+        public static float inGameTime = 0f;
 
         private static string FormattedTime {
             get {
@@ -41,52 +35,8 @@ namespace HollowKnightTasInfo {
 
         private static GameState lastGameState;
         private static bool lookForTeleporting;
-        
-        // ReSharper disable once UnusedMember.Global
-        public static void OnGameManagerLateUpdate() {
-            if (GameManager._instance is { } gameManager) {
-                StringBuilder infoBuilder = new();
 
-                if (!init) {
-                    init = true;
-                    Init(gameManager);
-                }
-                
-                BeforeUpdate(gameManager, infoBuilder);
-                
-                if (gameManager.hero_ctrl is { } heroController) {
-                    HandleHeroInfo(heroController, infoBuilder);
-                }
-
-                HandleInGameTime(gameManager, infoBuilder);
-                
-                AfterUpdate(gameManager, infoBuilder);
-                
-                GameManager.Info = infoBuilder.ToString();
-            }
-        }
-
-        private static void Init(GameManager gameManager) {
-            HpInfo.Init(gameManager);
-        }
-
-        private static void BeforeUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            DesyncChecker.BeforeUpdate(gameManager, infoBuilder);
-        }
-
-        private static void AfterUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            DesyncChecker.AfterUpdate(gameManager, infoBuilder);
-            HpInfo.AfterUpdate(gameManager, infoBuilder);
-        }
-
-        private static void HandleHeroInfo(HeroController heroController, StringBuilder infoBuilder) {
-            Vector3 position = heroController.transform.position;
-            infoBuilder.AppendLine($"pos: {position.ToSimpleString(5)}");
-            infoBuilder.AppendLine($"vel: {heroController.current_velocity.ToSimpleString(3)}");
-            infoBuilder.AppendLine(heroController.hero_state.ToString());
-        }
-
-        private static void HandleInGameTime(GameManager gameManager, StringBuilder infoBuilder) {
+        public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
             string currentScene = gameManager.sceneName;
             string nextScene = gameManager.nextSceneName;
             GameState gameState = gameManager.gameState;
@@ -137,20 +87,14 @@ namespace HollowKnightTasInfo {
             if (timeStart && !timePaused && !timeEnd) {
                 inGameTime += Time.unscaledDeltaTime;
             }
-            
+
             if (inGameTime > 0) {
+                if (!string.IsNullOrEmpty(gameManager.sceneName)) {
+                    infoBuilder.Append($"{gameManager.sceneName}  ");
+                }
+
                 infoBuilder.AppendLine(FormattedTime);
             }
-        }
-    }
-
-    internal static class VectorExtension {
-        public static string ToSimpleString(this Vector2 vector2, int precision) {
-            return $"{vector2.x.ToString($"F{precision}")}, {vector2.y.ToString($"F{precision}")}";
-        }
-
-        public static string ToSimpleString(this Vector3 vector3, int precision) {
-            return $"{vector3.x.ToString($"F{precision}")}, {vector3.y.ToString($"F{precision}")}";
         }
     }
 }

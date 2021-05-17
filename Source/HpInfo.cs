@@ -2,43 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using GlobalEnums;
+using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
-    internal class HpData {
-        private readonly GameObject gameObject;
-        private readonly PlayMakerFSM fsm;
-        private int Hp => fsm.FsmVariables.GetFsmInt("HP").Value;
-
-        public HpData(GameObject gameObject, PlayMakerFSM fsm) {
-            this.gameObject = gameObject;
-            this.fsm = fsm;
-        }
-
-        public override string ToString() {
-            if (Camera.main == null || gameObject == null || !gameObject.activeInHierarchy || Hp <= 0) {
-                return string.Empty;
-            }
-
-            Vector2 enemyPos = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-            enemyPos.y = Screen.height - enemyPos.y;
-
-            int x = (int) enemyPos.x;
-            int y = (int) enemyPos.y;
-
-            if (x < 0 || x > Screen.width || y < 0 || y > Screen.height) {
-                return string.Empty;
-            }
-
-            return $"{x},{y},{Hp}";
-        }
-    }
-
     public static class HpInfo {
         private static readonly Dictionary<GameObject, HpData> EnemyPool = new();
         private static readonly HashSet<GameObject> KnownGameObjects = new();
 
-        public static void Init(GameManager gameManager) {
+        public static void OnInit(GameManager gameManager) {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (scene, nextScene) => {
                 EnemyPool.Clear();
                 KnownGameObjects.Clear();
@@ -53,23 +25,25 @@ namespace HollowKnightTasInfo {
                 }
             };
         }
-        
-        public static void AfterUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            if (gameManager.gameState == GameState.PLAYING) {
-                UpdateEnemy(gameManager);
 
-                string hpInfo = GetInfo();
-                if (!string.IsNullOrEmpty(hpInfo)) {
-                    infoBuilder.AppendLine(hpInfo);
-                }
+        public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+            if (gameManager.IsNonGameplayScene()
+                || gameManager.gameState != GameState.PLAYING
+                || gameManager.hero_ctrl?.transitionState == HeroTransitionState.WAITING_TO_ENTER_LEVEL
+                || HkUtils.InInventory()
+            ) {
+                return;
+            }
+
+            UpdateEnemy(gameManager);
+
+            string hpInfo = GetInfo();
+            if (!string.IsNullOrEmpty(hpInfo)) {
+                infoBuilder.AppendLine(hpInfo);
             }
         }
 
         private static void UpdateEnemy(GameManager gameManager) {
-            if (gameManager.IsNonGameplayScene()) {
-                return;
-            }
-
             GameObject[] rootGameObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject gameObject in rootGameObjects) {
                 TryAddEnemy(gameObject);
@@ -84,9 +58,9 @@ namespace HollowKnightTasInfo {
             if (!EnemyPool.ContainsKey(gameObject)
                 && ((PhysLayers) gameObject.layer is PhysLayers.ENEMIES or PhysLayers.HERO_ATTACK || gameObject.CompareTag("Boss"))
                 && !IgnoreObject(gameObject)) {
-                PlayMakerFSM playMakerFsm = FSMUtility.LocateFSM(gameObject, "health_manager_enemy");
+                PlayMakerFSM playMakerFsm = gameObject.LocateMyFSM("health_manager_enemy");
                 if (playMakerFsm == null) {
-                    playMakerFsm = FSMUtility.LocateFSM(gameObject, "health_manager");
+                    playMakerFsm = gameObject.LocateMyFSM("health_manager");
                 }
 
                 if (playMakerFsm != null) {
@@ -97,7 +71,7 @@ namespace HollowKnightTasInfo {
             foreach (Transform childTransform in gameObject.transform) {
                 TryAddEnemy(childTransform.gameObject);
             }
-            
+
             KnownGameObjects.Add(gameObject);
         }
 
@@ -113,18 +87,36 @@ namespace HollowKnightTasInfo {
         }
 
         private static string GetInfo() {
-            StringBuilder result = new();
+            return HkUtils.Join(",", EnemyPool.Values, "HP=");
+        }
 
-            foreach (HpData hpData in EnemyPool.Values) {
-                string hpInfo = hpData.ToString();
-                if (string.IsNullOrEmpty(hpInfo)) {
-                    continue;
-                }
+        private class HpData {
+            private readonly GameObject gameObject;
+            private readonly PlayMakerFSM fsm;
+            private int Hp => fsm.FsmVariables.GetFsmInt("HP").Value;
 
-                result.Append(result.Length > 0 ? $",{hpData}" : $"HP:{hpData}");
+            public HpData(GameObject gameObject, PlayMakerFSM fsm) {
+                this.gameObject = gameObject;
+                this.fsm = fsm;
             }
 
-            return result.ToString();
+            public override string ToString() {
+                if (Camera.main == null || gameObject == null || !gameObject.activeInHierarchy || Hp <= 0) {
+                    return string.Empty;
+                }
+
+                Vector2 enemyPos = Camera.main.WorldToScreenPoint(gameObject.transform.position);
+                enemyPos.y = Screen.height - enemyPos.y;
+
+                int x = (int) enemyPos.x;
+                int y = (int) enemyPos.y;
+
+                if (x < 0 || x > Screen.width || y < 0 || y > Screen.height) {
+                    return string.Empty;
+                }
+
+                return $"{x},{y},{Hp}";
+            }
         }
     }
 }
