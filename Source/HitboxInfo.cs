@@ -39,7 +39,7 @@ namespace HollowKnightTasInfo {
                     return string.Empty;
                 }
 
-                if (hitboxColor == HitboxColor.PeaceMonster && (collider.GetComponent<DamageHero>() || collider.gameObject.LocateMyFSM("damages_hero"))) {
+                if (hitboxColor == HitboxColor.PeaceMonster && IsDamageHero(collider)) {
                     hitboxColor = HitboxColor.Enemy;
                 }
 
@@ -175,34 +175,38 @@ namespace HollowKnightTasInfo {
         }
 
         public static void UpdateHitbox(GameObject gameObject) {
-           UpdateHitbox(gameObject.GetComponent<Collider2D>());
+            UpdateHitbox(gameObject.GetComponent<Collider2D>());
         }
 
         private static void UpdateHitbox(Collider2D col) {
-                if (col == null || Colliders.ContainsKey(col)) {
-                    return;
-                }
+            if (col == null || Colliders.ContainsKey(col)) {
+                return;
+            }
 
-                if (col is BoxCollider2D or PolygonCollider2D or EdgeCollider2D) {
-                    GameObject gameObject = col.gameObject;
-#if V1028
-                    if (col.gameObject.LocateMyFSM("damages_hero")) {
-#elif V1221
-                    if (col.GetComponent<DamageHero>() || gameObject.LocateMyFSM("damages_hero")) {
-#endif
-                        Colliders.Add(col, new HitboxData(col, HitboxColor.Enemy));
-                    } else if (gameObject.LocateMyFSM("health_manager_enemy") || gameObject.LocateMyFSM("health_manager")) {
-                        Colliders.Add(col, new HitboxData(col, HitboxColor.PeaceMonster));
-                    } else if (gameObject.layer == (int) PhysLayers.TERRAIN) {
-                        Colliders.Add(col, new HitboxData(col, HitboxColor.Terrain));
-                    } else if (gameObject == HeroController.instance.gameObject && !col.isTrigger) {
-                        Colliders.Add(col, new HitboxData(col, HitboxColor.Knight));
-                    } else if (col.GetComponent<TransitionPoint>()
-                               || col.isTrigger && col.GetComponent<HazardRespawnTrigger>()
-                    ) {
-                        Colliders.Add(col, new HitboxData(col, HitboxColor.Trigger));
-                    }
+            if (col is BoxCollider2D or PolygonCollider2D or EdgeCollider2D) {
+                GameObject gameObject = col.gameObject;
+                if (IsDamageHero(col)) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Enemy));
+                } else if (gameObject.LocateMyFSM("health_manager_enemy") || gameObject.LocateMyFSM("health_manager")) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.PeaceMonster));
+                } else if (gameObject.layer == (int) PhysLayers.TERRAIN) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Terrain));
+                } else if (gameObject == HeroController.instance.gameObject && !col.isTrigger) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Knight));
+                } else if (col.GetComponent<TransitionPoint>()
+                           || col.isTrigger && col.GetComponent<HazardRespawnTrigger>()
+                ) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Trigger));
                 }
+            }
+        }
+
+        private static bool IsDamageHero(Collider2D col) {
+#if V1028
+            return col.gameObject.LocateMyFSM("damages_hero");
+#elif V1221
+            return col.GetComponent<DamageHero>() || col.gameObject.LocateMyFSM("damages_hero");
+#endif
         }
 
         private static string GetAllInfo() {
