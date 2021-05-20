@@ -233,5 +233,5 @@ function getInfoAddress1221()
     infoAddress = memory.readu64(infoAddress + 0xF0)
     infoAddress = memory.readu64(infoAddress + 0x8)
     infoAddress = memory.readu64(infoAddress + 0x18)
-    return memory.readu64(infoAddress + 0x90)
+    return memory.readu64(infoAddress + 0xB0)
 end

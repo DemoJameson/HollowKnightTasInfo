@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using HollowKnightTasInfo.Extensions;
+using HollowKnightTasInfo.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -12,7 +13,17 @@ namespace HollowKnightTasInfo {
     public static class CustomInfo {
         private static readonly Regex BraceRegex = new(@"\{(.+?)\}");
         private static readonly Dictionary<string, Type> CachedTypes = new();
-        private const string ConfigFile = "./hollow_knight_Data/Managed/HollowKnightTasInfo.config";
+        private const string ConfigFile = "./HollowKnightTasInfo.config";
+
+        private static string defaultContent =
+            "# 该文件用于定制显示的数据，需要注意如果调用属性或者方法有可能会造成 desync\n" +
+            "# 例如 HeroController.CanJump() 会修改 ledgeBufferSteps 字段，请查看源码确认是否安全。定制数据格式如下：\n" +
+            "# {UnityObject子类名.字段/属性/方法.字段/属性/方法……}，只支持无参方法需要以()结尾\n" +
+            "# {GameObjectName.字段/属性/方法.字段/属性/方法……}\n" +
+            "# 例如 canAttack: {HeroController.CanAttack()}";
+
+        private static DateTime lastWriteTime;
+        private static string customTemplate;
 
         public static void OnInit() {
             foreach (Type type in typeof(GameManager).Assembly.GetTypes()) {
@@ -23,7 +34,12 @@ namespace HollowKnightTasInfo {
         }
 
         public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            string customTemplate = GetTemplate();
+            DateTime writeTime = File.GetLastWriteTime(ConfigFile);
+            if (lastWriteTime != writeTime) {
+                lastWriteTime = writeTime;
+                customTemplate = GetTemplate();
+            }
+
             if (string.IsNullOrEmpty(customTemplate)) {
                 return;
             }
@@ -38,7 +54,8 @@ namespace HollowKnightTasInfo {
                 string typeNameOrObjectName = splitText[0];
 
                 Object obj;
-                if (CachedTypes.ContainsKey(typeNameOrObjectName) && CachedTypes[typeNameOrObjectName] is {} type && type.IsSubclassOf(typeof(Object))) {
+                if (CachedTypes.ContainsKey(typeNameOrObjectName) && CachedTypes[typeNameOrObjectName] is { } type &&
+                    type.IsSubclassOf(typeof(Object))) {
                     obj = typeNameOrObjectName switch {
                         "GameManager" => gameManager,
                         "HeroController" => gameManager.hero_ctrl,
@@ -62,11 +79,13 @@ namespace HollowKnightTasInfo {
 
         private static string GetTemplate() {
             if (!File.Exists(ConfigFile)) {
-                File.WriteAllText(ConfigFile, string.Empty);
+                File.WriteAllText(ConfigFile, defaultContent);
                 return string.Empty;
             }
 
-            return File.ReadAllText(ConfigFile);
+            string[] result = File.ReadAllLines(ConfigFile);
+
+            return HkUtils.Join("\n", result.Where(line => !line.TrimStart().StartsWith("#")));
         }
 
         private static string FormatValue(object obj) {

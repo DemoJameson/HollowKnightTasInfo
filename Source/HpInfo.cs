@@ -8,12 +8,10 @@ using UnityEngine;
 namespace HollowKnightTasInfo {
     public static class HpInfo {
         private static readonly Dictionary<GameObject, HpData> EnemyPool = new();
-        private static readonly HashSet<GameObject> KnownGameObjects = new();
 
         public static void OnInit(GameManager gameManager) {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (scene, nextScene) => {
                 EnemyPool.Clear();
-                KnownGameObjects.Clear();
 
                 if (gameManager.IsNonGameplayScene()) {
                     return;
@@ -35,23 +33,14 @@ namespace HollowKnightTasInfo {
                 return;
             }
 
-            UpdateEnemy(gameManager);
-
             string hpInfo = GetInfo();
             if (!string.IsNullOrEmpty(hpInfo)) {
                 infoBuilder.AppendLine(hpInfo);
             }
         }
 
-        private static void UpdateEnemy(GameManager gameManager) {
-            GameObject[] rootGameObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-            foreach (GameObject gameObject in rootGameObjects) {
-                TryAddEnemy(gameObject);
-            }
-        }
-
-        private static void TryAddEnemy(GameObject gameObject) {
-            if (gameObject == null || KnownGameObjects.Contains(gameObject)) {
+        public static void TryAddEnemy(GameObject gameObject) {
+            if (gameObject == null) {
                 return;
             }
 
@@ -71,8 +60,6 @@ namespace HollowKnightTasInfo {
             foreach (Transform childTransform in gameObject.transform) {
                 TryAddEnemy(childTransform.gameObject);
             }
-
-            KnownGameObjects.Add(gameObject);
         }
 
         private static bool IgnoreObject(GameObject gameObject) {

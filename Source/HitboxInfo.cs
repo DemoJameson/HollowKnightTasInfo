@@ -18,7 +18,7 @@ namespace HollowKnightTasInfo {
 
         private class HitboxData {
             private readonly Collider2D collider;
-            private readonly HitboxColor hitboxColor;
+            private HitboxColor hitboxColor;
 
             public HitboxData(Collider2D collider, HitboxColor hitboxColor) {
                 this.collider = collider;
@@ -37,6 +37,10 @@ namespace HollowKnightTasInfo {
                 Camera camera = Camera.main;
                 if (camera == null || collider == null || !collider.isActiveAndEnabled) {
                     return string.Empty;
+                }
+
+                if (hitboxColor == HitboxColor.PeaceMonster && (collider.GetComponent<DamageHero>() || collider.gameObject.LocateMyFSM("damages_hero"))) {
+                    hitboxColor = HitboxColor.Enemy;
                 }
 
                 return collider switch {
@@ -149,7 +153,9 @@ namespace HollowKnightTasInfo {
                     return;
                 }
 
-                UpdateHitbox();
+                foreach (Collider2D col in Object.FindObjectsOfType<Collider2D>()) {
+                    UpdateHitbox(col);
+                }
             };
         }
 
@@ -162,31 +168,33 @@ namespace HollowKnightTasInfo {
                 return;
             }
 
-            UpdateHitbox();
             string hitboxInfo = GetAllInfo();
             if (!string.IsNullOrEmpty(hitboxInfo)) {
                 infoBuilder.AppendLine(hitboxInfo);
             }
         }
 
-        private static void UpdateHitbox() {
-            foreach (Collider2D col in Object.FindObjectsOfType<Collider2D>()) {
-                if (Colliders.ContainsKey(col)) {
-                    continue;
+        public static void UpdateHitbox(GameObject gameObject) {
+           UpdateHitbox(gameObject.GetComponent<Collider2D>());
+        }
+
+        private static void UpdateHitbox(Collider2D col) {
+                if (col == null || Colliders.ContainsKey(col)) {
+                    return;
                 }
 
                 if (col is BoxCollider2D or PolygonCollider2D or EdgeCollider2D) {
                     GameObject gameObject = col.gameObject;
-                    if (gameObject.layer == (int) PhysLayers.TERRAIN) {
-                        Colliders.Add(col, new HitboxData(col, HitboxColor.Terrain));
 #if V1028
-                    } else if (col.gameObject.LocateMyFSM("damages_hero")) {
+                    if (col.gameObject.LocateMyFSM("damages_hero")) {
 #elif V1221
-                    } else if (col.GetComponent<DamageHero>() || gameObject.LocateMyFSM("damages_hero")) {
+                    if (col.GetComponent<DamageHero>() || gameObject.LocateMyFSM("damages_hero")) {
 #endif
                         Colliders.Add(col, new HitboxData(col, HitboxColor.Enemy));
                     } else if (gameObject.LocateMyFSM("health_manager_enemy") || gameObject.LocateMyFSM("health_manager")) {
                         Colliders.Add(col, new HitboxData(col, HitboxColor.PeaceMonster));
+                    } else if (gameObject.layer == (int) PhysLayers.TERRAIN) {
+                        Colliders.Add(col, new HitboxData(col, HitboxColor.Terrain));
                     } else if (gameObject == HeroController.instance.gameObject && !col.isTrigger) {
                         Colliders.Add(col, new HitboxData(col, HitboxColor.Knight));
                     } else if (col.GetComponent<TransitionPoint>()
@@ -195,7 +203,6 @@ namespace HollowKnightTasInfo {
                         Colliders.Add(col, new HitboxData(col, HitboxColor.Trigger));
                     }
                 }
-            }
         }
 
         private static string GetAllInfo() {

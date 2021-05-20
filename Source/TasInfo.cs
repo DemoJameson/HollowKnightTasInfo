@@ -33,6 +33,12 @@ namespace HollowKnightTasInfo {
             GameManager.Info = infoBuilder.ToString();
         }
 
+        // ReSharper disable once UnusedMember.Global
+        public static void OnColliderCreate(GameObject gameObject) {
+            HitboxInfo.UpdateHitbox(gameObject);
+            HpInfo.TryAddEnemy(gameObject);
+        }
+
         private static void OnInit(GameManager gameManager) {
             HpInfo.OnInit(gameManager);
             HitboxInfo.OnInit(gameManager);
