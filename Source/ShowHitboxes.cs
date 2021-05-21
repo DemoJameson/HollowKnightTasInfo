@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 // thanks seresharp
 // copy from https://github.com/seresharp/HollowKnight.HitboxDraw
 namespace HollowKnightTasInfo {
-    public class ShowHitboxes {
+    internal class ShowHitboxes {
         private Material greenMat;
         private Material redMat;
         private Material yellowMat;

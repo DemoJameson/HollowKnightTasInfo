@@ -5,7 +5,7 @@ using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
-    public static class HeroInfo {
+    internal static class HeroInfo {
         private static readonly List<string> HeroStates = new() {
             "Attack",
             "Jump",

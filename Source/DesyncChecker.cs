@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
-    public static class DesyncChecker {
+    internal static class DesyncChecker {
         private static Random.State savedRandomState;
         private static int desyncFrame = 0;
         public static void BeforeUpdate() {

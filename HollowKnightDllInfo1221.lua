@@ -21,16 +21,16 @@ local screenEdge = 6
 local screenWidth = 0
 local screenHeight = 0
 
-function init()
-    if screenWidth == 0 then
-        screenWidth, screenHeight = gui.resolution()
-        screenWidth = screenWidth - screenEdge;
-        screenHeight = screenHeight - screenEdge;
-    end
+function onStart()
+    screenWidth, screenHeight = gui.resolution()
+    screenWidth = screenWidth - screenEdge;
+    screenHeight = screenHeight - screenEdge;
 end
 
 function onPaint()
-    init()
+    if screenWidth == 0 then
+        onStart()
+    end
 
     local infoAddress = getInfoAddress1221()
 

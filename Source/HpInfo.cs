@@ -6,7 +6,7 @@ using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
-    public static class HpInfo {
+    internal static class HpInfo {
         private static readonly Dictionary<GameObject, HpData> EnemyPool = new();
 
         public static void OnInit(GameManager gameManager) {

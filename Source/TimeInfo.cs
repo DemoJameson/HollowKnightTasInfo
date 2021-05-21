@@ -6,13 +6,13 @@ using HollowKnightTasInfo.Extensions;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
-    public static class TimeInfo {
+    internal static class TimeInfo {
         private static readonly FieldInfo TeleportingFieldInfo = typeof(CameraController).GetFieldInfo("teleporting");
         private static readonly FieldInfo TilemapDirtyFieldInfo = typeof(GameManager).GetFieldInfo("tilemapDirty");
 
         private static bool timeStart = false;
         private static bool timeEnd = false;
-        public static float inGameTime = 0f;
+        private static float inGameTime = 0f;
 
         private static string FormattedTime {
             get {

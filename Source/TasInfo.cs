@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
@@ -14,21 +15,21 @@ namespace HollowKnightTasInfo {
                 return;
             }
 
-            DesyncChecker.BeforeUpdate();
-
             StringBuilder infoBuilder = new();
+
             try {
+                DesyncChecker.BeforeUpdate();
                 if (!init) {
                     init = true;
                     OnInit(gameManager);
                 }
 
                 OnUpdate(gameManager, infoBuilder);
+
+                DesyncChecker.AfterUpdate(infoBuilder);
             } catch (Exception e) {
                 Debug.LogException(e);
             }
-
-            DesyncChecker.AfterUpdate(infoBuilder);
 
             GameManager.Info = infoBuilder.ToString();
         }
@@ -42,7 +43,6 @@ namespace HollowKnightTasInfo {
         private static void OnInit(GameManager gameManager) {
             HpInfo.OnInit(gameManager);
             HitboxInfo.OnInit(gameManager);
-            // RngInfo.OnInit();
             CustomInfo.OnInit();
 #if DEBUG
             ShowHitboxes.Instance.Initialize();
@@ -53,7 +53,6 @@ namespace HollowKnightTasInfo {
             HeroInfo.OnUpdate(gameManager, infoBuilder);
             HpInfo.OnUpdate(gameManager, infoBuilder);
             HitboxInfo.OnUpdate(gameManager, infoBuilder);
-            // RngInfo.OnUpdate(infoBuilder);
             CustomInfo.OnUpdate(gameManager, infoBuilder);
             TimeInfo.OnUpdate(gameManager, infoBuilder);
 #if DEBUG

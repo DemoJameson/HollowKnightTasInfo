@@ -3,7 +3,7 @@ using System.Text;
 using UnityEngine;
 
 namespace HollowKnightTasInfo.Utils {
-    public static class HkUtils {
+    internal static class HkUtils {
         public static bool InInventory() {
             GameObject inventoryTop = GameObject.FindGameObjectWithTag("Inventory Top");
             if (inventoryTop == null) {

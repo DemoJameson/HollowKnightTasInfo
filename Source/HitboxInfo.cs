@@ -7,7 +7,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace HollowKnightTasInfo {
-    public static class HitboxInfo {
+    internal static class HitboxInfo {
         private enum HitboxColor {
             Knight,
             Enemy,
