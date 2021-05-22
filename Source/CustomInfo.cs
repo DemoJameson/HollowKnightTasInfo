@@ -60,8 +60,6 @@ namespace HollowKnightTasInfo {
             }
         }
 
-
-
         private static string FormatValue(object obj) {
             return obj switch {
                 null => string.Empty,

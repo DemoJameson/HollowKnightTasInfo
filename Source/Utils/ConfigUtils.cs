@@ -11,8 +11,8 @@ namespace HollowKnightTasInfo.Utils {
 # 例如 HeroController.CanJump() 会修改 ledgeBufferSteps 字段，请查看源码确认是否安全。定制数据格式如下：
 # {UnityObject子类名.字段/属性/方法.字段/属性/方法……}，只支持无参方法需要以()结尾
 # {GameObjectName.字段/属性/方法.字段/属性/方法……}
-# 支持配置多行
-# 请不要 [Custom_Info_Template] 这一行
+# 支持配置多行，并且同一行可以存在多个 {}
+# 请不要修改 [Custom_Info_Template] 这一行
 
 [Custom_Info_Template]
 # canAttack: {HeroController.CanAttack()}

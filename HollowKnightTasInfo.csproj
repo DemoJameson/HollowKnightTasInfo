@@ -14,16 +14,19 @@
         <Optimize>true</Optimize>
         <DebugSymbols>false</DebugSymbols>
         <DebugType>none</DebugType>
+        <OutputPath>bin\Debug\</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'v1028' ">
         <Optimize>true</Optimize>
         <DebugType>none</DebugType>
+        <OutputPath>bin\v1028\</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'v1221' ">
         <Optimize>true</Optimize>
         <DebugType>none</DebugType>
+        <OutputPath>bin\v1221\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -83,4 +86,12 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
+
+    <PropertyGroup>
+        <PostBuildEvent>
+            md "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed"
+            move ".\*.dll" "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed\"
+            move ".\*" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
+        </PostBuildEvent>
+    </PropertyGroup>
 </Project>
