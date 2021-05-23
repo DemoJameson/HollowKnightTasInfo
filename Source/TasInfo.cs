@@ -42,8 +42,8 @@ namespace HollowKnightTasInfo {
 
         private static void OnInit(GameManager gameManager) {
             HpInfo.OnInit(gameManager);
-            HitboxInfo.OnInit(gameManager);
             CustomInfo.OnInit();
+            HitboxInfo.OnInit(gameManager);
 #if DEBUG
             ShowHitboxes.Instance.Initialize();
 #endif
@@ -51,10 +51,10 @@ namespace HollowKnightTasInfo {
 
         private static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
             HeroInfo.OnUpdate(gameManager, infoBuilder);
-            HpInfo.OnUpdate(gameManager, infoBuilder);
-            HitboxInfo.OnUpdate(gameManager, infoBuilder);
             CustomInfo.OnUpdate(gameManager, infoBuilder);
             TimeInfo.OnUpdate(gameManager, infoBuilder);
+            HpInfo.OnUpdate(gameManager, infoBuilder);
+            HitboxInfo.OnUpdate(gameManager, infoBuilder);
 #if DEBUG
             ShowHitboxes.Instance.UpdateHitboxes();
 #endif

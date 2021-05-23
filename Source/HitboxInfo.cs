@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using GlobalEnums;
 using HollowKnightTasInfo.Utils;
@@ -27,10 +28,8 @@ namespace HollowKnightTasInfo {
 
             public string Key =>
                 collider switch {
-                    BoxCollider2D => "BoxHitbox",
-                    EdgeCollider2D => "EdgeHitbox",
-                    PolygonCollider2D => "PolyHitbox",
-                    _ => "BoxHitbox"
+                    BoxCollider2D or EdgeCollider2D or PolygonCollider2D  => "LineHitbox",
+                    _ => "LineHitbox"
                 };
 
             public override string ToString() {
@@ -54,55 +53,21 @@ namespace HollowKnightTasInfo {
             private string ToBoxInfo(BoxCollider2D box, Camera camera) {
                 Vector2 offset = box.offset;
                 Vector2 halfSize = box.size / 2f;
-                Vector2 topLeft = WorldToScreenPoint(camera, box.transform, offset + new Vector2(-halfSize.x, halfSize.y));
-                Vector2 bottomRight = WorldToScreenPoint(camera, box.transform, offset + new Vector2(halfSize.x, -halfSize.y));
-
-                int width = (int) Math.Round(Math.Abs(bottomRight.x - topLeft.x));
-                int height = (int) Math.Round(Math.Abs(topLeft.y - bottomRight.y));
-                int x = (int) Math.Round(Math.Min(topLeft.x, bottomRight.x));
-                int y = Screen.height - (int) Math.Round(Math.Max(topLeft.y, bottomRight.y));
-
-                if (x + width < 0 || x > Screen.width || y + height < 0 || y > Screen.height) {
-                    return string.Empty;
-                }
-
-                return $"{x},{y},{width},{height},{hitboxColor}";
+                Vector2 topLeft = offset + new Vector2(-halfSize.x, halfSize.y);
+                Vector2 topRight = offset + halfSize;
+                Vector2 bottomLeft = offset - halfSize;
+                Vector2 bottomRight = offset + new Vector2(halfSize.x, -halfSize.y);
+                return ToLineInfo(camera, box.transform, new List<Vector2> {
+                    topLeft, topRight, bottomRight, bottomLeft, topLeft
+                });
             }
 
             private string ToEdgeInfo(EdgeCollider2D edge, Camera camera) {
-                Vector2 transformPosition = edge.transform.position;
-                List<string> result = new();
-                for (var i = 0; i < edge.points.Length - 1; i++) {
-                    Vector2 point1 = camera.WorldToScreenPoint(transformPosition + edge.points[i]);
-                    Vector2 point2 = camera.WorldToScreenPoint(transformPosition + edge.points[i + 1]);
-
-                    if (point1.x > point2.x || point1.y > point2.y) {
-                        Vector2 temp = point1;
-                        point1 = point2;
-                        point2 = temp;
-                    }
-
-                    int width = (int) Math.Round(point2.x - point1.x);
-                    int height = (int) Math.Round(point2.y - point1.y);
-
-                    width = Math.Max(width, 1);
-                    height = Math.Max(height, 1);
-
-                    if (width == 1 && height == 1) {
-                        continue;
-                    }
-
-                    int x = (int) Math.Round(point1.x);
-                    int y = Screen.height - (int) Math.Round(point1.y) - height;
-
-                    if (x + width < 0 || x > Screen.width || y + height < 0 || y > Screen.height) {
-                        continue;
-                    }
-
-                    result.Add($"{x},{y},{width},{height},{hitboxColor}");
+                if (edge.points.Length == 0) {
+                    return string.Empty;
                 }
 
-                return HkUtils.Join(",", result);
+                return ToLineInfo(camera, edge.transform, edge.points.ToList());
             }
 
             private string ToPolyInfo(PolygonCollider2D poly, Camera camera) {
@@ -110,12 +75,16 @@ namespace HollowKnightTasInfo {
                     return string.Empty;
                 }
 
-                Transform transform = poly.transform;
+                List<Vector2> points = new(poly.points);
+                points.Add(points[0]);
+                return ToLineInfo(camera, poly.transform, points);
+            }
+
+            private string ToLineInfo(Camera camera, Transform transform, List<Vector2> points) {
                 List<string> result = new();
-                for (var i = 0; i < poly.points.Length; i++) {
-                    Vector2 point1 = WorldToScreenPoint(camera, transform, poly.points[i]);
-                    int next = i == poly.points.Length - 1 ? 0 : i + 1;
-                    Vector2 point2 = WorldToScreenPoint(camera, transform, poly.points[next]);
+                for (var i = 0; i < points.Count - 1; i++) {
+                    Vector2 point1 = WorldToScreenPoint(camera, transform, points[i]);
+                    Vector2 point2 = WorldToScreenPoint(camera, transform, points[i+1]);
 
                     List<Vector2> intersectionPoints = ScreenUtils.GetIntersectionPoint(point1, point2);
                     if (intersectionPoints.Count != 2) {
@@ -137,9 +106,7 @@ namespace HollowKnightTasInfo {
             }
 
             private static Vector2 WorldToScreenPoint(Camera camera, Transform transform, Vector2 point) {
-                Vector3 localScale = transform.localScale;
-                Quaternion localRotation = transform.localRotation;
-                return camera.WorldToScreenPoint(transform.position + localRotation * new Vector3(point.x * localScale.x, point.y * localScale.y, 0));
+                return camera.WorldToScreenPoint(transform.position + transform.localRotation * Vector3.Scale(point, transform.localScale));
             }
         }
 
@@ -204,7 +171,7 @@ namespace HollowKnightTasInfo {
         private static bool IsDamageHero(Collider2D col) {
 #if V1028
             return col.gameObject.LocateMyFSM("damages_hero");
-#elif V1221
+#else
             return col.GetComponent<DamageHero>() || col.gameObject.LocateMyFSM("damages_hero");
 #endif
         }

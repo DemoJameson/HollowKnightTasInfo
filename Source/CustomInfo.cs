@@ -12,6 +12,7 @@ namespace HollowKnightTasInfo {
     internal static class CustomInfo {
         private static readonly Regex BraceRegex = new(@"\{(.+?)\}");
         private static readonly Dictionary<string, Type> CachedTypes = new();
+        private static readonly Dictionary<string, Object> CachedObjects = new();
 
         public static void OnInit() {
             foreach (Type type in typeof(GameManager).Assembly.GetTypes()) {
@@ -27,6 +28,8 @@ namespace HollowKnightTasInfo {
                 return;
             }
 
+            CachedObjects.Clear();
+
             string result = BraceRegex.Replace(customTemplate, match => {
                 string matchText = match.Groups[1].Value;
                 string[] splitText = matchText.Split('.').Select(s => s.Trim()).ToArray();
@@ -37,8 +40,12 @@ namespace HollowKnightTasInfo {
                 string typeNameOrObjectName = splitText[0];
 
                 Object obj;
-                if (CachedTypes.ContainsKey(typeNameOrObjectName) && CachedTypes[typeNameOrObjectName] is { } type &&
-                    type.IsSubclassOf(typeof(Object))) {
+
+                if (CachedObjects.ContainsKey(typeNameOrObjectName)) {
+                    obj = CachedObjects[typeNameOrObjectName];
+                    return "hahaha";
+                } else if (CachedTypes.ContainsKey(typeNameOrObjectName) && CachedTypes[typeNameOrObjectName] is { } type &&
+                           type.IsSubclassOf(typeof(Object))) {
                     obj = typeNameOrObjectName switch {
                         "GameManager" => gameManager,
                         "HeroController" => gameManager.hero_ctrl,
@@ -49,6 +56,7 @@ namespace HollowKnightTasInfo {
                 }
 
                 if (obj != null) {
+                    CachedObjects[typeNameOrObjectName] = obj;
                     return FormatValue(GetMemberValue(obj, splitText.Skip(1)));
                 }
 

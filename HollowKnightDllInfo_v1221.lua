@@ -1,20 +1,15 @@
 -------------- config --------------
 local showHP = true
 local showHitbox = true
-local showPolygonHitbox = true
-local hidePolygonHitboxWhilePlaying = false
 
 local hitboxColors = {
-    Knight = 0x0000EE00,
-    Enemy = 0x00EE0000,
-    PeaceMonster = 0x00DDAA10,
-    Trigger = 0x009370DB,
-    Terrain = 0x00FF8040,
+    Knight = 0xFF00EE00,
+    Enemy = 0xFFEE0000,
+    PeaceMonster = 0xFFDDAA10,
+    Trigger = 0xFF9370DB,
+    Terrain = 0xFFFF8040,
 }
 -------------- config --------------
-
--- const
-local moviePlayback = 2
 
 -- 屏幕边缘无法绘制的像素
 local screenEdge = 6
@@ -48,25 +43,11 @@ function onPaint()
                     gui.text(hpData[i], hpData[i + 1], hpData[i + 2])
                 end
             end
-        elseif line:find("^BoxHitbox=") ~= nil then
-            if showHitbox then
-                local hitboxData = splitString(line:sub(11), ",")
-                for i = 1, #hitboxData, 5 do
-                    drawHollowRect(hitboxData[i], hitboxData[i + 1], hitboxData[i + 2], hitboxData[i + 3], 1, hitboxColors[hitboxData[i + 4]])
-                end
-            end
-        elseif line:find("^EdgeHitbox=") ~= nil then
+        elseif line:find("^LineHitbox=") ~= nil then
             if showHitbox then
                 local hitboxData = splitString(line:sub(12), ",")
                 for i = 1, #hitboxData, 5 do
-                    drawRect(hitboxData[i], hitboxData[i + 1], hitboxData[i + 2], hitboxData[i + 3], hitboxColors[hitboxData[i + 4]])
-                end
-            end
-        elseif line:find("^PolyHitbox=") ~= nil then
-            if showHitbox and showPolygonHitbox and not (hidePolygonHitboxWhilePlaying and movie.status() == moviePlayback) then
-                local hitboxData = splitString(line:sub(12), ",")
-                for i = 1, #hitboxData, 5 do
-                    drawLine(hitboxData[i], hitboxData[i + 1], hitboxData[i + 2], hitboxData[i + 3], hitboxColors[hitboxData[i + 4]])
+                    gui.line(hitboxData[i], hitboxData[i + 1], hitboxData[i + 2], hitboxData[i + 3], hitboxColors[hitboxData[i + 4]])
                 end
             end
         else
@@ -149,56 +130,6 @@ function drawRect(left, top, width, height, color)
     gui.rectangle(left, top, right - left, bottom - top, 0, color, color)
 end
 
-function drawLine(x0, y0, x1, y1, color)
-    x0 = tonumber(x0)
-    y0 = tonumber(y0)
-    x1 = tonumber(x1)
-    y1 = tonumber(y1)
-
-    local dx = x1 - x0;
-    local dy = y1 - y0;
-    local stepx, stepy
-
-    if dy < 0 then
-        dy = -dy
-        stepy = -1
-    else
-        stepy = 1
-    end
-
-    if dx < 0 then
-        dx = -dx
-        stepx = -1
-    else
-        stepx = 1
-    end
-
-    drawPoint(x0, y0, color)
-    if dx > dy then
-        local fraction = dy - math.floor(dx / 2.0)
-        while x0 ~= x1 do
-            if fraction >= 0 then
-                y0 = y0 + stepy
-                fraction = fraction - dx
-            end
-            x0 = x0 + stepx
-            fraction = fraction + dy
-            drawPoint(math.floor(x0), math.floor(y0), color)
-        end
-    else
-        local fraction = dx - math.floor(dy / 2.0)
-        while y0 ~= y1 do
-            if fraction >= 0 then
-                x0 = x0 + stepx
-                fraction = fraction - dy
-            end
-            y0 = y0 + stepy
-            fraction = fraction + dx
-            drawPoint(math.floor(x0), math.floor(y0), color)
-        end
-    end
-end
-
 function readString(address)
     local text = {}
     local len = memory.readu16(address + 0x10)
@@ -233,5 +164,10 @@ function getInfoAddress1221()
     infoAddress = memory.readu64(infoAddress + 0xF0)
     infoAddress = memory.readu64(infoAddress + 0x8)
     infoAddress = memory.readu64(infoAddress + 0x18)
-    return memory.readu64(infoAddress + 0xB0)
+    for i = 4, 10 do
+        if memory.readu64(infoAddress + i * 0x20 + 0x8) == 1234567890 then
+            return memory.readu64(infoAddress + i * 0x20 + 0x10)
+        end
+    end
+    return 0;
 end

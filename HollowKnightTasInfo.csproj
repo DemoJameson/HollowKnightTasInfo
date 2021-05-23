@@ -5,8 +5,8 @@
         <LangVersion>9</LangVersion>
         <Configurations>Debug;v1028;v1221</Configurations>
         <Platforms>AnyCPU</Platforms>
-        <AssemblyVersion>0.0.1</AssemblyVersion>
-        <FileVersion>0.0.1</FileVersion>
+        <AssemblyVersion>0.0.2</AssemblyVersion>
+        <FileVersion>0.0.2</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -42,13 +42,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" Condition=" '$(Configuration)'=='v1221' Or '$(Configuration)'=='Debug' ">
+        <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" Condition=" '$(Configuration)'!='v1028' ">
             <Private>True</Private>
-            <HintPath>lib-stripped\1221\Assembly-CSharp.dll</HintPath>
+            <HintPath>lib-stripped\v1221\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" Condition=" '$(Configuration)'=='v1028' ">
             <Private>True</Private>
-            <HintPath>lib-stripped\1028\Assembly-CSharp.dll</HintPath>
+            <HintPath>lib-stripped\v1028\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
@@ -73,10 +73,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="*1221.lua" Condition=" '$(Configuration)'=='v1221' Or '$(Configuration)'=='Debug' ">
+        <Content Include="*v1221.lua" Condition=" '$(Configuration)'!='v1028' ">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="*1028.lua" Condition=" '$(Configuration)'=='v1028'">
+        <Content Include="*v1028.lua" Condition=" '$(Configuration)'=='v1028' ">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="README.md">
@@ -89,9 +89,16 @@
 
     <PropertyGroup>
         <PostBuildEvent>
+            md "hollow_knight_Data\Managed"
+            copy ".\Assembly-CSharp.dll" "hollow_knight_Data\Managed\"
+            copy ".\$(AssemblyName).dll" "hollow_knight_Data\Managed\"
+            rd /S /Q "..\..\HK TAS 辅助信息插件\$(Configuration)"
             md "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed"
-            move ".\*.dll" "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed\"
-            move ".\*" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
+            move ".\Assembly-CSharp.dll" "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed\"
+            move ".\$(AssemblyName).dll" "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed\"
+            copy ".\*$(Configuration).lua" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
+            copy ".\$(AssemblyName).config" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
+            copy ".\README.md" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
         </PostBuildEvent>
     </PropertyGroup>
 </Project>

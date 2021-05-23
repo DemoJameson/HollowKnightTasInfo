@@ -3,14 +3,15 @@ using UnityEngine;
 
 namespace HollowKnightTasInfo.Utils {
     internal static class ScreenUtils {
+        private const int ScreenEdge = 6;
         public static List<Vector2> GetIntersectionPoint(Vector2 start, Vector2 end) {
-            int width = Screen.width;
-            int height = Screen.height;
+            int width = Screen.width - ScreenEdge;
+            int height = Screen.height - ScreenEdge;
             Vector2[] borderPoints = {
-                new(0, 0),
-                new(width, 0),
+                new(ScreenEdge, ScreenEdge),
+                new(width, ScreenEdge),
                 new(width, height),
-                new(0, height),
+                new(ScreenEdge, height),
             };
 
             List<Vector2> result = new();
@@ -32,7 +33,7 @@ namespace HollowKnightTasInfo.Utils {
         }
 
         private static bool InsideOfScreen(Vector2 vector2) {
-            return vector2.x >= 0 && vector2.x < Screen.width && vector2.y >= 0 && vector2.y < Screen.height;
+            return vector2.x >= ScreenEdge && vector2.x < Screen.width - ScreenEdge && vector2.y >= ScreenEdge && vector2.y < Screen.height - ScreenEdge;
         }
 
         private static Vector2? FindIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4) {
