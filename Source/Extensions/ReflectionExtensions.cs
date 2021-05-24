@@ -32,7 +32,7 @@ namespace HollowKnightTasInfo.Extensions {
                 return CachedPropertyInfos[type][name];
             }
         }
-        
+
         public static MethodInfo GetMethodInfo(this Type type, string name) {
             if (!CachedMethodInfos.ContainsKey(type)) {
                 CachedMethodInfos[type] = new Dictionary<string, MethodInfo>();
@@ -45,7 +45,6 @@ namespace HollowKnightTasInfo.Extensions {
             }
         }
 
-        
         public static T GetFieldValue<T>(this object obj, string name) {
             object result = obj.GetType().GetFieldInfo(name)?.GetValue(obj);
             if (result == null) {
@@ -54,11 +53,24 @@ namespace HollowKnightTasInfo.Extensions {
                 return (T) result;
             }
         }
-        
+
+        public static T GetFieldValue<T>(this Type type, string name) {
+            object result = type.GetFieldInfo(name)?.GetValue(null);
+            if (result == null) {
+                return default;
+            } else {
+                return (T) result;
+            }
+        }
+
         public static void SetFieldValue(this object obj, string name, object value) {
             obj.GetType().GetFieldInfo(name)?.SetValue(obj, value);
         }
-        
+
+        public static void SetFieldValue(this Type type, string name, object value) {
+            type.GetFieldInfo(name)?.SetValue(null, value);
+        }
+
         public static T GetPropertyValue<T>(this object obj, string name) {
             object result = obj.GetType().GetPropertyInfo(name)?.GetValue(obj, null);
             if (result == null) {
@@ -67,11 +79,28 @@ namespace HollowKnightTasInfo.Extensions {
                 return (T) result;
             }
         }
-        
-        public static void SetPropertyValue(this object obj, string name, object value) {
-            obj.GetType().GetPropertyInfo(name)?.SetValue(obj, value, null);
+
+        public static T GetPropertyValue<T>(Type type, string name) {
+            object result = type.GetPropertyInfo(name)?.GetValue(null, null);
+            if (result == null) {
+                return default;
+            } else {
+                return (T) result;
+            }
         }
-        
+
+        public static void SetPropertyValue(this object obj, string name, object value) {
+            if (obj.GetType().GetPropertyInfo(name) is {CanWrite: true} propertyInfo) {
+                propertyInfo.SetValue(obj, value, null);
+            }
+        }
+
+        public static void SetPropertyValue(this Type type, string name, object value) {
+            if (type.GetPropertyInfo(name) is {CanWrite: true} propertyInfo) {
+                propertyInfo.SetValue(null, value, null);
+            }
+        }
+
         public static T InvokeMethod<T>(this object obj, string name, params object[] parameters) {
             object result = obj.GetType().GetMethodInfo(name)?.Invoke(obj, parameters);
             if (result == null) {
@@ -79,6 +108,23 @@ namespace HollowKnightTasInfo.Extensions {
             } else {
                 return (T) result;
             }
+        }
+        
+        public static T InvokeMethod<T>(this Type type, string name, params object[] parameters) {
+            object result = type.GetMethodInfo(name)?.Invoke(null, parameters);
+            if (result == null) {
+                return default;
+            } else {
+                return (T) result;
+            }
+        }
+        
+        public static void InvokeMethod(this object obj, string name, params object[] parameters) {
+            obj.GetType().GetMethodInfo(name)?.Invoke(obj, parameters);
+        }
+        
+        public static void InvokeMethod(this Type type, string name, params object[] parameters) {
+            type.GetMethodInfo(name)?.Invoke(null, parameters);
         }
     }
 }
