@@ -88,7 +88,7 @@ namespace HollowKnightTasInfo {
                     lines.Add(col, SetupLineRenderer(col, null, blueMat));
 #if V1028
                 } else if (col.gameObject.LocateMyFSM("damages_hero")) {
-#elif V1221
+#else
                 } else if (col.GetComponent<DamageHero>()) {
 #endif
                     colliders.Add(col);

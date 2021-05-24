@@ -29,6 +29,7 @@ namespace HollowKnightTasInfo {
             public string Key =>
                 collider switch {
                     BoxCollider2D or EdgeCollider2D or PolygonCollider2D  => "LineHitbox",
+                    CircleCollider2D => "CircleHitbox",
                     _ => "LineHitbox"
                 };
 
@@ -46,6 +47,7 @@ namespace HollowKnightTasInfo {
                     BoxCollider2D box => ToBoxInfo(box, camera),
                     EdgeCollider2D edge => ToEdgeInfo(edge, camera),
                     PolygonCollider2D poly => ToPolyInfo(poly, camera),
+                    CircleCollider2D circle => ToCircleInfo(circle, camera),
                     _ => string.Empty
                 };
             }
@@ -105,6 +107,22 @@ namespace HollowKnightTasInfo {
                 return HkUtils.Join(",", result);
             }
 
+
+            private string ToCircleInfo(CircleCollider2D circle, Camera camera) {
+                Vector2 offset = circle.offset;
+                Vector2 center = WorldToScreenPoint(camera, circle.transform, offset);
+                Vector2 centerRight = WorldToScreenPoint(camera, circle.transform, new Vector2(offset.x + circle.radius, offset.y));
+                int radius = (int) Math.Abs(Math.Round(centerRight.x - center.x));
+                int x = (int) Math.Round(center.x);
+                int y = Screen.height - (int) Math.Round(center.y);
+
+                if (x + radius < 0 || x - radius > Screen.width || y + radius < 0 || y - radius > Screen.height || radius == 0 || radius > Screen.height) {
+                    return string.Empty;
+                }
+
+                return $"{x},{y},{radius},{hitboxColor}";
+            }
+
             private static Vector2 WorldToScreenPoint(Camera camera, Transform transform, Vector2 point) {
                 return camera.WorldToScreenPoint(transform.position + transform.localRotation * Vector3.Scale(point, transform.localScale));
             }
@@ -130,7 +148,6 @@ namespace HollowKnightTasInfo {
             if (gameManager.IsNonGameplayScene()
                 || gameManager.gameState != GameState.PLAYING
                 || gameManager.hero_ctrl?.transitionState == HeroTransitionState.WAITING_TO_ENTER_LEVEL
-                || HkUtils.InInventory()
             ) {
                 return;
             }
@@ -142,7 +159,9 @@ namespace HollowKnightTasInfo {
         }
 
         public static void UpdateHitbox(GameObject gameObject) {
-            UpdateHitbox(gameObject.GetComponent<Collider2D>());
+            foreach (Collider2D collider2D in gameObject.GetComponents<Collider2D>()) {
+                UpdateHitbox(collider2D);
+            }
         }
 
         private static void UpdateHitbox(Collider2D col) {
@@ -150,7 +169,7 @@ namespace HollowKnightTasInfo {
                 return;
             }
 
-            if (col is BoxCollider2D or PolygonCollider2D or EdgeCollider2D) {
+            if (col is BoxCollider2D or PolygonCollider2D or EdgeCollider2D or CircleCollider2D) {
                 GameObject gameObject = col.gameObject;
                 if (IsDamageHero(col)) {
                     Colliders.Add(col, new HitboxData(col, HitboxColor.Enemy));

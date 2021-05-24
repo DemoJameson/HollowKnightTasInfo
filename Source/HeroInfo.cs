@@ -23,6 +23,10 @@ namespace HollowKnightTasInfo {
                 infoBuilder.AppendLine($"pos: {position.ToSimpleString(5)}");
                 infoBuilder.AppendLine($"{heroController.hero_state} vel: {heroController.current_velocity.ToSimpleString(3)}");
 
+                if (heroController.GetFieldValue<Vector2[]>("positionHistory") is { } positionHistory) {
+                    infoBuilder.AppendLine($"diff vel: {((positionHistory[0] - positionHistory[1]) * 50).ToSimpleString(3)}");
+                }
+
                 // CanJump 中会改变该字段的值，所以需要备份稍微还原
                 int ledgeBufferSteps = heroController.GetFieldValue<int>(nameof(ledgeBufferSteps));
 

@@ -28,7 +28,6 @@ namespace HollowKnightTasInfo {
             if (gameManager.IsNonGameplayScene()
                 || gameManager.gameState != GameState.PLAYING
                 || gameManager.hero_ctrl?.transitionState == HeroTransitionState.WAITING_TO_ENTER_LEVEL
-                || HkUtils.InInventory()
             ) {
                 return;
             }

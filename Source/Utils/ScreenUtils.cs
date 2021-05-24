@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HollowKnightTasInfo.Utils {
     internal static class ScreenUtils {
-        private const int ScreenEdge = 6;
+        private const int ScreenEdge = 0;
         public static List<Vector2> GetIntersectionPoint(Vector2 start, Vector2 end) {
             int width = Screen.width - ScreenEdge;
             int height = Screen.height - ScreenEdge;
