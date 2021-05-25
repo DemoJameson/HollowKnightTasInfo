@@ -23,8 +23,8 @@ namespace HollowKnightTasInfo {
         }
 
         public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            string customTemplate = ConfigUtils.GetCustomInfoTemplate();
-            if (string.IsNullOrEmpty(customTemplate)) {
+            string customTemplate = ConfigManager.CustomInfoTemplate;
+            if (!ConfigManager.ShowCustomInfo || string.IsNullOrEmpty(customTemplate)) {
                 return;
             }
 

@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text;
 using GlobalEnums;
 using HollowKnightTasInfo.Extensions;
+using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
@@ -89,11 +90,13 @@ namespace HollowKnightTasInfo {
             }
 
             if (inGameTime > 0) {
-                if (!string.IsNullOrEmpty(gameManager.sceneName)) {
+                if (!string.IsNullOrEmpty(gameManager.sceneName) && ConfigManager.ShowSceneName) {
                     infoBuilder.Append($"{gameManager.sceneName}  ");
                 }
 
-                infoBuilder.AppendLine(FormattedTime);
+                if (ConfigManager.ShowTime) {
+                    infoBuilder.AppendLine(FormattedTime);
+                }
             }
         }
     }

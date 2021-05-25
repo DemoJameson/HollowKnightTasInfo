@@ -31,7 +31,7 @@ namespace HollowKnightTasInfo {
                 Debug.LogException(e);
             }
 
-            GameManager.Info = infoBuilder.ToString();
+            GameManager.TasInfo = infoBuilder.ToString();
         }
 
         // ReSharper disable once UnusedMember.Global
@@ -44,20 +44,17 @@ namespace HollowKnightTasInfo {
             HpInfo.OnInit(gameManager);
             CustomInfo.OnInit();
             HitboxInfo.OnInit(gameManager);
-#if DEBUG
-            ShowHitboxes.Instance.Initialize();
-#endif
         }
 
         private static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+            // 放第一位，先更新 settings
+            ConfigManager.OnUpdate();
+            
             HeroInfo.OnUpdate(gameManager, infoBuilder);
             CustomInfo.OnUpdate(gameManager, infoBuilder);
             TimeInfo.OnUpdate(gameManager, infoBuilder);
             HpInfo.OnUpdate(gameManager, infoBuilder);
             HitboxInfo.OnUpdate(gameManager, infoBuilder);
-#if DEBUG
-            ShowHitboxes.Instance.UpdateHitboxes();
-#endif
         }
     }
 }

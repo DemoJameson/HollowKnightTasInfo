@@ -18,7 +18,7 @@ namespace HollowKnightTasInfo {
         };
 
         public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            if (gameManager.hero_ctrl is { } heroController) {
+            if (gameManager.hero_ctrl is { } heroController && ConfigManager.ShowKnightInfo) {
                 Vector3 position = heroController.transform.position;
                 infoBuilder.AppendLine($"pos: {position.ToSimpleString(5)}");
                 infoBuilder.AppendLine($"{heroController.hero_state} vel: {heroController.current_velocity.ToSimpleString(3)}");

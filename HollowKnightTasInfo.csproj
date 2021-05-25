@@ -73,10 +73,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="*v1221.lua" Condition=" '$(Configuration)'!='v1028' ">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="*v1028.lua" Condition=" '$(Configuration)'=='v1028' ">
+        <Content Include="HollowKnightTasInfo.lua">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="README.md">
@@ -88,10 +85,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <PropertyGroup>
@@ -103,7 +100,7 @@
             md "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed"
             move ".\Assembly-CSharp.dll" "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed\"
             move ".\$(AssemblyName).dll" "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed\"
-            copy ".\*$(Configuration).lua" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
+            copy ".\$(AssemblyName).lua" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
             copy ".\$(AssemblyName).config" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
             copy ".\README.md" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
         </PostBuildEvent>

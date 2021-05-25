@@ -27,7 +27,7 @@ function onPaint()
         onStart()
     end
 
-    local infoAddress = getInfoAddress1028()
+    local infoAddress = getInfoAddress()
 
     if infoAddress == 0 then
         return ;
@@ -157,24 +157,19 @@ function splitString(text, sep)
     return t
 end
 
-function getInfoAddress1028()
+function getInfoAddress()
     local infoAddress = memory.readu64(0x400000 + 0x1B1CF60)
     infoAddress = memory.readu64(infoAddress + 0x400)
     infoAddress = memory.readu64(infoAddress + 0x18)
     infoAddress = memory.readu64(infoAddress + 0x20)
-    return memory.readu64(infoAddress + 0xF80)
-end
-
-function getInfoAddress1221()
-    local infoAddress = memory.readu64(0x400000 + 0x1B317A8)
-    infoAddress = memory.readu64(infoAddress + 0x20)
-    infoAddress = memory.readu64(infoAddress + 0xF0)
-    infoAddress = memory.readu64(infoAddress + 0x8)
-    infoAddress = memory.readu64(infoAddress + 0x18)
-    for i = 4, 10 do
-        if memory.readu64(infoAddress + i * 0x20 + 0x8) == 1234567890 then
-            return memory.readu64(infoAddress + i * 0x20 + 0x10)
-        end
+    
+    if memory.readu64(infoAddress + 0xF38) == 1234567890 then
+        -- v1221
+        return memory.readu64(infoAddress + 0xF40)
+    elseif memory.readu64(infoAddress + 0xF78) == 1234567890 then
+        -- v1028
+        return memory.readu64(infoAddress + 0xF80)
+    else
+        return 0;
     end
-    return 0;
-end
+end 
