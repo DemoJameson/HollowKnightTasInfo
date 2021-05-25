@@ -12,7 +12,7 @@ namespace HollowKnightTasInfo {
         private enum HitboxColor {
             Knight,
             Enemy,
-            PeaceMonster,
+            Harmless,
             Trigger,
             Terrain
         }
@@ -26,9 +26,19 @@ namespace HollowKnightTasInfo {
                 this.hitboxColor = hitboxColor;
             }
 
+            private string ColorValue =>
+                hitboxColor switch {
+                    HitboxColor.Knight => ConfigManager.KnightHitbox,
+                    HitboxColor.Enemy => ConfigManager.EnemyHitbox,
+                    HitboxColor.Harmless => ConfigManager.HarmlessHitbox,
+                    HitboxColor.Trigger => ConfigManager.TriggerHitbox,
+                    HitboxColor.Terrain => ConfigManager.TerrainHitbox,
+                    _ => "0xFFFF0000"
+                };
+
             public string Key =>
                 collider switch {
-                    BoxCollider2D or EdgeCollider2D or PolygonCollider2D  => "LineHitbox",
+                    BoxCollider2D or EdgeCollider2D or PolygonCollider2D => "LineHitbox",
                     CircleCollider2D => "CircleHitbox",
                     _ => "LineHitbox"
                 };
@@ -39,7 +49,7 @@ namespace HollowKnightTasInfo {
                     return string.Empty;
                 }
 
-                if (hitboxColor == HitboxColor.PeaceMonster && IsDamageHero(collider)) {
+                if (hitboxColor == HitboxColor.Harmless && IsDamageHero(collider)) {
                     hitboxColor = HitboxColor.Enemy;
                 }
 
@@ -86,7 +96,7 @@ namespace HollowKnightTasInfo {
                 List<string> result = new();
                 for (var i = 0; i < points.Count - 1; i++) {
                     Vector2 point1 = WorldToScreenPoint(camera, transform, points[i]);
-                    Vector2 point2 = WorldToScreenPoint(camera, transform, points[i+1]);
+                    Vector2 point2 = WorldToScreenPoint(camera, transform, points[i + 1]);
 
                     List<Vector2> intersectionPoints = ScreenUtils.GetIntersectionPoint(point1, point2);
                     if (intersectionPoints.Count != 2) {
@@ -101,7 +111,7 @@ namespace HollowKnightTasInfo {
                     int x2 = (int) Math.Round(point2.x);
                     int y2 = Screen.height - (int) Math.Round(point2.y);
 
-                    result.Add($"{x1},{y1},{x2},{y2},{hitboxColor}");
+                    result.Add($"{x1},{y1},{x2},{y2},{ColorValue}");
                 }
 
                 return HkUtils.Join(",", result);
@@ -116,15 +126,17 @@ namespace HollowKnightTasInfo {
                 int x = (int) Math.Round(center.x);
                 int y = Screen.height - (int) Math.Round(center.y);
 
-                if (x + radius < 0 || x - radius > Screen.width || y + radius < 0 || y - radius > Screen.height || radius == 0 || radius > Screen.height) {
+                if (x + radius < 0 || x - radius > Screen.width || y + radius < 0 || y - radius > Screen.height || radius == 0 ||
+                    radius > Screen.height) {
                     return string.Empty;
                 }
 
-                return $"{x},{y},{radius},{hitboxColor}";
+                return $"{x},{y},{radius},{ColorValue}";
             }
 
             private static Vector2 WorldToScreenPoint(Camera camera, Transform transform, Vector2 point) {
-                return camera.WorldToScreenPoint(transform.position + transform.localRotation * Vector3.Scale(point, transform.localScale));
+                return ScreenUtils.WorldToScreenPoint(camera,
+                    transform.position + transform.localRotation * Vector3.Scale(point, transform.localScale));
             }
         }
 
@@ -145,11 +157,7 @@ namespace HollowKnightTasInfo {
         }
 
         public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            if (gameManager.IsNonGameplayScene()
-                || gameManager.gameState != GameState.PLAYING
-                || gameManager.hero_ctrl?.transitionState == HeroTransitionState.WAITING_TO_ENTER_LEVEL
-                || !ConfigManager.ShowHitbox
-            ) {
+            if (gameManager.IsNonGameplayScene() || !ConfigManager.ShowHitbox) {
                 return;
             }
 
@@ -175,7 +183,7 @@ namespace HollowKnightTasInfo {
                 if (IsDamageHero(col)) {
                     Colliders.Add(col, new HitboxData(col, HitboxColor.Enemy));
                 } else if (gameObject.LocateMyFSM("health_manager_enemy") || gameObject.LocateMyFSM("health_manager")) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.PeaceMonster));
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Harmless));
                 } else if (gameObject.layer == (int) PhysLayers.TERRAIN) {
                     Colliders.Add(col, new HitboxData(col, HitboxColor.Terrain));
                 } else if (gameObject == HeroController.instance.gameObject && !col.isTrigger) {

@@ -12,16 +12,26 @@ ShowKnightInfo = true
 ShowCustomInfo = true
 ShowSceneName = true
 ShowTime = true
-ShowHitbox = true
 ShowHp = true
+ShowHitbox = true
 
+# 碰撞箱颜色 ARGB 格式
+KnightHitbox = 0xFF00FF00
+EnemyHitbox = 0xFFFF0000
+HarmlessHitbox = 0xFFFFFF00
+TriggerHitbox = 0xFF9370DB
+TerrainHitbox = 0xFFFF8040
+
+CameraFollow = false
+# 默认为 1，数值越大视野越广
+CameraZoom = 1
+
+[CustomInfoTemplate]
 # 该配置用于定制附加显示的数据，需要注意如果调用属性或者方法有可能会造成 desync
 # 例如 HeroController.CanJump() 会修改 ledgeBufferSteps 字段，请查看源码确认是否安全。定制数据格式如下：
 # {UnityObject子类名.字段/属性/方法.字段/属性/方法……}，只支持无参方法需要以()结尾
 # {GameObjectName.字段/属性/方法.字段/属性/方法……}
 # 支持配置多行，并且同一行可以存在多个 {}
-
-[Custom_Info_Template]
 # canAttack: {HeroController.CanAttack()}
 # geo: {HeroController.playerData.geo}
 ";
@@ -34,9 +44,15 @@ ShowHp = true
         public static bool ShowSceneName => GetSettingValue<bool>(nameof(ShowSceneName));
         public static bool ShowTime => GetSettingValue<bool>(nameof(ShowTime));
         public static bool ShowHitbox => GetSettingValue<bool>(nameof(ShowHitbox));
+        public static string KnightHitbox => GetSettingValue(nameof(KnightHitbox), "0xFF00FF00");
+        public static string EnemyHitbox => GetSettingValue(nameof(EnemyHitbox), "0xFFFF0000");
+        public static string HarmlessHitbox => GetSettingValue(nameof(HarmlessHitbox), "0xFFFFFF00");
+        public static string TriggerHitbox => GetSettingValue(nameof(TriggerHitbox), "0xFF9370DB");
+        public static string TerrainHitbox => GetSettingValue(nameof(TerrainHitbox), "0xFFFF8040");
         public static bool ShowHp => GetSettingValue<bool>(nameof(ShowHp));
         public static bool CameraFollow => GetSettingValue<bool>(nameof(CameraFollow));
-        public static float CameraZoom => GetSettingValue<float>(nameof(CameraZoom), 1f);
+        public static float CameraZoom => GetSettingValue(nameof(CameraZoom), 1f);
+        public static bool IsCameraZoom => CameraZoom > 0f && Math.Abs(CameraZoom - 1f) > 0.001;
 
         public static void OnUpdate() {
             TryParseConfigFile();
@@ -73,7 +89,7 @@ ShowHp = true
                 bool settingsSection = false;
                 foreach (string content in contents) {
                     switch (content) {
-                        case "[Custom_Info_Template]":
+                        case "[CustomInfoTemplate]":
                             customInfoSection = true;
                             settingsSection = false;
                             continue;

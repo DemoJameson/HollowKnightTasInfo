@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
@@ -35,6 +34,22 @@ namespace HollowKnightTasInfo {
         }
 
         // ReSharper disable once UnusedMember.Global
+        // CameraController.OnPreRender
+        public static void OnPreRender() {
+            if (GameManager._instance is { } gameManager) {
+                CameraManager.OnPreRender(gameManager);
+            }
+        }
+
+        // ReSharper disable once UnusedMember.Global
+        // CameraController.OnPostRender
+        public static void OnPostRender() {
+            if (GameManager._instance is { } gameManager) {
+                CameraManager.OnPostRender(gameManager);
+            }
+        }
+
+        // ReSharper disable once UnusedMember.Global
         public static void OnColliderCreate(GameObject gameObject) {
             HitboxInfo.UpdateHitbox(gameObject);
             HpInfo.TryAddEnemy(gameObject);
@@ -49,6 +64,9 @@ namespace HollowKnightTasInfo {
         private static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
             // 放第一位，先更新 settings
             ConfigManager.OnUpdate();
+
+            // 放第二位，CameraOffset 其它模块需要用到
+            CameraManager.OnUpdate(gameManager);
             
             HeroInfo.OnUpdate(gameManager, infoBuilder);
             CustomInfo.OnUpdate(gameManager, infoBuilder);

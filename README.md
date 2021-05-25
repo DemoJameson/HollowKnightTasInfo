@@ -1,6 +1,6 @@
 ## 简介
 
-本项目通过修改游戏文件 Assembly-CSharp.dll 获取数据，然后在 libTAS 上通过 Lua 脚本绘制到画面上，尽量减少对游戏的影响避免 desync，不过会稍微降低游戏运行速度。
+本工具通过修改的游戏文件 Assembly-CSharp.dll 获取数据，然后在 libTAS 执行 Lua 脚本显示数据到画面上，尽量减少对游戏的影响避免 desync，不过会稍微降低游戏运行速度。
 
 支持 Hollow Knight 1028/1221 Linux 版本
 
@@ -10,6 +10,7 @@
 2. GameManager 中新增字段 `public static string TasInfo` 用于 libTAS lua 脚本读取然后绘制到画面上
 3. GamaManager._instance 字段改为 Public 便于读取，不使用现成的 GamaManager.instance 是因为读取属性也有可能造成 desync
 4. CameraController.LateUpdate() 方法最后调用 HollowKnightTasInfo.TasInfo.Update() 方法，这样可以保证在其它 Object 更新之后才获取的数据
+5. CameraController 新增 OnPreRender 和 OnPostRender 方法分别调用 TasInfo 中的同名方法，用于完成镜头居中以及缩放等功能
 
 ## 功能
 

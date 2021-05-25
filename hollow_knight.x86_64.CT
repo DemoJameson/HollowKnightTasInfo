@@ -397,9 +397,34 @@
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
+      <ID>42</ID>
+      <Description>"Mark 1028"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+01B1CF60</Address>
+      <Offsets>
+        <Offset>F78</Offset>
+        <Offset>20</Offset>
+        <Offset>18</Offset>
+        <Offset>400</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>43</ID>
+      <Description>"Info 1028"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+01B1CF60</Address>
+      <Offsets>
+        <Offset>F80</Offset>
+        <Offset>20</Offset>
+        <Offset>18</Offset>
+        <Offset>400</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
       <ID>40</ID>
-      <Description>"Mark"</Description>
-      <LastState Value="1234567890" RealAddress="7F493217CE08"/>
+      <Description>"Mark 1211"</Description>
       <VariableType>4 Bytes</VariableType>
       <Address>"hollow_knight.x86_64"+01B1CF60</Address>
       <Offsets>
@@ -411,9 +436,10 @@
     </CheatEntry>
     <CheatEntry>
       <ID>41</ID>
-      <Description>"Info"</Description>
-      <LastState Value="0" RealAddress="7F493217CE10"/>
-      <VariableType>4 Bytes</VariableType>
+      <Description>"Info 1211"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
       <Address>"hollow_knight.x86_64"+01B1CF60</Address>
       <Offsets>
         <Offset>F40</Offset>

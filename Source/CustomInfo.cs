@@ -43,7 +43,6 @@ namespace HollowKnightTasInfo {
 
                 if (CachedObjects.ContainsKey(typeNameOrObjectName)) {
                     obj = CachedObjects[typeNameOrObjectName];
-                    return "hahaha";
                 } else if (CachedTypes.ContainsKey(typeNameOrObjectName) && CachedTypes[typeNameOrObjectName] is { } type &&
                            type.IsSubclassOf(typeof(Object))) {
                     obj = typeNameOrObjectName switch {

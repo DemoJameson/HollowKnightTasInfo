@@ -4,6 +4,22 @@ using UnityEngine;
 namespace HollowKnightTasInfo.Utils {
     internal static class ScreenUtils {
         private const int ScreenEdge = 0;
+
+        public static Vector3 WorldToScreenPoint(Camera camera, Vector3 position) {
+            float? fieldOfView = null;
+            if (ConfigManager.IsCameraZoom) {
+                fieldOfView = camera.fieldOfView;
+                camera.fieldOfView *= ConfigManager.CameraZoom;
+            }
+
+            Vector3 result = camera.WorldToScreenPoint((Vector3) CameraManager.CameraOffset + position);
+            if (fieldOfView != null) {
+                camera.fieldOfView = fieldOfView.Value;
+            }
+
+            return result;
+        }
+
         public static List<Vector2> GetIntersectionPoint(Vector2 start, Vector2 end) {
             int width = Screen.width - ScreenEdge;
             int height = Screen.height - ScreenEdge;
@@ -33,7 +49,8 @@ namespace HollowKnightTasInfo.Utils {
         }
 
         private static bool InsideOfScreen(Vector2 vector2) {
-            return vector2.x >= ScreenEdge && vector2.x < Screen.width - ScreenEdge && vector2.y >= ScreenEdge && vector2.y < Screen.height - ScreenEdge;
+            return vector2.x >= ScreenEdge && vector2.x < Screen.width - ScreenEdge && vector2.y >= ScreenEdge &&
+                   vector2.y < Screen.height - ScreenEdge;
         }
 
         private static Vector2? FindIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4) {

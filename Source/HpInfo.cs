@@ -25,11 +25,7 @@ namespace HollowKnightTasInfo {
         }
 
         public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            if (gameManager.IsNonGameplayScene()
-                || gameManager.gameState != GameState.PLAYING
-                || gameManager.hero_ctrl?.transitionState == HeroTransitionState.WAITING_TO_ENTER_LEVEL
-                || !ConfigManager.ShowHp
-            ) {
+            if (gameManager.IsNonGameplayScene() || !ConfigManager.ShowHp) {
                 return;
             }
 
@@ -92,7 +88,7 @@ namespace HollowKnightTasInfo {
                     return string.Empty;
                 }
 
-                Vector2 enemyPos = Camera.main.WorldToScreenPoint(gameObject.transform.position);
+                Vector2 enemyPos = ScreenUtils.WorldToScreenPoint(Camera.main, gameObject.transform.position);
                 enemyPos.y = Screen.height - enemyPos.y;
 
                 int x = (int) enemyPos.x;

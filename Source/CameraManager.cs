@@ -1,76 +1,59 @@
 ﻿using System;
-using HollowKnightTasInfo.Extensions;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
-    public static class CameraManager {
-        private static Vector3? cameraControllerPosition;
-        private static Vector3? cameraTargetPosition;
-        private static float? zoomFactor;
+    internal static class CameraManager {
+        public static Vector2 CameraOffset { get; private set; }
 
-        public static void OnPreRender() {
-            if (!ConfigManager.CameraFollow && (Math.Abs(ConfigManager.CameraZoom - 1f) < 0.001 || ConfigManager.CameraZoom <= 0f)) {
+        private static Vector3? cameraControllerPosition;
+        private static float? fieldOfView;
+
+        public static void OnUpdate(GameManager gameManager) {
+            if (ConfigManager.CameraFollow && gameManager.hero_ctrl is { } heroCtrl && gameManager.cameraCtrl is { } cameraCtrl) {
+                CameraOffset = cameraCtrl.transform.position - heroCtrl.transform.position;
+            } else {
+                CameraOffset = Vector2.zero;
+            }
+        }
+
+        public static void OnPreRender(GameManager gameManager) {
+            if (gameManager.IsNonGameplayScene()) {
+                return;
+            }
+
+            if (gameManager.cameraCtrl is not { } cameraCtrl) {
                 return;
             }
 
             if (ConfigManager.CameraFollow) {
-                if (GameManager._instance is not { } gameManager) {
-                    return;
-                }
-
                 if (gameManager.hero_ctrl is not { } heroCtrl) {
                     return;
                 }
 
-                if (gameManager.cameraCtrl is not { } cameraCtrl) {
-                    return;
-                }
-
-                if (cameraCtrl.GetFieldValue<CameraTarget>("camTarget") is not { } camTarget) {
-                    return;
-                }
-
                 cameraControllerPosition = cameraCtrl.transform.position;
-                cameraTargetPosition = camTarget.transform.position;
-
                 Vector3 heroPosition = heroCtrl.transform.position;
-                camTarget.transform.position = new Vector3(heroPosition.x, heroPosition.y, camTarget.transform.position.z);
                 cameraCtrl.transform.position = new Vector3(heroPosition.x, heroPosition.y, cameraCtrl.transform.position.z);
             }
 
-            if (ConfigManager.CameraZoom > 0f && Math.Abs(ConfigManager.CameraZoom - 1f) > 0.001) {
-                // zoomFactor = GameCameras.instance.tk2dCam.ZoomFactor;
-                // GameCameras.instance.tk2dCam.ZoomFactor *= ConfigManager.CameraZoom;
+            if (ConfigManager.IsCameraZoom) {
+                fieldOfView = cameraCtrl.cam.fieldOfView;
+                cameraCtrl.cam.fieldOfView *= ConfigManager.CameraZoom;
             }
         }
 
-        public static void OnPostRender() {
-            if (cameraControllerPosition != null || cameraTargetPosition != null) {
-                if (GameManager._instance is not { } gameManager) {
-                    return;
-                }
-
-                if (gameManager.cameraCtrl is not { } cameraCtrl) {
-                    return;
-                }
-
-                if (cameraCtrl.GetFieldValue<CameraTarget>("camTarget") is not { } cameraTarget) {
-                    return;
-                }
-
-                if (cameraControllerPosition != null) {
-                    cameraCtrl.transform.position = cameraControllerPosition.Value;
-                    cameraControllerPosition = null;
-                }
-
-                if (cameraTargetPosition != null) {
-                    cameraTarget.transform.position = cameraTargetPosition.Value;
-                    cameraTargetPosition = null;
-                }
+        public static void OnPostRender(GameManager gameManager) {
+            if (gameManager.cameraCtrl is not { } cameraCtrl) {
+                return;
             }
 
-            if (zoomFactor != null) {
-                // GameCameras.instance.tk2dCam.ZoomFactor = zoomFactor.Value;
+            if (cameraControllerPosition != null) {
+                cameraCtrl.transform.position = cameraControllerPosition.Value;
+                cameraControllerPosition = null;
+            }
+
+            if (fieldOfView != null) {
+                cameraCtrl.cam.fieldOfView = fieldOfView.Value;
+                fieldOfView = null;
             }
         }
     }

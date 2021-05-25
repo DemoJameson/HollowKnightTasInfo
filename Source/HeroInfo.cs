@@ -17,15 +17,16 @@ namespace HollowKnightTasInfo {
             "Cast",
         };
 
+        private static Vector3 lastPosition = Vector3.zero;
+        private static float frameRate => Time.unscaledDeltaTime == 0 ? 0 : 1 / Time.unscaledDeltaTime;
+
         public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
             if (gameManager.hero_ctrl is { } heroController && ConfigManager.ShowKnightInfo) {
                 Vector3 position = heroController.transform.position;
                 infoBuilder.AppendLine($"pos: {position.ToSimpleString(5)}");
                 infoBuilder.AppendLine($"{heroController.hero_state} vel: {heroController.current_velocity.ToSimpleString(3)}");
-
-                if (heroController.GetFieldValue<Vector2[]>("positionHistory") is { } positionHistory) {
-                    infoBuilder.AppendLine($"diff vel: {((positionHistory[0] - positionHistory[1]) * 50).ToSimpleString(3)}");
-                }
+                infoBuilder.AppendLine($"diff vel: {((position - lastPosition) * frameRate).ToSimpleString(3)}");
+                lastPosition = position;
 
                 // CanJump 中会改变该字段的值，所以需要备份稍微还原
                 int ledgeBufferSteps = heroController.GetFieldValue<int>(nameof(ledgeBufferSteps));
