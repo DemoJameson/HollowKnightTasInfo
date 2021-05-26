@@ -6,10 +6,99 @@ using GlobalEnums;
 using HollowKnightTasInfo.Extensions;
 using HollowKnightTasInfo.Utils;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace HollowKnightTasInfo {
     internal static class HitboxInfo {
+        private static readonly Dictionary<Collider2D, HitboxData> Colliders = new();
+
+        public static void OnInit(GameManager gameManager) {
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (scene, nextScene) => {
+                Colliders.Clear();
+
+                if (gameManager.IsNonGameplayScene()) {
+                    return;
+                }
+
+                foreach (Collider2D col in Resources.FindObjectsOfTypeAll<Collider2D>()) {
+                    TryAddHitbox(col);
+                }
+            };
+        }
+
+        public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+            if (gameManager.IsNonGameplayScene() || !ConfigManager.ShowHitbox) {
+                return;
+            }
+
+            string hitboxInfo = GetAllInfo();
+            if (!string.IsNullOrEmpty(hitboxInfo)) {
+                infoBuilder.AppendLine(hitboxInfo);
+            }
+        }
+
+        public static void TryAddHitbox(GameObject gameObject) {
+            foreach (Collider2D collider2D in gameObject.GetComponentsInChildren<Collider2D>(true)) {
+                TryAddHitbox(collider2D);
+            }
+        }
+
+        private static void TryAddHitbox(Collider2D col) {
+            if (col == null || Colliders.ContainsKey(col)) {
+                return;
+            }
+
+            if (col is BoxCollider2D or PolygonCollider2D or EdgeCollider2D or CircleCollider2D) {
+                GameObject gameObject = col.gameObject;
+                if (IsDamageHero(col)) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Enemy));
+                } else if (gameObject.LocateMyFSM("health_manager_enemy") || gameObject.LocateMyFSM("health_manager")) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Harmless));
+                } else if (gameObject.layer == (int) PhysLayers.TERRAIN) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Terrain));
+                } else if (gameObject == HeroController.instance.gameObject && !col.isTrigger) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Knight));
+                } else if (gameObject.LocateMyFSM("damages_enemy")) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Attack));
+                } else if (col.GetComponent<TransitionPoint>()
+                           || col.isTrigger && col.GetComponent<HazardRespawnTrigger>()
+                ) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Trigger));
+                }
+            }
+        }
+
+        private static bool IsDamageHero(Collider2D col) {
+#if V1028
+            return col.gameObject.LocateMyFSM("damages_hero");
+#else
+            return col.GetComponent<DamageHero>() || col.gameObject.LocateMyFSM("damages_hero");
+#endif
+        }
+
+        private static string GetAllInfo() {
+            Dictionary<string, StringBuilder> results = new();
+
+            foreach (HitboxData hitboxData in Colliders.Values) {
+                string hitboxInfo = hitboxData.ToString();
+
+                if (string.IsNullOrEmpty(hitboxInfo)) {
+                    continue;
+                }
+
+                StringBuilder result;
+                if (results.ContainsKey(hitboxData.Key)) {
+                    result = results[hitboxData.Key];
+                } else {
+                    result = new StringBuilder();
+                    results[hitboxData.Key] = result;
+                }
+
+                result.Append(result.Length > 0 ? $",{hitboxInfo}" : $"{hitboxData.Key}={hitboxInfo}");
+            }
+
+            return HkUtils.Join("\n", results.Values);
+        }
+
         private enum HitboxColor {
             Knight,
             Attack,
@@ -135,96 +224,6 @@ namespace HollowKnightTasInfo {
             private static Vector2 WorldToScreenPoint(Camera camera, Transform transform, Vector2 point) {
                 return ScreenUtils.WorldToScreenPoint(camera, transform.WorldPosition(point));
             }
-        }
-
-        private static readonly Dictionary<Collider2D, HitboxData> Colliders = new();
-
-        public static void OnInit(GameManager gameManager) {
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (scene, nextScene) => {
-                Colliders.Clear();
-
-                if (gameManager.IsNonGameplayScene()) {
-                    return;
-                }
-
-                foreach (Collider2D col in Object.FindObjectsOfType<Collider2D>()) {
-                    TryAddHitbox(col);
-                }
-            };
-        }
-
-        public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            if (gameManager.IsNonGameplayScene() || !ConfigManager.ShowHitbox) {
-                return;
-            }
-
-            string hitboxInfo = GetAllInfo();
-            if (!string.IsNullOrEmpty(hitboxInfo)) {
-                infoBuilder.AppendLine(hitboxInfo);
-            }
-        }
-
-        public static void TryAddHitbox(GameObject gameObject) {
-            foreach (Collider2D collider2D in gameObject.GetComponentsInChildren<Collider2D>(true)) {
-                TryAddHitbox(collider2D);
-            }
-        }
-
-        private static void TryAddHitbox(Collider2D col) {
-            if (col == null || Colliders.ContainsKey(col)) {
-                return;
-            }
-
-            if (col is BoxCollider2D or PolygonCollider2D or EdgeCollider2D or CircleCollider2D) {
-                GameObject gameObject = col.gameObject;
-                if (IsDamageHero(col)) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Enemy));
-                } else if (gameObject.LocateMyFSM("health_manager_enemy") || gameObject.LocateMyFSM("health_manager")) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Harmless));
-                } else if (gameObject.layer == (int) PhysLayers.TERRAIN) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Terrain));
-                } else if (gameObject == HeroController.instance.gameObject && !col.isTrigger) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Knight));
-                } else if (gameObject.LocateMyFSM("damages_enemy")) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Attack));
-                } else if (col.GetComponent<TransitionPoint>()
-                           || col.isTrigger && col.GetComponent<HazardRespawnTrigger>()
-                ) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Trigger));
-                }
-            }
-        }
-
-        private static bool IsDamageHero(Collider2D col) {
-#if V1028
-            return col.gameObject.LocateMyFSM("damages_hero");
-#else
-            return col.GetComponent<DamageHero>() || col.gameObject.LocateMyFSM("damages_hero");
-#endif
-        }
-
-        private static string GetAllInfo() {
-            Dictionary<string, StringBuilder> results = new();
-
-            foreach (HitboxData hitboxData in Colliders.Values) {
-                string hitboxInfo = hitboxData.ToString();
-
-                if (string.IsNullOrEmpty(hitboxInfo)) {
-                    continue;
-                }
-
-                StringBuilder result;
-                if (results.ContainsKey(hitboxData.Key)) {
-                    result = results[hitboxData.Key];
-                } else {
-                    result = new StringBuilder();
-                    results[hitboxData.Key] = result;
-                }
-
-                result.Append(result.Length > 0 ? $",{hitboxInfo}" : $"{hitboxData.Key}={hitboxInfo}");
-            }
-
-            return HkUtils.Join("\n", results.Values);
         }
     }
 }

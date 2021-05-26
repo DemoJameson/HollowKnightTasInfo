@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using GlobalEnums;
 using HollowKnightTasInfo.Extensions;
@@ -9,6 +9,13 @@ using UnityEngine;
 namespace HollowKnightTasInfo {
     internal static class HpInfo {
         private static readonly Dictionary<GameObject, HpData> EnemyPool = new();
+        private static readonly string[] IgnoreObjectNames = {
+            "Hornet Barb",
+            "Needle Tink",
+            "Worm",
+            "Laser Turret",
+            "Deep Spikes",
+        };
 
         public static void OnInit(GameManager gameManager) {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (scene, nextScene) => {
@@ -18,10 +25,7 @@ namespace HollowKnightTasInfo {
                     return;
                 }
 
-                GameObject[] rootGameObjects = nextScene.GetRootGameObjects();
-                foreach (GameObject gameObject in rootGameObjects) {
-                    TryAddEnemy(gameObject);
-                }
+                TryAddEnemy(Resources.FindObjectsOfTypeAll<Transform>().Select(transform => transform.gameObject));
             };
         }
 
@@ -37,37 +41,27 @@ namespace HollowKnightTasInfo {
         }
 
         public static void TryAddEnemy(GameObject gameObject) {
-            if (gameObject == null) {
-                return;
-            }
-
-            if (!EnemyPool.ContainsKey(gameObject)
-                && ((PhysLayers) gameObject.layer is PhysLayers.ENEMIES or PhysLayers.HERO_ATTACK || gameObject.CompareTag("Boss"))
-                && !IgnoreObject(gameObject)) {
-                PlayMakerFSM playMakerFsm = gameObject.LocateMyFSM("health_manager_enemy");
-                if (playMakerFsm == null) {
-                    playMakerFsm = gameObject.LocateMyFSM("health_manager");
-                }
-
-                if (playMakerFsm != null) {
-                    EnemyPool.Add(gameObject, new HpData(gameObject, playMakerFsm));
-                }
-            }
-
-            foreach (Transform childTransform in gameObject.transform) {
-                TryAddEnemy(childTransform.gameObject);
-            }
+            TryAddEnemy(gameObject.GetComponentsInChildren<Transform>(true).Select(transform => transform.gameObject));
         }
 
-        private static bool IgnoreObject(GameObject gameObject) {
-            string name = gameObject.name;
-            if (name.IndexOf("Hornet Barb", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Needle Tink", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("worm", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Laser Turret", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Deep Spikes", StringComparison.OrdinalIgnoreCase) >= 0) return true;
+        private static void TryAddEnemy(IEnumerable<GameObject> gameObjects) {
+            foreach (GameObject gameObject in gameObjects) {
+                if (gameObject == null || EnemyPool.ContainsKey(gameObject)) {
+                    continue;
+                }
 
-            return false;
+                if (((PhysLayers) gameObject.layer is PhysLayers.ENEMIES or PhysLayers.HERO_ATTACK || gameObject.CompareTag("Boss"))
+                    && IgnoreObjectNames.All(name => !gameObject.name.StartsWith(name))) {
+                    PlayMakerFSM playMakerFsm = gameObject.LocateMyFSM("health_manager_enemy");
+                    if (playMakerFsm == null) {
+                        playMakerFsm = gameObject.LocateMyFSM("health_manager");
+                    }
+
+                    if (playMakerFsm != null) {
+                        EnemyPool.Add(gameObject, new HpData(gameObject, playMakerFsm));
+                    }
+                }
+            }
         }
 
         private static string GetInfo() {

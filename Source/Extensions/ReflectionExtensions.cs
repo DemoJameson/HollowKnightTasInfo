@@ -33,13 +33,18 @@ namespace HollowKnightTasInfo.Extensions {
             }
         }
 
+        // TODO 获取指定参数的方法
         public static MethodInfo GetMethodInfo(this Type type, string name) {
             if (!CachedMethodInfos.ContainsKey(type)) {
                 CachedMethodInfos[type] = new Dictionary<string, MethodInfo>();
             }
 
             if (!CachedMethodInfos[type].ContainsKey(name)) {
-                return CachedMethodInfos[type][name] = type.GetMethod(name, Flags);
+                try {
+                    return CachedMethodInfos[type][name] = type.GetMethod(name, Flags);
+                } catch {
+                    return CachedMethodInfos[type][name] = null;
+                }
             } else {
                 return CachedMethodInfos[type][name];
             }
@@ -109,7 +114,7 @@ namespace HollowKnightTasInfo.Extensions {
                 return (T) result;
             }
         }
-        
+
         public static T InvokeMethod<T>(this Type type, string name, params object[] parameters) {
             object result = type.GetMethodInfo(name)?.Invoke(null, parameters);
             if (result == null) {
@@ -118,11 +123,11 @@ namespace HollowKnightTasInfo.Extensions {
                 return (T) result;
             }
         }
-        
+
         public static void InvokeMethod(this object obj, string name, params object[] parameters) {
             obj.GetType().GetMethodInfo(name)?.Invoke(obj, parameters);
         }
-        
+
         public static void InvokeMethod(this Type type, string name, params object[] parameters) {
             type.GetMethodInfo(name)?.Invoke(null, parameters);
         }

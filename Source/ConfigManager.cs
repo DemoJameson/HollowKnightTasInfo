@@ -17,6 +17,7 @@ ShowHitbox = true
 
 # 碰撞箱颜色 ARGB 格式
 KnightHitbox = 0xFF00FF00
+AttackHitbox = 0xFF00FFFF
 EnemyHitbox = 0xFFFF0000
 HarmlessHitbox = 0xFFFFFF00
 TriggerHitbox = 0xFF9370DB
@@ -29,11 +30,18 @@ CameraZoom = 1
 [CustomInfoTemplate]
 # 该配置用于定制附加显示的数据，需要注意如果调用属性或者方法有可能会造成 desync
 # 例如 HeroController.CanJump() 会修改 ledgeBufferSteps 字段，请查看源码确认是否安全。定制数据格式如下：
-# {UnityObject子类名.字段/属性/方法.字段/属性/方法……}，只支持无参方法需要以()结尾
+# {UnityObject子类名.字段/属性/方法.字段/属性/方法……}
 # {GameObjectName.字段/属性/方法.字段/属性/方法……}
+# 只支持无参方法以及字符串作为唯一参数的方法
+# 常用的类型 PlayerData 和 HeroControllerStates 可以简写
 # 支持配置多行，并且同一行可以存在多个 {}
+# paused: {GameManager.isPaused}
 # canAttack: {HeroController.CanAttack()}
 # geo: {HeroController.playerData.geo}
+# geo: {PlayerData.geo}
+# jumping: {HeroControllerStates.jumping}
+# component: {Crawler Fixed.GetComponent(BoxCollider2D)}
+# fsm: {Crawler Fixed.LocateMyFSM(health_manager_enemy).FsmVariables.GetFsmInt(HP)}
 ";
 
         private static DateTime lastWriteTime;
@@ -45,7 +53,7 @@ CameraZoom = 1
         public static bool ShowTime => GetSettingValue<bool>(nameof(ShowTime));
         public static bool ShowHitbox => GetSettingValue<bool>(nameof(ShowHitbox));
         public static string KnightHitbox => GetSettingValue(nameof(KnightHitbox), "0xFF00FF00");
-        public static string AttackHitbox => GetSettingValue(nameof(AttackHitbox), "0xFFFFFF00");
+        public static string AttackHitbox => GetSettingValue(nameof(AttackHitbox), "0xFF00FFF");
         public static string EnemyHitbox => GetSettingValue(nameof(EnemyHitbox), "0xFFFF0000");
         public static string HarmlessHitbox => GetSettingValue(nameof(HarmlessHitbox), "0xFFFFFF00");
         public static string TriggerHitbox => GetSettingValue(nameof(TriggerHitbox), "0xFF9370DB");

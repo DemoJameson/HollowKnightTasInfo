@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using HollowKnightTasInfo.Extensions;
-using HollowKnightTasInfo.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace HollowKnightTasInfo {
     internal static class CustomInfo {
         private static readonly Regex BraceRegex = new(@"\{(.+?)\}");
+        private static readonly Regex MethodRegex = new(@"^(\w+)\((.*?)\)$");
         private static readonly Dictionary<string, Type> CachedTypes = new();
-        private static readonly Dictionary<string, Object> CachedObjects = new();
+        private static readonly Dictionary<string, object> CachedObjects = new();
 
         public static void OnInit() {
             foreach (Type type in typeof(GameManager).Assembly.GetTypes()) {
@@ -39,19 +39,26 @@ namespace HollowKnightTasInfo {
 
                 string typeNameOrObjectName = splitText[0];
 
-                Object obj;
+                object obj;
 
                 if (CachedObjects.ContainsKey(typeNameOrObjectName)) {
                     obj = CachedObjects[typeNameOrObjectName];
-                } else if (CachedTypes.ContainsKey(typeNameOrObjectName) && CachedTypes[typeNameOrObjectName] is { } type &&
-                           type.IsSubclassOf(typeof(Object))) {
+                } else {
                     obj = typeNameOrObjectName switch {
                         "GameManager" => gameManager,
                         "HeroController" => gameManager.hero_ctrl,
-                        _ => Object.FindObjectOfType(type)
+                        "PlayerData" => gameManager.hero_ctrl?.playerData,
+                        "HeroControllerStates" => gameManager.hero_ctrl?.cState,
+                        _ => null
                     };
-                } else {
-                    obj = GameObject.Find(typeNameOrObjectName);
+
+                    if (obj == null) {
+                        if (CachedTypes.TryGetValue(typeNameOrObjectName, out Type type) && type.IsSubclassOf(typeof(Object))) {
+                            obj = Object.FindObjectOfType(type);
+                        } else {
+                            obj = GameObject.Find(typeNameOrObjectName);
+                        }
+                    }
                 }
 
                 if (obj != null) {
@@ -80,16 +87,27 @@ namespace HollowKnightTasInfo {
             object result = obj;
             foreach (string memberName in memberNames) {
                 Type objType = result.GetType();
-                if (memberName.EndsWith("()")) {
-                    if (objType.GetMethodInfo(memberName.Replace("()", "")) is { } methodInfo) {
-                        result = methodInfo.Invoke(result, null);
-                    } else {
-                        return null;
-                    }
-                } else if (objType.GetPropertyInfo(memberName) is { } propertyInfo) {
+                if (objType.GetPropertyInfo(memberName) is { } propertyInfo) {
                     result = propertyInfo.GetValue(result, null);
                 } else if (objType.GetFieldInfo(memberName) is { } fieldInfo) {
                     result = fieldInfo.GetValue(result);
+                } else if (MethodRegex.IsMatch(memberName)) {
+                    Match match = MethodRegex.Match(memberName);
+                    string methodName = match.Groups[1].Value;
+                    object arg = match.Groups[2].Value;
+                    if (string.Empty.Equals(arg)) {
+                        result = result.InvokeMethod<object>(methodName);
+                    } else if (result is GameObject gameObject) {
+                        if (methodName == "LocateMyFSM") {
+                            result = FSMUtility.LocateFSM(gameObject, arg.ToString());
+                        } else if (methodName == "GetComponent") {
+                            result = gameObject.GetComponent(arg.ToString());
+                        }  else {
+                            result = result.InvokeMethod<object>(methodName, arg);
+                        }
+                    } else {
+                        result = result.InvokeMethod<object>(methodName, arg);
+                    }
                 } else {
                     return $"{memberName} not found";
                 }
