@@ -45,6 +45,7 @@ CameraZoom = 1
         public static bool ShowTime => GetSettingValue<bool>(nameof(ShowTime));
         public static bool ShowHitbox => GetSettingValue<bool>(nameof(ShowHitbox));
         public static string KnightHitbox => GetSettingValue(nameof(KnightHitbox), "0xFF00FF00");
+        public static string AttackHitbox => GetSettingValue(nameof(AttackHitbox), "0xFFFFFF00");
         public static string EnemyHitbox => GetSettingValue(nameof(EnemyHitbox), "0xFFFF0000");
         public static string HarmlessHitbox => GetSettingValue(nameof(HarmlessHitbox), "0xFFFFFF00");
         public static string TriggerHitbox => GetSettingValue(nameof(TriggerHitbox), "0xFF9370DB");

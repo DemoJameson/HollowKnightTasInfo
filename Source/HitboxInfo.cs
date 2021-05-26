@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GlobalEnums;
+using HollowKnightTasInfo.Extensions;
 using HollowKnightTasInfo.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -11,6 +12,7 @@ namespace HollowKnightTasInfo {
     internal static class HitboxInfo {
         private enum HitboxColor {
             Knight,
+            Attack,
             Enemy,
             Harmless,
             Trigger,
@@ -29,6 +31,7 @@ namespace HollowKnightTasInfo {
             private string ColorValue =>
                 hitboxColor switch {
                     HitboxColor.Knight => ConfigManager.KnightHitbox,
+                    HitboxColor.Attack => ConfigManager.AttackHitbox,
                     HitboxColor.Enemy => ConfigManager.EnemyHitbox,
                     HitboxColor.Harmless => ConfigManager.HarmlessHitbox,
                     HitboxColor.Trigger => ConfigManager.TriggerHitbox,
@@ -47,10 +50,6 @@ namespace HollowKnightTasInfo {
                 Camera camera = Camera.main;
                 if (camera == null || collider == null || !collider.isActiveAndEnabled) {
                     return string.Empty;
-                }
-
-                if (hitboxColor == HitboxColor.Harmless && IsDamageHero(collider)) {
-                    hitboxColor = HitboxColor.Enemy;
                 }
 
                 return collider switch {
@@ -117,7 +116,6 @@ namespace HollowKnightTasInfo {
                 return HkUtils.Join(",", result);
             }
 
-
             private string ToCircleInfo(CircleCollider2D circle, Camera camera) {
                 Vector2 offset = circle.offset;
                 Vector2 center = WorldToScreenPoint(camera, circle.transform, offset);
@@ -135,8 +133,7 @@ namespace HollowKnightTasInfo {
             }
 
             private static Vector2 WorldToScreenPoint(Camera camera, Transform transform, Vector2 point) {
-                return ScreenUtils.WorldToScreenPoint(camera,
-                    transform.position + transform.localRotation * Vector3.Scale(point, transform.localScale));
+                return ScreenUtils.WorldToScreenPoint(camera, transform.WorldPosition(point));
             }
         }
 
@@ -151,7 +148,7 @@ namespace HollowKnightTasInfo {
                 }
 
                 foreach (Collider2D col in Object.FindObjectsOfType<Collider2D>()) {
-                    UpdateHitbox(col);
+                    TryAddHitbox(col);
                 }
             };
         }
@@ -167,13 +164,13 @@ namespace HollowKnightTasInfo {
             }
         }
 
-        public static void UpdateHitbox(GameObject gameObject) {
-            foreach (Collider2D collider2D in gameObject.GetComponents<Collider2D>()) {
-                UpdateHitbox(collider2D);
+        public static void TryAddHitbox(GameObject gameObject) {
+            foreach (Collider2D collider2D in gameObject.GetComponentsInChildren<Collider2D>(true)) {
+                TryAddHitbox(collider2D);
             }
         }
 
-        private static void UpdateHitbox(Collider2D col) {
+        private static void TryAddHitbox(Collider2D col) {
             if (col == null || Colliders.ContainsKey(col)) {
                 return;
             }
@@ -188,6 +185,8 @@ namespace HollowKnightTasInfo {
                     Colliders.Add(col, new HitboxData(col, HitboxColor.Terrain));
                 } else if (gameObject == HeroController.instance.gameObject && !col.isTrigger) {
                     Colliders.Add(col, new HitboxData(col, HitboxColor.Knight));
+                } else if (gameObject.LocateMyFSM("damages_enemy")) {
+                    Colliders.Add(col, new HitboxData(col, HitboxColor.Attack));
                 } else if (col.GetComponent<TransitionPoint>()
                            || col.isTrigger && col.GetComponent<HazardRespawnTrigger>()
                 ) {

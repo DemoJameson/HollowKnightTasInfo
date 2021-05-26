@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using GlobalEnums;
+using HollowKnightTasInfo.Extensions;
 using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
@@ -88,7 +89,7 @@ namespace HollowKnightTasInfo {
                     return string.Empty;
                 }
 
-                Vector2 enemyPos = ScreenUtils.WorldToScreenPoint(Camera.main, gameObject.transform.position);
+                Vector2 enemyPos = ScreenUtils.WorldToScreenPoint(Camera.main, gameObject.transform.WorldPosition());
                 enemyPos.y = Screen.height - enemyPos.y;
 
                 int x = (int) enemyPos.x;

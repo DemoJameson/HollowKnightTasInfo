@@ -6,6 +6,10 @@ namespace HollowKnightTasInfo {
     // ReSharper disable once UnusedType.Global
     public static class TasInfo {
         private static bool init;
+        
+        // 用于测试
+        // ReSharper disable once MemberCanBePrivate.Global
+        public static string AdditionalInfo = string.Empty;
 
         // ReSharper disable once UnusedMember.Global
         // After CameraController.LateUpdate
@@ -13,6 +17,8 @@ namespace HollowKnightTasInfo {
             if (GameManager._instance is not { } gameManager) {
                 return;
             }
+
+            AdditionalInfo = string.Empty;
 
             StringBuilder infoBuilder = new();
 
@@ -30,7 +36,7 @@ namespace HollowKnightTasInfo {
                 Debug.LogException(e);
             }
 
-            GameManager.TasInfo = infoBuilder.ToString();
+            GameManager.TasInfo = infoBuilder.AppendLine(AdditionalInfo).ToString();
         }
 
         // ReSharper disable once UnusedMember.Global
@@ -51,7 +57,7 @@ namespace HollowKnightTasInfo {
 
         // ReSharper disable once UnusedMember.Global
         public static void OnColliderCreate(GameObject gameObject) {
-            HitboxInfo.UpdateHitbox(gameObject);
+            HitboxInfo.TryAddHitbox(gameObject);
             HpInfo.TryAddEnemy(gameObject);
         }
 
@@ -65,9 +71,6 @@ namespace HollowKnightTasInfo {
             // 放第一位，先更新 settings
             ConfigManager.OnUpdate();
 
-            // 放第二位，CameraOffset 其它模块需要用到
-            CameraManager.OnUpdate(gameManager);
-            
             HeroInfo.OnUpdate(gameManager, infoBuilder);
             CustomInfo.OnUpdate(gameManager, infoBuilder);
             TimeInfo.OnUpdate(gameManager, infoBuilder);
