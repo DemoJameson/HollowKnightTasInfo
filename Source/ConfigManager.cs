@@ -12,10 +12,15 @@ ShowKnightInfo = true
 ShowCustomInfo = true
 ShowSceneName = true
 ShowTime = true
-ShowHp = true
+ShowEnemyHp = true
+ShowEnemyPosition = true
+ShowEnemyVelocity = true
 ShowHitbox = true
 
-# 碰撞箱颜色 ARGB 格式
+PositionPrecision = 5
+VelocityPrecision = 3
+
+# 碰撞箱颜色 ARGB 格式，注释或删除则不显示该类 hitbox
 KnightHitbox = 0xFF00FF00
 AttackHitbox = 0xFF00FFFF
 EnemyHitbox = 0xFFFF0000
@@ -23,9 +28,9 @@ HarmlessHitbox = 0xFFFFFF00
 TriggerHitbox = 0xFF9370DB
 TerrainHitbox = 0xFFFF8040
 
-CameraFollow = false
 # 默认为 1，数值越大视野越广
 CameraZoom = 1
+CameraFollow = false
 
 [CustomInfoTemplate]
 # 该配置用于定制附加显示的数据，需要注意如果调用属性或者方法有可能会造成 desync
@@ -40,8 +45,8 @@ CameraZoom = 1
 # geo: {HeroController.playerData.geo}
 # geo: {PlayerData.geo}
 # jumping: {HeroControllerStates.jumping}
-# component: {Crawler Fixed.GetComponent(BoxCollider2D)}
-# fsm: {Crawler Fixed.LocateMyFSM(health_manager_enemy).FsmVariables.GetFsmInt(HP)}
+# component: {Crawler Fixed.GetComponentInChildren(BoxCollider2D)}
+# crawler hp: {Crawler Fixed.LocateMyFSM(health_manager_enemy).FsmVariables.GetFsmInt(HP)}
 ";
 
         private static DateTime lastWriteTime;
@@ -52,9 +57,13 @@ CameraZoom = 1
         public static bool ShowSceneName => GetSettingValue<bool>(nameof(ShowSceneName));
         public static bool ShowTime => GetSettingValue<bool>(nameof(ShowTime));
         public static bool ShowHitbox => GetSettingValue<bool>(nameof(ShowHitbox));
-        public static bool ShowHp => GetSettingValue<bool>(nameof(ShowHp));
-        public static bool CameraFollow => GetSettingValue<bool>(nameof(CameraFollow));
+        public static bool ShowEnemyHp => GetSettingValue<bool>(nameof(ShowEnemyHp));
+        public static bool ShowEnemyPosition => GetSettingValue<bool>(nameof(ShowEnemyPosition));
+        public static bool ShowEnemyVelocity => GetSettingValue<bool>(nameof(ShowEnemyVelocity));
+        public static int PositionPrecision => GetSettingValue(nameof(PositionPrecision), 5);
+        public static int VelocityPrecision => GetSettingValue(nameof(VelocityPrecision), 3);
         public static float CameraZoom => GetSettingValue(nameof(CameraZoom), 1f);
+        public static bool CameraFollow => GetSettingValue<bool>(nameof(CameraFollow));
         public static bool IsCameraZoom => CameraZoom > 0f && Math.Abs(CameraZoom - 1f) > 0.001;
 
         public static string GetHitboxColorValue(HitboxInfo.HitboxType hitboxType) {

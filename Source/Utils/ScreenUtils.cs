@@ -3,8 +3,6 @@ using UnityEngine;
 
 namespace HollowKnightTasInfo.Utils {
     internal static class ScreenUtils {
-        private const int ScreenEdge = 0;
-
         public static Vector3 WorldToScreenPoint(Camera camera, Vector3 position) {
             float? fieldOfView = null;
             if (ConfigManager.IsCameraZoom) {
@@ -21,13 +19,13 @@ namespace HollowKnightTasInfo.Utils {
         }
 
         public static List<Vector2> GetIntersectionPoint(Vector2 start, Vector2 end) {
-            int width = Screen.width - ScreenEdge;
-            int height = Screen.height - ScreenEdge;
+            int width = Screen.width;
+            int height = Screen.height;
             Vector2[] borderPoints = {
-                new(ScreenEdge, ScreenEdge),
-                new(width, ScreenEdge),
+                new(0, 0),
+                new(width, 0),
                 new(width, height),
-                new(ScreenEdge, height),
+                new(0, height),
             };
 
             List<Vector2> result = new();
@@ -48,9 +46,12 @@ namespace HollowKnightTasInfo.Utils {
             return result;
         }
 
-        private static bool InsideOfScreen(Vector2 vector2) {
-            return vector2.x >= ScreenEdge && vector2.x < Screen.width - ScreenEdge && vector2.y >= ScreenEdge &&
-                   vector2.y < Screen.height - ScreenEdge;
+        public static bool InsideOfScreen(Vector2 vector2) {
+            return vector2.x >= 0 && vector2.x <= Screen.width && vector2.y >= 0 && vector2.y <= Screen.height;
+        }
+
+        public static bool InsideOfScreen(int x, int y) {
+            return x >= 0 && x <= Screen.width && y >= 0 && y <= Screen.height;
         }
 
         private static Vector2? FindIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4) {

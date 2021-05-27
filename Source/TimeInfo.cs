@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using GlobalEnums;
@@ -90,12 +91,18 @@ namespace HollowKnightTasInfo {
             }
 
             if (inGameTime > 0) {
+                List<string> result = new();
                 if (!string.IsNullOrEmpty(gameManager.sceneName) && ConfigManager.ShowSceneName) {
-                    infoBuilder.Append($"{gameManager.sceneName}  ");
+                    result.Add(gameManager.sceneName);
                 }
 
                 if (ConfigManager.ShowTime) {
-                    infoBuilder.AppendLine(FormattedTime);
+                    result.Add(FormattedTime);
+                }
+
+                string resultString = HkUtils.Join("  ", result);
+                if (!string.IsNullOrEmpty(resultString)) {
+                    infoBuilder.AppendLine(resultString);
                 }
             }
         }

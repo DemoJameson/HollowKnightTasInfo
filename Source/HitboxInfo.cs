@@ -59,8 +59,11 @@ namespace HollowKnightTasInfo {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Knight));
                 } else if (gameObject.LocateMyFSM("damages_enemy")) {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Attack));
-                } else if (col.GetComponent<TransitionPoint>()
-                           || col.isTrigger && col.GetComponent<HazardRespawnTrigger>()
+                } else if (col.isTrigger && (
+                        col.GetComponent<TransitionPoint>()
+                        || col.GetComponent<HazardRespawnTrigger>()
+                        || gameObject.name.StartsWith("Alert Range")
+                    )
                 ) {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Trigger));
                 }
@@ -93,7 +96,7 @@ namespace HollowKnightTasInfo {
                     results[hitboxData.Key] = result;
                 }
 
-                result.Append(result.Length > 0 ? $",{hitboxInfo}" : $"{hitboxData.Key}={hitboxInfo}");
+                result.Append(result.Length > 0 ? $"|{hitboxInfo}" : $"{hitboxData.Key}={hitboxInfo}");
             }
 
             return HkUtils.Join("\n", results.Values);
@@ -118,6 +121,7 @@ namespace HollowKnightTasInfo {
             }
 
             private string ColorValue => ConfigManager.GetHitboxColorValue(hitboxType);
+
             public string Key =>
                 collider switch {
                     BoxCollider2D or EdgeCollider2D or PolygonCollider2D => "LineHitbox",
@@ -191,10 +195,10 @@ namespace HollowKnightTasInfo {
                     int x2 = (int) Math.Round(point2.x);
                     int y2 = Screen.height - (int) Math.Round(point2.y);
 
-                    result.Add($"{x1},{y1},{x2},{y2},{ColorValue}");
+                    result.Add($"{x1}|{y1}|{x2}|{y2}|{ColorValue}");
                 }
 
-                return HkUtils.Join(",", result);
+                return HkUtils.Join("|", result);
             }
 
             private string ToCircleInfo(CircleCollider2D circle, Camera camera) {
@@ -206,11 +210,11 @@ namespace HollowKnightTasInfo {
                 int y = Screen.height - (int) Math.Round(center.y);
 
                 if (x + radius < 0 || x - radius > Screen.width || y + radius < 0 || y - radius > Screen.height || radius == 0 ||
-                    radius > Screen.height) {
+                    radius > Screen.width) {
                     return string.Empty;
                 }
 
-                return $"{x},{y},{radius},{ColorValue}";
+                return $"{x}|{y}|{radius}|{ColorValue}";
             }
 
             private static Vector2 WorldToScreenPoint(Camera camera, Transform transform, Vector2 point) {

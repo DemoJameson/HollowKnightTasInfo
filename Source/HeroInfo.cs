@@ -23,9 +23,9 @@ namespace HollowKnightTasInfo {
         public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
             if (gameManager.hero_ctrl is { } heroController && ConfigManager.ShowKnightInfo) {
                 Vector3 position = heroController.transform.position;
-                infoBuilder.AppendLine($"pos: {position.ToSimpleString(5)}");
-                infoBuilder.AppendLine($"{heroController.hero_state} vel: {heroController.current_velocity.ToSimpleString(3)}");
-                infoBuilder.AppendLine($"diff vel: {((position - lastPosition) * frameRate).ToSimpleString(3)}");
+                infoBuilder.AppendLine($"pos: {position.ToSimpleString(ConfigManager.PositionPrecision)}");
+                infoBuilder.AppendLine($"{heroController.hero_state} vel: {heroController.current_velocity.ToSimpleString(ConfigManager.VelocityPrecision)}");
+                infoBuilder.AppendLine($"diff vel: {((position - lastPosition) * frameRate).ToSimpleString(ConfigManager.VelocityPrecision)}");
                 lastPosition = position;
 
                 // CanJump 中会改变该字段的值，所以需要备份稍微还原

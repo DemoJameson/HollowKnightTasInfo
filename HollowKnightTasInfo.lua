@@ -8,18 +8,18 @@ function onPaint()
     local infoText = readString(infoAddress)
     local gameInfo = {}
     for line in infoText:gmatch("[^\r\n]+") do
-        if line:find("^HP=") ~= nil then
-            local hpData = splitString(line:sub(4), ",")
+        if line:find("^Enemy=") ~= nil then
+            local hpData = splitString(line:sub(7), "|")
             for i = 1, #hpData, 3 do
                 gui.text(hpData[i], hpData[i + 1], hpData[i + 2])
             end
         elseif line:find("^LineHitbox=") ~= nil then
-            local hitboxData = splitString(line:sub(12), ",")
+            local hitboxData = splitString(line:sub(12), "|")
             for i = 1, #hitboxData, 5 do
                 gui.line(hitboxData[i], hitboxData[i + 1], hitboxData[i + 2], hitboxData[i + 3], hitboxData[i + 4])
             end
         elseif line:find("^CircleHitbox=") ~= nil then
-            local hitboxData = splitString(line:sub(14), ",")
+            local hitboxData = splitString(line:sub(14), "|")
             for i = 1, #hitboxData, 4 do
                 gui.ellipse(hitboxData[i], hitboxData[i + 1], hitboxData[i + 2], hitboxData[i + 2], hitboxData[i + 3])
             end

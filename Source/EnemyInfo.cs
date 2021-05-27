@@ -7,8 +7,9 @@ using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
 namespace HollowKnightTasInfo {
-    internal static class HpInfo {
-        private static readonly Dictionary<GameObject, HpData> EnemyPool = new();
+    internal static class EnemyInfo {
+        private static readonly Dictionary<GameObject, EnemyData> EnemyPool = new();
+
         private static readonly string[] IgnoreObjectNames = {
             "Hornet Barb",
             "Needle Tink",
@@ -30,13 +31,13 @@ namespace HollowKnightTasInfo {
         }
 
         public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
-            if (gameManager.IsNonGameplayScene() || !ConfigManager.ShowHp) {
+            if (gameManager.IsNonGameplayScene()) {
                 return;
             }
 
-            string hpInfo = GetInfo();
-            if (!string.IsNullOrEmpty(hpInfo)) {
-                infoBuilder.AppendLine(hpInfo);
+            string enemyInfo = GetInfo();
+            if (!string.IsNullOrEmpty(enemyInfo)) {
+                infoBuilder.AppendLine(enemyInfo);
             }
         }
 
@@ -58,23 +59,25 @@ namespace HollowKnightTasInfo {
                     }
 
                     if (playMakerFsm != null) {
-                        EnemyPool.Add(gameObject, new HpData(gameObject, playMakerFsm));
+                        EnemyPool.Add(gameObject, new EnemyData(gameObject, playMakerFsm));
                     }
                 }
             }
         }
 
         private static string GetInfo() {
-            return HkUtils.Join(",", EnemyPool.Values, "HP=");
+            return HkUtils.Join("|", EnemyPool.Values, "Enemy=");
         }
 
-        private class HpData {
+        private class EnemyData {
             private readonly GameObject gameObject;
+            private readonly Rigidbody2D rigidbody2D;
             private readonly PlayMakerFSM fsm;
             private int Hp => fsm.FsmVariables.GetFsmInt("HP").Value;
 
-            public HpData(GameObject gameObject, PlayMakerFSM fsm) {
+            public EnemyData(GameObject gameObject, PlayMakerFSM fsm) {
                 this.gameObject = gameObject;
+                rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
                 this.fsm = fsm;
             }
 
@@ -89,11 +92,23 @@ namespace HollowKnightTasInfo {
                 int x = (int) enemyPos.x;
                 int y = (int) enemyPos.y;
 
-                if (x < 0 || x > Screen.width || y < 0 || y > Screen.height) {
-                    return string.Empty;
+                List<string> result = new();
+
+                if (ConfigManager.ShowEnemyHp && ScreenUtils.InsideOfScreen(x, y)) {
+                    result.Add($"{x}|{y}|{Hp}");
+                    y += 23;
                 }
 
-                return $"{x},{y},{Hp}";
+                if (ConfigManager.ShowEnemyPosition && ScreenUtils.InsideOfScreen(x, y)) {
+                    result.Add($"{x}|{y}|{gameObject.transform.position.ToSimpleString(ConfigManager.PositionPrecision)}");
+                    y += 23;
+                }
+
+                if (ConfigManager.ShowEnemyVelocity && rigidbody2D != null && ScreenUtils.InsideOfScreen(x, y)) {
+                    result.Add($"{x}|{y}|{rigidbody2D.velocity.ToSimpleString(ConfigManager.VelocityPrecision)}");
+                }
+
+                return HkUtils.Join("|", result);
             }
         }
     }

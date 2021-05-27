@@ -59,11 +59,11 @@ namespace HollowKnightTasInfo {
         // PlayMakerUnity2DProxy.start()
         public static void OnColliderCreate(GameObject gameObject) {
             HitboxInfo.TryAddHitbox(gameObject);
-            HpInfo.TryAddEnemy(gameObject);
+            EnemyInfo.TryAddEnemy(gameObject);
         }
 
         private static void OnInit(GameManager gameManager) {
-            HpInfo.OnInit(gameManager);
+            EnemyInfo.OnInit(gameManager);
             CustomInfo.OnInit();
             HitboxInfo.OnInit(gameManager);
         }
@@ -75,7 +75,7 @@ namespace HollowKnightTasInfo {
             HeroInfo.OnUpdate(gameManager, infoBuilder);
             CustomInfo.OnUpdate(gameManager, infoBuilder);
             TimeInfo.OnUpdate(gameManager, infoBuilder);
-            HpInfo.OnUpdate(gameManager, infoBuilder);
+            EnemyInfo.OnUpdate(gameManager, infoBuilder);
             HitboxInfo.OnUpdate(gameManager, infoBuilder);
         }
     }
