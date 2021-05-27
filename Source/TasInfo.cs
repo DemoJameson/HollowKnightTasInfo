@@ -56,6 +56,7 @@ namespace HollowKnightTasInfo {
         }
 
         // ReSharper disable once UnusedMember.Global
+        // PlayMakerUnity2DProxy.start()
         public static void OnColliderCreate(GameObject gameObject) {
             HitboxInfo.TryAddHitbox(gameObject);
             HpInfo.TryAddEnemy(gameObject);

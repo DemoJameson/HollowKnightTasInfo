@@ -52,16 +52,14 @@ CameraZoom = 1
         public static bool ShowSceneName => GetSettingValue<bool>(nameof(ShowSceneName));
         public static bool ShowTime => GetSettingValue<bool>(nameof(ShowTime));
         public static bool ShowHitbox => GetSettingValue<bool>(nameof(ShowHitbox));
-        public static string KnightHitbox => GetSettingValue(nameof(KnightHitbox), "0xFF00FF00");
-        public static string AttackHitbox => GetSettingValue(nameof(AttackHitbox), "0xFF00FFF");
-        public static string EnemyHitbox => GetSettingValue(nameof(EnemyHitbox), "0xFFFF0000");
-        public static string HarmlessHitbox => GetSettingValue(nameof(HarmlessHitbox), "0xFFFFFF00");
-        public static string TriggerHitbox => GetSettingValue(nameof(TriggerHitbox), "0xFF9370DB");
-        public static string TerrainHitbox => GetSettingValue(nameof(TerrainHitbox), "0xFFFF8040");
         public static bool ShowHp => GetSettingValue<bool>(nameof(ShowHp));
         public static bool CameraFollow => GetSettingValue<bool>(nameof(CameraFollow));
         public static float CameraZoom => GetSettingValue(nameof(CameraZoom), 1f);
         public static bool IsCameraZoom => CameraZoom > 0f && Math.Abs(CameraZoom - 1f) > 0.001;
+
+        public static string GetHitboxColorValue(HitboxInfo.HitboxType hitboxType) {
+            return GetSettingValue($"{hitboxType}Hitbox", string.Empty);
+        }
 
         public static void OnUpdate() {
             TryParseConfigFile();

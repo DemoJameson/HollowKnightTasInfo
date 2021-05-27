@@ -50,19 +50,19 @@ namespace HollowKnightTasInfo {
             if (col is BoxCollider2D or PolygonCollider2D or EdgeCollider2D or CircleCollider2D) {
                 GameObject gameObject = col.gameObject;
                 if (IsDamageHero(col)) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Enemy));
+                    Colliders.Add(col, new HitboxData(col, HitboxType.Enemy));
                 } else if (gameObject.LocateMyFSM("health_manager_enemy") || gameObject.LocateMyFSM("health_manager")) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Harmless));
+                    Colliders.Add(col, new HitboxData(col, HitboxType.Harmless));
                 } else if (gameObject.layer == (int) PhysLayers.TERRAIN) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Terrain));
+                    Colliders.Add(col, new HitboxData(col, HitboxType.Terrain));
                 } else if (gameObject == HeroController.instance.gameObject && !col.isTrigger) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Knight));
+                    Colliders.Add(col, new HitboxData(col, HitboxType.Knight));
                 } else if (gameObject.LocateMyFSM("damages_enemy")) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Attack));
+                    Colliders.Add(col, new HitboxData(col, HitboxType.Attack));
                 } else if (col.GetComponent<TransitionPoint>()
                            || col.isTrigger && col.GetComponent<HazardRespawnTrigger>()
                 ) {
-                    Colliders.Add(col, new HitboxData(col, HitboxColor.Trigger));
+                    Colliders.Add(col, new HitboxData(col, HitboxType.Trigger));
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace HollowKnightTasInfo {
             return HkUtils.Join("\n", results.Values);
         }
 
-        private enum HitboxColor {
+        internal enum HitboxType {
             Knight,
             Attack,
             Enemy,
@@ -110,24 +110,14 @@ namespace HollowKnightTasInfo {
 
         private class HitboxData {
             private readonly Collider2D collider;
-            private readonly HitboxColor hitboxColor;
+            private readonly HitboxType hitboxType;
 
-            public HitboxData(Collider2D collider, HitboxColor hitboxColor) {
+            public HitboxData(Collider2D collider, HitboxType hitboxType) {
                 this.collider = collider;
-                this.hitboxColor = hitboxColor;
+                this.hitboxType = hitboxType;
             }
 
-            private string ColorValue =>
-                hitboxColor switch {
-                    HitboxColor.Knight => ConfigManager.KnightHitbox,
-                    HitboxColor.Attack => ConfigManager.AttackHitbox,
-                    HitboxColor.Enemy => ConfigManager.EnemyHitbox,
-                    HitboxColor.Harmless => ConfigManager.HarmlessHitbox,
-                    HitboxColor.Trigger => ConfigManager.TriggerHitbox,
-                    HitboxColor.Terrain => ConfigManager.TerrainHitbox,
-                    _ => "0xFFFF0000"
-                };
-
+            private string ColorValue => ConfigManager.GetHitboxColorValue(hitboxType);
             public string Key =>
                 collider switch {
                     BoxCollider2D or EdgeCollider2D or PolygonCollider2D => "LineHitbox",
@@ -137,7 +127,7 @@ namespace HollowKnightTasInfo {
 
             public override string ToString() {
                 Camera camera = Camera.main;
-                if (camera == null || collider == null || !collider.isActiveAndEnabled) {
+                if (camera == null || collider == null || !collider.isActiveAndEnabled || string.IsNullOrEmpty(ColorValue)) {
                     return string.Empty;
                 }
 
