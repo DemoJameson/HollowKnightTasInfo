@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace HollowKnightTasInfo.Extensions {
@@ -33,20 +34,21 @@ namespace HollowKnightTasInfo.Extensions {
             }
         }
 
-        // TODO 获取指定参数的方法
-        public static MethodInfo GetMethodInfo(this Type type, string name) {
+        public static MethodInfo GetMethodInfo(this Type type, string name, params Type[] types) {
             if (!CachedMethodInfos.ContainsKey(type)) {
                 CachedMethodInfos[type] = new Dictionary<string, MethodInfo>();
             }
 
-            if (!CachedMethodInfos[type].ContainsKey(name)) {
+            string keyName = types.Length > 0 ? $"{name}-{string.Join("-", types.Select(t => t.FullName).ToArray())}" : name;
+            
+            if (!CachedMethodInfos[type].ContainsKey(keyName)) {
                 try {
-                    return CachedMethodInfos[type][name] = type.GetMethod(name, Flags);
+                    return CachedMethodInfos[type][keyName] = type.GetMethod(name, Flags, null, types, null);
                 } catch {
-                    return CachedMethodInfos[type][name] = null;
+                    return CachedMethodInfos[type][keyName] = null;
                 }
             } else {
-                return CachedMethodInfos[type][name];
+                return CachedMethodInfos[type][keyName];
             }
         }
 

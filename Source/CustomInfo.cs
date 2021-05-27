@@ -13,11 +13,20 @@ namespace HollowKnightTasInfo {
         private static readonly Regex MethodRegex = new(@"^(\w+)\((.*?)\)$");
         private static readonly Dictionary<string, Type> CachedTypes = new();
         private static readonly Dictionary<string, object> CachedObjects = new();
+        private static readonly object[] NoArgs = { };
+        private static readonly Type[] NoTypes = { };
+        private static readonly Type[] StringTypes = {typeof(string)};
 
         public static void OnInit() {
+            foreach (Type type in typeof(GameObject).Assembly.GetTypes()) {
+                if (type.FullName != null) {
+                    CachedTypes[type.Name] = type;
+                }
+            }
+
             foreach (Type type in typeof(GameManager).Assembly.GetTypes()) {
                 if (type.FullName != null) {
-                    CachedTypes[type.FullName] = type;
+                    CachedTypes[type.Name] = type;
                 }
             }
         }
@@ -95,18 +104,27 @@ namespace HollowKnightTasInfo {
                     Match match = MethodRegex.Match(memberName);
                     string methodName = match.Groups[1].Value;
                     object arg = match.Groups[2].Value;
-                    if (string.Empty.Equals(arg)) {
-                        result = result.InvokeMethod<object>(methodName);
-                    } else if (result is GameObject gameObject) {
+                    Type[] types = string.Empty.Equals(arg) ? NoTypes : StringTypes;
+                    object[] parameters = string.Empty.Equals(arg) ? NoArgs : new[] {arg};
+
+                    if (result is GameObject gameObject && !string.Empty.Equals(arg)) {
                         if (methodName == "LocateMyFSM") {
                             result = FSMUtility.LocateFSM(gameObject, arg.ToString());
-                        } else if (methodName == "GetComponent") {
-                            result = gameObject.GetComponent(arg.ToString());
-                        }  else {
-                            result = result.InvokeMethod<object>(methodName, arg);
+                            continue;
+                        } else if (methodName == "GetComponentInChildren" && CachedTypes.TryGetValue(arg.ToString(), out Type type)) {
+                            result = gameObject.GetComponentInChildren(type, true);
+                            continue;
+                        }
+                    }
+
+                    if (objType.GetMethodInfo(methodName, types) is { } methodInfo) {
+                        try {
+                            result = methodInfo.Invoke(result, parameters);
+                        } catch {
+                            return $"{memberName} can't be invoked";
                         }
                     } else {
-                        result = result.InvokeMethod<object>(methodName, arg);
+                        return $"{memberName} not found";
                     }
                 } else {
                     return $"{memberName} not found";

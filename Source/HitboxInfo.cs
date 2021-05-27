@@ -110,7 +110,7 @@ namespace HollowKnightTasInfo {
 
         private class HitboxData {
             private readonly Collider2D collider;
-            private HitboxColor hitboxColor;
+            private readonly HitboxColor hitboxColor;
 
             public HitboxData(Collider2D collider, HitboxColor hitboxColor) {
                 this.collider = collider;
@@ -151,13 +151,12 @@ namespace HollowKnightTasInfo {
             }
 
             private string ToBoxInfo(BoxCollider2D box, Camera camera) {
-                Vector2 offset = box.offset;
                 Vector2 halfSize = box.size / 2f;
-                Vector2 topLeft = offset + new Vector2(-halfSize.x, halfSize.y);
-                Vector2 topRight = offset + halfSize;
-                Vector2 bottomLeft = offset - halfSize;
-                Vector2 bottomRight = offset + new Vector2(halfSize.x, -halfSize.y);
-                return ToLineInfo(camera, box.transform, new List<Vector2> {
+                Vector2 topLeft = new(-halfSize.x, halfSize.y);
+                Vector2 topRight = halfSize;
+                Vector2 bottomLeft = -halfSize;
+                Vector2 bottomRight = new(halfSize.x, -halfSize.y);
+                return ToLineInfo(camera, box, new List<Vector2> {
                     topLeft, topRight, bottomRight, bottomLeft, topLeft
                 });
             }
@@ -167,7 +166,7 @@ namespace HollowKnightTasInfo {
                     return string.Empty;
                 }
 
-                return ToLineInfo(camera, edge.transform, edge.points.ToList());
+                return ToLineInfo(camera, edge, edge.points.ToList());
             }
 
             private string ToPolyInfo(PolygonCollider2D poly, Camera camera) {
@@ -177,14 +176,17 @@ namespace HollowKnightTasInfo {
 
                 List<Vector2> points = new(poly.points);
                 points.Add(points[0]);
-                return ToLineInfo(camera, poly.transform, points);
+                return ToLineInfo(camera, poly, points);
             }
 
-            private string ToLineInfo(Camera camera, Transform transform, List<Vector2> points) {
+            private string ToLineInfo(Camera camera, Collider2D collider2D, List<Vector2> points) {
+                Transform transform = collider2D.transform;
+                Vector2 offset = collider2D.offset;
+
                 List<string> result = new();
-                for (var i = 0; i < points.Count - 1; i++) {
-                    Vector2 point1 = WorldToScreenPoint(camera, transform, points[i]);
-                    Vector2 point2 = WorldToScreenPoint(camera, transform, points[i + 1]);
+                for (int i = 0; i < points.Count - 1; i++) {
+                    Vector2 point1 = WorldToScreenPoint(camera, transform, points[i] + offset);
+                    Vector2 point2 = WorldToScreenPoint(camera, transform, points[i + 1] + offset);
 
                     List<Vector2> intersectionPoints = ScreenUtils.GetIntersectionPoint(point1, point2);
                     if (intersectionPoints.Count != 2) {
