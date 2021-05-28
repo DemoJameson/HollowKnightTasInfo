@@ -70,7 +70,7 @@ CameraFollow = false
             return GetSettingValue($"{hitboxType}Hitbox", string.Empty);
         }
 
-        public static void OnUpdate() {
+        public static void OnPreRender() {
             TryParseConfigFile();
         }
 

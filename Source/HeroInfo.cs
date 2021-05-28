@@ -20,7 +20,7 @@ namespace HollowKnightTasInfo {
         private static Vector3 lastPosition = Vector3.zero;
         private static float frameRate => Time.unscaledDeltaTime == 0 ? 0 : 1 / Time.unscaledDeltaTime;
 
-        public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+        public static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {
             if (gameManager.hero_ctrl is { } heroController && ConfigManager.ShowKnightInfo) {
                 Vector3 position = heroController.transform.position;
                 infoBuilder.AppendLine($"pos: {position.ToSimpleString(ConfigManager.PositionPrecision)}");

@@ -25,7 +25,7 @@ namespace HollowKnightTasInfo {
             };
         }
 
-        public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+        public static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {
             if (gameManager.IsNonGameplayScene() || !ConfigManager.ShowHitbox) {
                 return;
             }
@@ -218,7 +218,7 @@ namespace HollowKnightTasInfo {
             }
 
             private static Vector2 WorldToScreenPoint(Camera camera, Transform transform, Vector2 point) {
-                return ScreenUtils.WorldToScreenPoint(camera, transform.WorldPosition(point));
+                return camera.WorldToScreenPoint(transform.WorldPosition(point));
             }
         }
     }

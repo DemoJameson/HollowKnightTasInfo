@@ -6,14 +6,14 @@ namespace HollowKnightTasInfo {
     // ReSharper disable once UnusedType.Global
     public static class TasInfo {
         private static bool init;
-        
+
         // 用于测试
         // ReSharper disable once MemberCanBePrivate.Global
         public static string AdditionalInfo = string.Empty;
 
         // ReSharper disable once UnusedMember.Global
-        // After CameraController.LateUpdate
-        public static void Update() {
+        // CameraController.OnPreRender
+        public static void OnPreRender() {
             if (GameManager._instance is not { } gameManager) {
                 return;
             }
@@ -29,7 +29,7 @@ namespace HollowKnightTasInfo {
                     OnInit(gameManager);
                 }
 
-                OnUpdate(gameManager, infoBuilder);
+                OnPreRender(gameManager, infoBuilder);
 
                 DesyncChecker.AfterUpdate(infoBuilder);
             } catch (Exception e) {
@@ -40,19 +40,13 @@ namespace HollowKnightTasInfo {
         }
 
         // ReSharper disable once UnusedMember.Global
-        // CameraController.OnPreRender
-        public static void OnPreRender() {
-            if (GameManager._instance is { } gameManager) {
-                CameraManager.OnPreRender(gameManager);
-            }
-        }
-
-        // ReSharper disable once UnusedMember.Global
         // CameraController.OnPostRender
         public static void OnPostRender() {
-            if (GameManager._instance is { } gameManager) {
-                CameraManager.OnPostRender(gameManager);
+            if (GameManager._instance is not { } gameManager) {
+                return;
             }
+
+            CameraManager.OnPostRender(gameManager);
         }
 
         // ReSharper disable once UnusedMember.Global
@@ -68,15 +62,18 @@ namespace HollowKnightTasInfo {
             HitboxInfo.OnInit(gameManager);
         }
 
-        private static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+        private static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {
             // 放第一位，先更新 settings
-            ConfigManager.OnUpdate();
+            ConfigManager.OnPreRender();
 
-            HeroInfo.OnUpdate(gameManager, infoBuilder);
-            CustomInfo.OnUpdate(gameManager, infoBuilder);
-            TimeInfo.OnUpdate(gameManager, infoBuilder);
-            EnemyInfo.OnUpdate(gameManager, infoBuilder);
-            HitboxInfo.OnUpdate(gameManager, infoBuilder);
+            // 放第二位，先处理镜头之后 camera.WorldToScreenPoint 才能获得正确数据
+            CameraManager.OnPreRender(gameManager);
+
+            HeroInfo.OnPreRender(gameManager, infoBuilder);
+            CustomInfo.OnPreRender(gameManager, infoBuilder);
+            TimeInfo.OnPreRender(gameManager, infoBuilder);
+            EnemyInfo.OnPreRender(gameManager, infoBuilder);
+            HitboxInfo.OnPreRender(gameManager, infoBuilder);
         }
     }
 }

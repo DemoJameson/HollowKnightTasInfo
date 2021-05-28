@@ -38,7 +38,7 @@ namespace HollowKnightTasInfo {
         private static GameState lastGameState;
         private static bool lookForTeleporting;
 
-        public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+        public static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {
             string currentScene = gameManager.sceneName;
             string nextScene = gameManager.nextSceneName;
             GameState gameState = gameManager.gameState;

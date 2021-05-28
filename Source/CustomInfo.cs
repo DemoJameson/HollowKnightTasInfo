@@ -31,7 +31,7 @@ namespace HollowKnightTasInfo {
             }
         }
 
-        public static void OnUpdate(GameManager gameManager, StringBuilder infoBuilder) {
+        public static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {
             string customTemplate = ConfigManager.CustomInfoTemplate;
             if (!ConfigManager.ShowCustomInfo || string.IsNullOrEmpty(customTemplate)) {
                 return;

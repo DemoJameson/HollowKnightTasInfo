@@ -3,25 +3,6 @@ using UnityEngine;
 
 namespace HollowKnightTasInfo {
     internal static class CameraManager {
-        private static Vector2? cameraOffset;
-
-        public static Vector2 CameraOffset {
-            get {
-                if (cameraOffset != null) {
-                    return cameraOffset.Value;
-                }
-
-                if (ConfigManager.CameraFollow && GameManager._instance.hero_ctrl is { } heroCtrl &&
-                    GameManager._instance.cameraCtrl is { } cameraCtrl) {
-                    cameraOffset = cameraCtrl.transform.position - heroCtrl.transform.position;
-                } else {
-                    cameraOffset = Vector2.zero;
-                }
-                
-                return cameraOffset ?? Vector2.zero;
-            }
-        }
-
         private static Vector3? cameraControllerPosition;
         private static float? fieldOfView;
 
@@ -51,7 +32,6 @@ namespace HollowKnightTasInfo {
         }
 
         public static void OnPostRender(GameManager gameManager) {
-            cameraOffset = null;
             if (gameManager.cameraCtrl is not { } cameraCtrl) {
                 return;
             }

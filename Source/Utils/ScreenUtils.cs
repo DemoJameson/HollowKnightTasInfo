@@ -3,21 +3,6 @@ using UnityEngine;
 
 namespace HollowKnightTasInfo.Utils {
     internal static class ScreenUtils {
-        public static Vector3 WorldToScreenPoint(Camera camera, Vector3 position) {
-            float? fieldOfView = null;
-            if (ConfigManager.IsCameraZoom) {
-                fieldOfView = camera.fieldOfView;
-                camera.fieldOfView *= ConfigManager.CameraZoom;
-            }
-
-            Vector3 result = camera.WorldToScreenPoint((Vector3) CameraManager.CameraOffset + position);
-            if (fieldOfView != null) {
-                camera.fieldOfView = fieldOfView.Value;
-            }
-
-            return result;
-        }
-
         public static List<Vector2> GetIntersectionPoint(Vector2 start, Vector2 end) {
             int width = Screen.width;
             int height = Screen.height;
