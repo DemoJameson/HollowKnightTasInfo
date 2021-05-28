@@ -2,8 +2,9 @@
 
 namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class CameraManager {
-        private static Vector3? cameraControllerPosition;
         private static float? fieldOfView;
+        private static Vector3? cameraControllerPosition;
+        private static Vector3? cameraParentPosition;
 
         public static void OnPreRender(GameManager gameManager) {
             if (gameManager.IsNonGameplayScene()) {
@@ -22,6 +23,9 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                 cameraControllerPosition = cameraCtrl.transform.position;
                 Vector3 heroPosition = heroCtrl.transform.position;
                 cameraCtrl.transform.position = new Vector3(heroPosition.x, heroPosition.y, cameraCtrl.transform.position.z);
+            } else if (ConfigManager.DisableCameraShake && GameCameras.instance.cameraParent is {} cameraParent) {
+                cameraParentPosition = cameraParent.position;
+                cameraParent.position = Vector3.zero;
             }
 
             if (ConfigManager.IsCameraZoom) {
@@ -38,6 +42,11 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             if (cameraControllerPosition != null) {
                 cameraCtrl.transform.position = cameraControllerPosition.Value;
                 cameraControllerPosition = null;
+            }
+
+            if (cameraParentPosition != null && GameCameras.instance.cameraParent is {} cameraParent) {
+                cameraParent.position = cameraParentPosition.Value;
+                cameraParentPosition = null;
             }
 
             if (fieldOfView != null) {

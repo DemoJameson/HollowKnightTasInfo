@@ -8,6 +8,8 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
         private const string ConfigFile = "./HollowKnightTasInfo.config";
         private static string defaultContent = @"
 [Settings]
+Enabled = true
+
 ShowKnightInfo = true
 ShowCustomInfo = true
 ShowSceneName = true
@@ -33,6 +35,7 @@ TerrainHitbox = 0xFFFF8844
 # 默认为 1，数值越大视野越广
 CameraZoom = 1
 CameraFollow = false
+DisableCameraShake = false
 
 [CustomInfoTemplate]
 # 该配置用于定制附加显示的数据，需要注意如果调用属性或者方法有可能会造成 desync
@@ -54,19 +57,21 @@ CameraFollow = false
         private static DateTime lastWriteTime;
         private static readonly Dictionary<string, string> Settings = new();
         public static string CustomInfoTemplate { get; private set; } = string.Empty;
-        public static bool ShowCustomInfo => GetSettingValue<bool>(nameof(ShowCustomInfo));
-        public static bool ShowKnightInfo => GetSettingValue<bool>(nameof(ShowKnightInfo));
-        public static bool ShowSceneName => GetSettingValue<bool>(nameof(ShowSceneName));
-        public static bool ShowTime => GetSettingValue<bool>(nameof(ShowTime));
-        public static bool ShowRng => GetSettingValue<bool>(nameof(ShowRng));
-        public static bool ShowHitbox => GetSettingValue<bool>(nameof(ShowHitbox));
-        public static bool ShowEnemyHp => GetSettingValue<bool>(nameof(ShowEnemyHp));
-        public static bool ShowEnemyPosition => GetSettingValue<bool>(nameof(ShowEnemyPosition));
-        public static bool ShowEnemyVelocity => GetSettingValue<bool>(nameof(ShowEnemyVelocity));
+        public static bool Enabled => GetSettingValue<bool>(nameof(Enabled));
+        public static bool ShowCustomInfo => Enabled && GetSettingValue<bool>(nameof(ShowCustomInfo));
+        public static bool ShowKnightInfo => Enabled && GetSettingValue<bool>(nameof(ShowKnightInfo));
+        public static bool ShowSceneName => Enabled && GetSettingValue<bool>(nameof(ShowSceneName));
+        public static bool ShowTime => Enabled && GetSettingValue<bool>(nameof(ShowTime));
+        public static bool ShowRng => Enabled && GetSettingValue<bool>(nameof(ShowRng));
+        public static bool ShowHitbox => Enabled && GetSettingValue<bool>(nameof(ShowHitbox));
+        public static bool ShowEnemyHp => Enabled && GetSettingValue<bool>(nameof(ShowEnemyHp));
+        public static bool ShowEnemyPosition => Enabled && GetSettingValue<bool>(nameof(ShowEnemyPosition));
+        public static bool ShowEnemyVelocity => Enabled && GetSettingValue<bool>(nameof(ShowEnemyVelocity));
         public static int PositionPrecision => GetSettingValue(nameof(PositionPrecision), 5);
         public static int VelocityPrecision => GetSettingValue(nameof(VelocityPrecision), 3);
-        public static float CameraZoom => GetSettingValue(nameof(CameraZoom), 1f);
-        public static bool CameraFollow => GetSettingValue<bool>(nameof(CameraFollow));
+        public static float CameraZoom => Enabled ? GetSettingValue(nameof(CameraZoom), 1f) : 1f;
+        public static bool CameraFollow => Enabled && GetSettingValue<bool>(nameof(CameraFollow));
+        public static bool DisableCameraShake => Enabled && GetSettingValue<bool>(nameof(DisableCameraShake));
         public static bool IsCameraZoom => CameraZoom > 0f && Math.Abs(CameraZoom - 1f) > 0.001;
 
         public static string GetHitboxColorValue(HitboxInfo.HitboxType hitboxType) {

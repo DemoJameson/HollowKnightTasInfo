@@ -14,7 +14,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
         // ReSharper disable once UnusedMember.Global
         // CameraController.OnPreRender
         public static void OnPreRender() {
-            if (patch_GameManager._instanceSafe is not { } gameManager) {
+            if (GameManager.instance is not { } gameManager) {
                 return;
             }
 
@@ -42,7 +42,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
         // ReSharper disable once UnusedMember.Global
         // CameraController.OnPostRender
         public static void OnPostRender() {
-            if (patch_GameManager._instanceSafe is not { } gameManager) {
+            if (GameManager.instance is not { } gameManager) {
                 return;
             }
 

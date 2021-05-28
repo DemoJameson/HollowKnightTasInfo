@@ -9,7 +9,7 @@
 * GameManager 中新增字段 `private static readonly long TasInfoMark = 1234567890` 字段用于辅助内存查找时定位
 * GameManager 中新增字段 `public static string TasInfo` 用于 libTAS lua 脚本读取然后绘制到画面上
 * CameraController 新增 OnPreRender 和 OnPostRender 方法分别调用 TasInfo 中的同名方法，用于完成镜头居中以及缩放，以及各种数据的获取
-* PlayMakerUnity2DProxy.Start() 方法中 RefreshImplementation() 前调用 TasInfo 中的同名方法，用于处理新创建的 Object
+* PlayMakerUnity2DProxy.Start() 方法中调用 TasInfo 中的同名方法，用于处理新创建的 Object
 
 ## 功能
 
@@ -22,7 +22,7 @@
 
 ## 使用说明
 
-1. 复制两个 dll 文件到 `游戏目录/hollow_knight_Data/Manager` 目录，其中 `Assembly-CSharp.dll` 需要覆盖，注意备份。
+1. 复制 `Assembly-CSharp.dll` 文件到 `游戏目录/hollow_knight_Data/Manager` 目录中进行覆盖，注意备份。
 2. libTAS 中使用菜单 `Tools -> Lua -> Execute lua script` 打开 `HollowKnightTasInfo.lua` 即可在读取存档后显示辅助信息。
 3. （可选）通过编辑`游戏目录/HollowKnightTasInfo.config`文件，可以实时开关各项功能以及定制需要获取的数据。
 
