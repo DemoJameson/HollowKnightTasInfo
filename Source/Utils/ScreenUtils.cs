@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace HollowKnightTasInfo.Utils {
+namespace Assembly_CSharp.TasInfo.mm.Source.Utils {
     internal static class ScreenUtils {
         public static List<Vector2> GetIntersectionPoint(Vector2 start, Vector2 end) {
             int width = Screen.width;

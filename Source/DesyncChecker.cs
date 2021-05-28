@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using UnityEngine;
 
-namespace HollowKnightTasInfo {
+namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class DesyncChecker {
         private static Random.State savedRandomState;
         private static int desyncFrame = 0;

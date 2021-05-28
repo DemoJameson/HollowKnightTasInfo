@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace HollowKnightTasInfo {
+namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class CameraManager {
         private static Vector3? cameraControllerPosition;
         private static float? fieldOfView;

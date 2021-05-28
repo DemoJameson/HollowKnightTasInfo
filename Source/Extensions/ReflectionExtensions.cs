@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using HollowKnightTasInfo.Utils;
+using Assembly_CSharp.TasInfo.mm.Source.Utils;
 
-namespace HollowKnightTasInfo.Extensions {
+namespace Assembly_CSharp.TasInfo.mm.Source.Extensions {
     internal static class ReflectionExtensions {
         private const BindingFlags Flags = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         private static readonly Dictionary<Type, Dictionary<string, FieldInfo>> CachedFieldInfos = new();

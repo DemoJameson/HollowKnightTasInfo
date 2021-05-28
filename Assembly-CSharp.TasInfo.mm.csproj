@@ -3,18 +3,14 @@
     <PropertyGroup>
         <TargetFramework>net35</TargetFramework>
         <LangVersion>9</LangVersion>
-        <Configurations>Debug;v1028;v1221</Configurations>
+        <Configurations>v1028;v1221</Configurations>
         <Platforms>AnyCPU</Platforms>
         <AssemblyVersion>0.0.5</AssemblyVersion>
         <FileVersion>0.0.5</FileVersion>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <DefineConstants>TRACE</DefineConstants>
-        <Optimize>true</Optimize>
-        <DebugSymbols>false</DebugSymbols>
-        <DebugType>none</DebugType>
-        <OutputPath>bin\Debug\</OutputPath>
+        <AssemblyName>Assembly-CSharp.TasInfo.mm</AssemblyName>
+        <RootNamespace>Assembly_CSharp.TasInfo.mm</RootNamespace>
+        <Company>Assembly-CSharp.TasInfo.mm</Company>
+        <Product>Assembly-CSharp.TasInfo.mm</Product>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'v1028' ">
@@ -31,28 +27,23 @@
 
     <ItemGroup>
         <Compile Remove="lib-stripped\**" />
+        <Compile Remove="bin\**" />
     </ItemGroup>
 
     <ItemGroup>
         <EmbeddedResource Remove="lib-stripped\**" />
+        <EmbeddedResource Remove="bin\**" />
     </ItemGroup>
 
     <ItemGroup>
         <None Remove="lib-stripped\**" />
+        <None Remove="bin\**" />
     </ItemGroup>
 
     <ItemGroup>
         <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <Private>True</Private>
+            <Private>False</Private>
             <HintPath>lib-stripped\$(Configuration)\Assembly-CSharp.dll</HintPath>
-        </Reference>
-        <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <Private>False</Private>
-            <HintPath>lib-stripped\$(Configuration)\Assembly-CSharp-firstpass.dll</HintPath>
-        </Reference>
-        <Reference Include="Mono.Security, Version=2.0.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-            <Private>False</Private>
-            <HintPath>lib-stripped\$(Configuration)\Mono.Security.dll</HintPath>
         </Reference>
         <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
@@ -61,10 +52,6 @@
         <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
             <HintPath>lib-stripped\$(Configuration)\UnityEngine.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <Private>False</Private>
-            <HintPath>lib-stripped\$(Configuration)\UnityEngine.UI.dll</HintPath>
         </Reference>
     </ItemGroup>
 
@@ -85,20 +72,36 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="MonoMod" Version="21.4.29.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Files Include="$(SolutionDir)lib-stripped\$(Configuration)\*" />
+        <BuildDir Include="$(TargetDir)" />
     </ItemGroup>
 
     <PropertyGroup>
-        <PostBuildEvent>
-            md "hollow_knight_Data\Managed"
-            copy ".\Assembly-CSharp.dll" "hollow_knight_Data\Managed\"
-            copy ".\$(AssemblyName).dll" "hollow_knight_Data\Managed\"
-            rd /S /Q "..\..\HK TAS 辅助信息插件\$(Configuration)"
-            md "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed"
-            move ".\Assembly-CSharp.dll" "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed\"
-            move ".\$(AssemblyName).dll" "..\..\HK TAS 辅助信息插件\$(Configuration)\hollow_knight_Data\Managed\"
-            copy ".\$(AssemblyName).lua" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
-            copy ".\$(AssemblyName).config" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
-            copy ".\README.md" "..\..\HK TAS 辅助信息插件\$(Configuration)\"
-        </PostBuildEvent>
+        <AllOutputDir>$(SolutionDir)bin\HK TAS Info Tool\</AllOutputDir>
+        <OutputDir>$(AllOutputDir)\$(Configuration)</OutputDir>
+        <ZipFile>$(SolutionDir)bin\HK TAS Info Tool v$(AssemblyVersion).zip</ZipFile>
     </PropertyGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Delete Condition="Exists('$(OutputDir)')" Files="$(OutputDir)" />
+        <Delete Condition="Exists('$(ZipFile)')" Files="$(ZipFile)" />
+
+        <Copy SkipUnchangedFiles="true" SourceFiles="@(Files)" DestinationFolder="@(BuildDir)" />
+
+        <Delete Condition="Exists('MONOMODDED_Assembly-CSharp.dll')" Files="MONOMODDED_Assembly-CSharp.dll" />
+        <Exec WorkingDirectory="@(BuildDir)" Command="MonoMod.exe Assembly-CSharp.dll" />
+
+        <!-- Folder structure such that you can just merge dirs to install the api, not really necessary with the installer now !-->
+        <MakeDir Directories="$(OutputDir)/hollow_knight_Data/Managed" />
+        <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.config" DestinationFiles="$(OutputDir)/HollowKnightTasInfo.config" />
+        <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.lua" DestinationFiles="$(OutputDir)/HollowKnightTasInfo.lua" />
+        <Copy SourceFiles="$(TargetDir)MONOMODDED_Assembly-CSharp.dll" DestinationFiles="$(OutputDir)/hollow_knight_Data/Managed/Assembly-CSharp.dll" />
+
+        <!-- Zip the Distribution Folder !-->
+        <ZipDirectory SourceDirectory="$(AllOutputDir)" DestinationFile="$(ZipFile)" />
+    </Target>
 </Project>

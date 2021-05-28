@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assembly_CSharp.TasInfo.mm.Source.Extensions;
+using Assembly_CSharp.TasInfo.mm.Source.Utils;
 using GlobalEnums;
-using HollowKnightTasInfo.Extensions;
-using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
-namespace HollowKnightTasInfo {
+namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class HitboxInfo {
         private static readonly Dictionary<Collider2D, HitboxData> Colliders = new();
 

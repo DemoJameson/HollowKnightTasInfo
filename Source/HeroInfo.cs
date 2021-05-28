@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using HollowKnightTasInfo.Extensions;
-using HollowKnightTasInfo.Utils;
+using Assembly_CSharp.TasInfo.mm.Source.Extensions;
+using Assembly_CSharp.TasInfo.mm.Source.Utils;
 using UnityEngine;
 
-namespace HollowKnightTasInfo {
+namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class HeroInfo {
         private static readonly List<string> HeroStates = new() {
             "Attack",

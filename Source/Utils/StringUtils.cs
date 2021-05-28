@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace HollowKnightTasInfo.Utils {
+namespace Assembly_CSharp.TasInfo.mm.Source.Utils {
     internal static class StringUtils {
         public static string Join<T>(string separator, IEnumerable<T> values, string prefix = "") {
             separator ??= "";

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Assembly_CSharp.TasInfo.mm.Source.Extensions;
+using Assembly_CSharp.TasInfo.mm.Source.Utils;
 using GlobalEnums;
-using HollowKnightTasInfo.Extensions;
-using HollowKnightTasInfo.Utils;
 using UnityEngine;
 
-namespace HollowKnightTasInfo {
+namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class TimeInfo {
         private static readonly FieldInfo TeleportingFieldInfo = typeof(CameraController).GetFieldInfo("teleporting");
         private static readonly FieldInfo TilemapDirtyFieldInfo = typeof(GameManager).GetFieldInfo("tilemapDirty");

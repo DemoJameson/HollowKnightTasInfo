@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HollowKnightTasInfo.Utils {
+namespace Assembly_CSharp.TasInfo.mm.Source.Utils {
     internal static class HkUtils {
         public static bool InInventory() {
             GameObject inventoryTop = GameObject.FindGameObjectWithTag("Inventory Top");

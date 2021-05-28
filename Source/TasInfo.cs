@@ -2,7 +2,7 @@
 using System.Text;
 using UnityEngine;
 
-namespace HollowKnightTasInfo {
+namespace Assembly_CSharp.TasInfo.mm.Source {
     // ReSharper disable once UnusedType.Global
     public static class TasInfo {
         private static bool init;
@@ -14,7 +14,7 @@ namespace HollowKnightTasInfo {
         // ReSharper disable once UnusedMember.Global
         // CameraController.OnPreRender
         public static void OnPreRender() {
-            if (GameManager._instance is not { } gameManager) {
+            if (patch_GameManager._instanceSafe is not { } gameManager) {
                 return;
             }
 
@@ -36,13 +36,13 @@ namespace HollowKnightTasInfo {
                 Debug.LogException(e);
             }
 
-            GameManager.TasInfo = infoBuilder.AppendLine(AdditionalInfo).ToString();
+            patch_GameManager.TasInfo = infoBuilder.AppendLine(AdditionalInfo).ToString();
         }
 
         // ReSharper disable once UnusedMember.Global
         // CameraController.OnPostRender
         public static void OnPostRender() {
-            if (GameManager._instance is not { } gameManager) {
+            if (patch_GameManager._instanceSafe is not { } gameManager) {
                 return;
             }
 

@@ -2,7 +2,7 @@ function onPaint()
     local infoAddress = getInfoAddress()
 
     if infoAddress == 0 then
-        return ;
+        return
     end
 
     local infoText = readString(infoAddress)
@@ -44,7 +44,7 @@ function readString(address)
     for i = 1, len do
         text[i] = string.char(memory.readu16(address + 0x12 + i * 2))
     end
-    return table.concat(text);
+    return table.concat(text)
 end
 
 function splitString(text, sep)
@@ -63,14 +63,16 @@ function getInfoAddress()
     infoAddress = memory.readu64(infoAddress + 0x400)
     infoAddress = memory.readu64(infoAddress + 0x18)
     infoAddress = memory.readu64(infoAddress + 0x20)
+    
+    local mark = 1234567890123456789
 
-    if memory.readu64(infoAddress + 0xF38) == 1234567890 then
+    if memory.readu64(infoAddress + 0xF38) == mark then
         -- v1221
         return memory.readu64(infoAddress + 0xF40)
-    elseif memory.readu64(infoAddress + 0xF78) == 1234567890 then
+    elseif memory.readu64(infoAddress + 0xF78) == mark then
         -- v1028
         return memory.readu64(infoAddress + 0xF80)
     else
-        return 0;
+        return 0
     end
 end 

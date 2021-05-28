@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using HollowKnightTasInfo.Extensions;
+using Assembly_CSharp.TasInfo.mm.Source.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace HollowKnightTasInfo {
+namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class CustomInfo {
         private static readonly Regex BraceRegex = new(@"\{(.+?)\}");
         private static readonly Regex MethodRegex = new(@"^(\w+)\((.*?)\)$");

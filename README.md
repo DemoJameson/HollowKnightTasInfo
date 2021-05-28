@@ -8,7 +8,6 @@
 
 * GameManager 中新增字段 `private static readonly long TasInfoMark = 1234567890` 字段用于辅助内存查找时定位
 * GameManager 中新增字段 `public static string TasInfo` 用于 libTAS lua 脚本读取然后绘制到画面上
-* GamaManager._instance 字段改为 Public 便于读取，不使用现成的 GamaManager.instance 是因为读取属性也有可能造成 desync
 * CameraController 新增 OnPreRender 和 OnPostRender 方法分别调用 TasInfo 中的同名方法，用于完成镜头居中以及缩放，以及各种数据的获取
 * PlayMakerUnity2DProxy.Start() 方法中 RefreshImplementation() 前调用 TasInfo 中的同名方法，用于处理新创建的 Object
 

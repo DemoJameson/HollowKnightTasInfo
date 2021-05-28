@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace HollowKnightTasInfo {
+namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class ConfigManager {
         private const string ConfigFile = "./HollowKnightTasInfo.config";
         private static string defaultContent = @"
