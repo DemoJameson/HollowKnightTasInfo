@@ -42,33 +42,29 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" Condition=" '$(Configuration)'!='v1028' ">
+        <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>True</Private>
-            <HintPath>lib-stripped\v1221\Assembly-CSharp.dll</HintPath>
-        </Reference>
-        <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" Condition=" '$(Configuration)'=='v1028' ">
-            <Private>True</Private>
-            <HintPath>lib-stripped\v1028\Assembly-CSharp.dll</HintPath>
+            <HintPath>lib-stripped\$(Configuration)\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
-            <HintPath>lib-stripped\Assembly-CSharp-firstpass.dll</HintPath>
+            <HintPath>lib-stripped\$(Configuration)\Assembly-CSharp-firstpass.dll</HintPath>
         </Reference>
         <Reference Include="Mono.Security, Version=2.0.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
             <Private>False</Private>
-            <HintPath>lib-stripped\Mono.Security.dll</HintPath>
+            <HintPath>lib-stripped\$(Configuration)\Mono.Security.dll</HintPath>
         </Reference>
         <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
-            <HintPath>lib-stripped\PlayMaker.dll</HintPath>
+            <HintPath>lib-stripped\$(Configuration)\PlayMaker.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
-            <HintPath>lib-stripped\UnityEngine.dll</HintPath>
+            <HintPath>lib-stripped\$(Configuration)\UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
-            <HintPath>lib-stripped\UnityEngine.UI.dll</HintPath>
+            <HintPath>lib-stripped\$(Configuration)\UnityEngine.UI.dll</HintPath>
         </Reference>
     </ItemGroup>
 
