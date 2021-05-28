@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using HollowKnightTasInfo.Utils;
 
 namespace HollowKnightTasInfo.Extensions {
     internal static class ReflectionExtensions {
@@ -39,7 +40,7 @@ namespace HollowKnightTasInfo.Extensions {
                 CachedMethodInfos[type] = new Dictionary<string, MethodInfo>();
             }
 
-            string keyName = types.Length > 0 ? $"{name}-{string.Join("-", types.Select(t => t.FullName).ToArray())}" : name;
+            string keyName = types.Length > 0 ? $"{name}-{StringUtils.Join("-", types.Select(t => t.FullName))}" : name;
             
             if (!CachedMethodInfos[type].ContainsKey(keyName)) {
                 try {

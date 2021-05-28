@@ -99,7 +99,7 @@ namespace HollowKnightTasInfo {
                 result.Append(result.Length > 0 ? $"|{hitboxInfo}" : $"{hitboxData.Key}={hitboxInfo}");
             }
 
-            return HkUtils.Join("\n", results.Values);
+            return StringUtils.Join("\n", results.Values);
         }
 
         internal enum HitboxType {
@@ -198,7 +198,7 @@ namespace HollowKnightTasInfo {
                     result.Add($"{x1}|{y1}|{x2}|{y2}|{ColorValue}");
                 }
 
-                return HkUtils.Join("|", result);
+                return StringUtils.Join("|", result);
             }
 
             private string ToCircleInfo(CircleCollider2D circle, Camera camera) {

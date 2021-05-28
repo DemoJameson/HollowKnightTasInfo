@@ -100,7 +100,7 @@ namespace HollowKnightTasInfo {
                     result.Add(FormattedTime);
                 }
 
-                string resultString = HkUtils.Join("  ", result);
+                string resultString = StringUtils.Join("  ", result);
                 if (!string.IsNullOrEmpty(resultString)) {
                     infoBuilder.AppendLine(resultString);
                 }

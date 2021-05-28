@@ -45,7 +45,7 @@ namespace HollowKnightTasInfo {
                 heroController.SetFieldValue(nameof(ledgeBufferSteps), ledgeBufferSteps);
 
                 if (results.Count > 0) {
-                    infoBuilder.AppendLine(HkUtils.Join(" ", results));
+                    infoBuilder.AppendLine(StringUtils.Join(" ", results));
                 }
             }
         }

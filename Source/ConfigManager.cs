@@ -46,7 +46,7 @@ CameraFollow = false
 # geo: {PlayerData.geo}
 # jumping: {HeroControllerStates.jumping}
 # component: {Crawler Fixed.GetComponentInChildren(BoxCollider2D)}
-# crawler hp: {Crawler Fixed.LocateMyFSM(health_manager_enemy).FsmVariables.GetFsmInt(HP)}
+# crawler hp: {Crawler Fixed.LocateMyFSM(health_manager_enemy).FsmVariables.FindFsmInt(HP)}
 ";
 
         private static DateTime lastWriteTime;

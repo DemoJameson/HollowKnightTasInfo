@@ -66,14 +66,14 @@ namespace HollowKnightTasInfo {
         }
 
         private static string GetInfo() {
-            return HkUtils.Join("|", EnemyPool.Values, "Enemy=");
+            return StringUtils.Join("|", EnemyPool.Values, "Enemy=");
         }
 
         private class EnemyData {
             private readonly GameObject gameObject;
             private readonly Rigidbody2D rigidbody2D;
             private readonly PlayMakerFSM fsm;
-            private int Hp => fsm.FsmVariables.GetFsmInt("HP").Value;
+            private int Hp => fsm.FsmVariables.FindFsmInt("HP").Value;
 
             public EnemyData(GameObject gameObject, PlayMakerFSM fsm) {
                 this.gameObject = gameObject;
@@ -108,7 +108,7 @@ namespace HollowKnightTasInfo {
                     result.Add($"{x}|{y}|{rigidbody2D.velocity.ToSimpleString(ConfigManager.VelocityPrecision)}");
                 }
 
-                return HkUtils.Join("|", result);
+                return StringUtils.Join("|", result);
             }
         }
     }
