@@ -12,6 +12,8 @@ ShowKnightInfo = true
 ShowCustomInfo = true
 ShowSceneName = true
 ShowTime = true
+ShowRng = true
+
 ShowEnemyHp = true
 ShowEnemyPosition = true
 ShowEnemyVelocity = true
@@ -56,6 +58,7 @@ CameraFollow = false
         public static bool ShowKnightInfo => GetSettingValue<bool>(nameof(ShowKnightInfo));
         public static bool ShowSceneName => GetSettingValue<bool>(nameof(ShowSceneName));
         public static bool ShowTime => GetSettingValue<bool>(nameof(ShowTime));
+        public static bool ShowRng => GetSettingValue<bool>(nameof(ShowRng));
         public static bool ShowHitbox => GetSettingValue<bool>(nameof(ShowHitbox));
         public static bool ShowEnemyHp => GetSettingValue<bool>(nameof(ShowEnemyHp));
         public static bool ShowEnemyPosition => GetSettingValue<bool>(nameof(ShowEnemyPosition));

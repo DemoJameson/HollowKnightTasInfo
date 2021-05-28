@@ -60,6 +60,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             EnemyInfo.OnInit(gameManager);
             CustomInfo.OnInit();
             HitboxInfo.OnInit(gameManager);
+            RngInfo.OnInit();
         }
 
         private static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {
@@ -74,6 +75,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             TimeInfo.OnPreRender(gameManager, infoBuilder);
             EnemyInfo.OnPreRender(gameManager, infoBuilder);
             HitboxInfo.OnPreRender(gameManager, infoBuilder);
+            RngInfo.OnPreRender(infoBuilder);
         }
     }
 }
