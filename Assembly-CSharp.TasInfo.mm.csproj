@@ -56,18 +56,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="HollowKnightTasInfo.lua">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="README.md">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="HollowKnightTasInfo.config">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -82,6 +70,7 @@
 
     <PropertyGroup>
         <AllOutputDir>$(SolutionDir)bin\HK TAS Info Tool\</AllOutputDir>
+        <TempOutputDir>$(SolutionDir)bin\temp\$(Configuration)</TempOutputDir>
         <OutputDir>$(AllOutputDir)\$(Configuration)</OutputDir>
         <ZipFile>$(SolutionDir)bin\HK TAS Info Tool v$(AssemblyVersion).zip</ZipFile>
     </PropertyGroup>
@@ -95,13 +84,19 @@
         <Delete Condition="Exists('MONOMODDED_Assembly-CSharp.dll')" Files="MONOMODDED_Assembly-CSharp.dll" />
         <Exec WorkingDirectory="@(BuildDir)" Command="MonoMod.exe Assembly-CSharp.dll" />
 
-        <!-- Folder structure such that you can just merge dirs to install the api, not really necessary with the installer now !-->
         <MakeDir Directories="$(OutputDir)/hollow_knight_Data/Managed" />
+        <Copy SourceFiles="$(SolutionDir)/README.md" DestinationFiles="$(OutputDir)/README.md" />
         <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.config" DestinationFiles="$(OutputDir)/HollowKnightTasInfo.config" />
         <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.lua" DestinationFiles="$(OutputDir)/HollowKnightTasInfo.lua" />
         <Copy SourceFiles="$(TargetDir)MONOMODDED_Assembly-CSharp.dll" DestinationFiles="$(OutputDir)/hollow_knight_Data/Managed/Assembly-CSharp.dll" />
 
-        <!-- Zip the Distribution Folder !-->
         <ZipDirectory SourceDirectory="$(AllOutputDir)" DestinationFile="$(ZipFile)" />
+
+        <!-- 把实际游戏目录 link 过来就可以编译之后直接测试-->
+        <MakeDir Directories="$(TempOutputDir)/hollow_knight_Data/Managed" />
+        <Copy SourceFiles="$(SolutionDir)/README.md" DestinationFiles="$(TempOutputDir)/README.md" />
+        <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.config" DestinationFiles="$(TempOutputDir)/HollowKnightTasInfo.config" />
+        <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.lua" DestinationFiles="$(TempOutputDir)/HollowKnightTasInfo.lua" />
+        <Copy SourceFiles="$(TargetDir)MONOMODDED_Assembly-CSharp.dll" DestinationFiles="$(TempOutputDir)/hollow_knight_Data/Managed/Assembly-CSharp.dll" />
     </Target>
 </Project>

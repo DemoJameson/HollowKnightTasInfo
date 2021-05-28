@@ -1,4 +1,5 @@
-﻿// ReSharper disable all
+﻿// ReSharper disable All
+
 #pragma warning disable CS0649, CS0414
 
 public class patch_GameManager : GameManager {
