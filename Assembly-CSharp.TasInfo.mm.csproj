@@ -92,19 +92,21 @@
         <Delete Condition="Exists('MONOMODDED_Assembly-CSharp.dll')" Files="MONOMODDED_Assembly-CSharp.dll" />
         <Exec WorkingDirectory="@(BuildDir)" Command="MonoMod.exe Assembly-CSharp.dll" />
 
-        <MakeDir Directories="$(OutputDir)/hollow_knight_Data/Managed" />
+        <MakeDir Directories="$(OutputDir)/hollow_knight_Data/Managed/original" />
         <Copy SourceFiles="$(SolutionDir)/README.md" DestinationFiles="$(OutputDir)/README.md" />
         <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.config" DestinationFiles="$(OutputDir)/HollowKnightTasInfo.config" />
         <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.lua" DestinationFiles="$(OutputDir)/HollowKnightTasInfo.lua" />
         <Copy SourceFiles="$(TargetDir)MONOMODDED_Assembly-CSharp.dll" DestinationFiles="$(OutputDir)/hollow_knight_Data/Managed/Assembly-CSharp.dll" />
+        <Copy SourceFiles="$(TargetDir)Assembly-CSharp.dll" DestinationFiles="$(OutputDir)/hollow_knight_Data/Managed/original/Assembly-CSharp.dll" />
 
         <ZipDirectory SourceDirectory="$(AllOutputDir)" DestinationFile="$(ZipFile)" />
 
         <!-- 把实际游戏目录 link 过来就可以编译之后直接测试-->
-        <MakeDir Directories="$(TempOutputDir)/hollow_knight_Data/Managed" />
+        <MakeDir Directories="$(TempOutputDir)/hollow_knight_Data/Managed/original" />
         <Copy SourceFiles="$(SolutionDir)/README.md" DestinationFiles="$(TempOutputDir)/README.md" />
         <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.config" DestinationFiles="$(TempOutputDir)/HollowKnightTasInfo.config" />
         <Copy SourceFiles="$(SolutionDir)/HollowKnightTasInfo.lua" DestinationFiles="$(TempOutputDir)/HollowKnightTasInfo.lua" />
         <Copy SourceFiles="$(TargetDir)MONOMODDED_Assembly-CSharp.dll" DestinationFiles="$(TempOutputDir)/hollow_knight_Data/Managed/Assembly-CSharp.dll" />
+        <Copy SourceFiles="$(TargetDir)Assembly-CSharp.dll" DestinationFiles="$(TempOutputDir)/hollow_knight_Data/Managed/original/Assembly-CSharp.dll" />
     </Target>
 </Project>

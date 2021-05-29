@@ -22,7 +22,7 @@
 
 ## 使用说明
 
-1. 复制 `Assembly-CSharp.dll` 文件到 `游戏目录/hollow_knight_Data/Manager` 目录中进行覆盖，注意备份。
+1. 复制 `hollow_knight_Data/Manager/Assembly-CSharp.dll` 文件到 `游戏目录/hollow_knight_Data/Manager` 目录中进行覆盖。`original/Assembly-CSharp.dll` 是未经修改的原版文件
 2. libTAS 中使用菜单 `Tools -> Lua -> Execute lua script` 打开 `HollowKnightTasInfo.lua` 即可在读取存档后显示辅助信息。
 3. （可选）通过编辑`游戏目录/HollowKnightTasInfo.config`文件，可以实时开关各项功能以及定制需要获取的数据。
 
@@ -30,7 +30,7 @@
 
 * Shout out ot Kilaye for HK 特供版 [libTAS](https://github.com/clementgallet/libTAS/tree/hollowknight) 以及增加了画线的 lua api
 * 参考 [LiveSplit.HollowKnight](https://github.com/ShootMe/LiveSplit.HollowKnight) 的游戏时间计算方式
-* 参考 [HollowKnight.Modding](https://github.com/HollowKnight-Modding/HollowKnight.Modding) 的代码找到生成 Object 的方法
+* 参考 [HollowKnight.Modding](https://github.com/HollowKnight-Modding/HollowKnight.Modding) MonoMod 的使用
 * 参考 [HollowKnight.HitboxDraw](https://github.com/seresharp/HollowKnight.HitboxDraw) 绘制 hitbox
 * 参考 [DebugMod](https://github.com/seresharp/DebugMod) 获取 HP 和镜头跟随缩放
 * 借助 [HKWorldEdit2](https://github.com/nesrak1/HKWorldEdit2) 直接在 Unity 浏览场景
