@@ -1,3 +1,9 @@
+local gameVersion
+
+function onStart()
+    gameVersion = nil
+end
+
 function onPaint()
     local infoAddress = getInfoAddress()
 
@@ -59,20 +65,43 @@ function splitString(text, sep)
 end
 
 function getInfoAddress()
-    local infoAddress = memory.readu64(0x400000 + 0x1B1CF60)
-    infoAddress = memory.readu64(infoAddress + 0x400)
-    infoAddress = memory.readu64(infoAddress + 0x18)
-    infoAddress = memory.readu64(infoAddress + 0x20)
-    
-    local mark = 1234567890123456789
+    local infoAddress = 0
+    local markOffset = 0
+    local matchedGameVersion = 0
 
-    if memory.readu64(infoAddress + 0xF38) == mark then
-        -- v1221
-        return memory.readu64(infoAddress + 0xF40)
-    elseif memory.readu64(infoAddress + 0xF78) == mark then
-        -- v1028
-        return memory.readu64(infoAddress + 0xF80)
+    if gameVersion == nil or gameVersion == 1028 then
+        infoAddress = getPointerAddress({ 0x400000 + 0x1B1CF60, 0x400, 0x18, 0x20 })
+        markOffset = 0xF78
+        matchedGameVersion = 1028
+    end
+
+    if gameVersion == nil or gameVersion == 1221 then
+        infoAddress = getPointerAddress({ 0x400000 + 0x1B1CF60, 0x400, 0x18, 0x20 })
+        markOffset = 0xF38
+        matchedGameVersion = 1221
+    end
+
+    if gameVersion == nil or gameVersion == 1432 then
+        infoAddress = getPointerAddress({ 0x400000 + 0x20E41A8, 0x38, 0x10, 0xA8, 0x8D8 })
+        markOffset = 0x28
+        matchedGameVersion = 1432
+    end
+
+    if infoAddress ~= 0 and memory.readu64(infoAddress + markOffset) == 1234567890123456789 then
+        gameVersion = matchedGameVersion
+        return memory.readu64(infoAddress + markOffset + 0x8)
     else
         return 0
     end
-end 
+end
+
+function getPointerAddress(offsets)
+    local address = 0
+    for i, v in ipairs(offsets) do
+        address = memory.readu64(address + v)
+        if address == 0 then
+            return 0
+        end
+    end
+    return address
+end

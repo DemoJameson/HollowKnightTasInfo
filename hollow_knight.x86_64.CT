@@ -448,6 +448,37 @@
         <Offset>400</Offset>
       </Offsets>
     </CheatEntry>
+    <CheatEntry>
+      <ID>46</ID>
+      <Description>"Mark 1432"</Description>
+      <LastState Value="1234567890123456789" RealAddress="7F4140A42EE8"/>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+020E41A8</Address>
+      <Offsets>
+        <Offset>28</Offset>
+        <Offset>8D8</Offset>
+        <Offset>A8</Offset>
+        <Offset>10</Offset>
+        <Offset>38</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>47</ID>
+      <Description>"Info 1432"</Description>
+      <LastState Value="0000000000000000" RealAddress="7F4140A42EF0"/>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+020E41A8</Address>
+      <Offsets>
+        <Offset>30</Offset>
+        <Offset>8D8</Offset>
+        <Offset>A8</Offset>
+        <Offset>10</Offset>
+        <Offset>38</Offset>
+      </Offsets>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
 </CheatTable>

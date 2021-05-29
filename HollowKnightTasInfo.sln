@@ -6,11 +6,14 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		v1028|Any CPU = v1028|Any CPU
 		v1221|Any CPU = v1221|Any CPU
+		v1432|Any CPU = v1432|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{45699EED-E8CE-4B17-9B91-CB721B84D493}.v1028|Any CPU.ActiveCfg = v1028|Any CPU
 		{45699EED-E8CE-4B17-9B91-CB721B84D493}.v1028|Any CPU.Build.0 = v1028|Any CPU
 		{45699EED-E8CE-4B17-9B91-CB721B84D493}.v1221|Any CPU.ActiveCfg = v1221|Any CPU
 		{45699EED-E8CE-4B17-9B91-CB721B84D493}.v1221|Any CPU.Build.0 = v1221|Any CPU
+		{45699EED-E8CE-4B17-9B91-CB721B84D493}.v1432|Any CPU.ActiveCfg = v1432|Any CPU
+		{45699EED-E8CE-4B17-9B91-CB721B84D493}.v1432|Any CPU.Build.0 = v1432|Any CPU
 	EndGlobalSection
 EndGlobal

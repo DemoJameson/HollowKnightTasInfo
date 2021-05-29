@@ -53,6 +53,11 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
 
                 if (((PhysLayers) gameObject.layer is PhysLayers.ENEMIES or PhysLayers.HERO_ATTACK || gameObject.CompareTag("Boss"))
                     && IgnoreObjectNames.All(name => !gameObject.name.StartsWith(name))) {
+#if V1432
+                    if (gameObject.GetComponent<HealthManager>() is {} healthManager) {
+                        EnemyPool.Add(gameObject, new EnemyData(gameObject, healthManager));
+                    }
+#else
                     PlayMakerFSM playMakerFsm = gameObject.LocateMyFSM("health_manager_enemy");
                     if (playMakerFsm == null) {
                         playMakerFsm = gameObject.LocateMyFSM("health_manager");
@@ -61,6 +66,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                     if (playMakerFsm != null) {
                         EnemyPool.Add(gameObject, new EnemyData(gameObject, playMakerFsm));
                     }
+#endif
                 }
             }
         }
@@ -72,6 +78,16 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
         private class EnemyData {
             private readonly GameObject gameObject;
             private readonly Rigidbody2D rigidbody2D;
+#if V1432
+            private readonly HealthManager healthManager;
+            private int Hp => healthManager.hp;
+
+            public EnemyData(GameObject gameObject, HealthManager healthManager) {
+                this.gameObject = gameObject;
+                rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
+                this.healthManager = healthManager;
+            }
+#else
             private readonly PlayMakerFSM fsm;
             private int Hp => fsm.FsmVariables.FindFsmInt("HP").Value;
 
@@ -80,6 +96,8 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                 rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
                 this.fsm = fsm;
             }
+#endif
+
 
             public override string ToString() {
                 if (Camera.main == null || gameObject == null || !gameObject.activeInHierarchy || Hp <= 0) {
