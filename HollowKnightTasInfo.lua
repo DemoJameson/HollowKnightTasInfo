@@ -1,21 +1,14 @@
 local gameVersion
-
 local markAddresses = {
     v1028 = { 0x400000 + 0x1B1CF60, 0x400, 0x18, 0x20, 0xF78 },
     v1221 = { 0x400000 + 0x1B1CF60, 0x400, 0x18, 0x20, 0xF38 },
     v1432 = { 0x400000 + 0x2115D28, 0x28, 0xB8, 0x10, 0x60, 0x238, 0xF48 }
 }
 
-function onStart()
-    gameVersion = 1221
-end
-
 function onPaint()
     local infoAddress = getInfoAddress()
 
     if infoAddress == 0 then
-        local screenWidth, screenHeight = gui.resolution()
-        gui.text(screenWidth, 0, "Cant find the info address")
         return
     end
 

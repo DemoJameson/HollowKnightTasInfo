@@ -3,6 +3,7 @@
 本工具通过修改的游戏文件 Assembly-CSharp.dll 获取数据，然后在 libTAS 执行 Lua 脚本显示数据到画面上，尽量减少对游戏的影响避免 desync，不过会稍微降低游戏运行速度。
 
 支持 Hollow Knight 1028/1221/1432 Linux 版本
+需要最低 libtas_1.4.1_amd64_hk_v9 版本
 
 ## Assembly-CSharp.dll 修改的内容
 
