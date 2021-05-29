@@ -14,9 +14,9 @@
 ## 功能
 
 * 小骑士相关信息，包括位置，速度，状态等
-* 当前场景名，与 LiveSplit 相同逻辑的游戏时间
+* LiveSplit 相同逻辑的游戏时间
 * 敌人的数据与碰撞箱
-* 镜头跟随以及缩放
+* 镜头跟随、缩放和禁止震动
 * 自定义附加显示的数据，需要对 HK 代码有一定了解
 * 通过编辑 `HollowKnightTasInfo.config` 文件，实时开关各项功能
 
@@ -24,7 +24,7 @@
 
 1. 复制 `hollow_knight_Data/Manager/Assembly-CSharp.dll` 文件到 `游戏目录/hollow_knight_Data/Manager` 目录中进行覆盖。`original/Assembly-CSharp.dll` 是未经修改的原版文件
 2. libTAS 中使用菜单 `Tools -> Lua -> Execute lua script` 打开 `HollowKnightTasInfo.lua` 即可在读取存档后显示辅助信息。
-3. （可选）通过编辑`游戏目录/HollowKnightTasInfo.config`文件，可以实时开关各项功能以及定制需要获取的数据。
+3. 编辑`游戏目录/HollowKnightTasInfo.config`文件，可以实时开关各项功能以及定制需要获取的数据。
 
 ## 致谢
 

@@ -399,7 +399,8 @@
     <CheatEntry>
       <ID>42</ID>
       <Description>"Mark 1028"</Description>
-      <VariableType>4 Bytes</VariableType>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
       <Address>"hollow_knight.x86_64"+01B1CF60</Address>
       <Offsets>
         <Offset>F78</Offset>
@@ -425,7 +426,8 @@
     <CheatEntry>
       <ID>40</ID>
       <Description>"Mark 1211"</Description>
-      <VariableType>4 Bytes</VariableType>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>8 Bytes</VariableType>
       <Address>"hollow_knight.x86_64"+01B1CF60</Address>
       <Offsets>
         <Offset>F38</Offset>
@@ -449,34 +451,32 @@
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>46</ID>
+      <ID>48</ID>
       <Description>"Mark 1432"</Description>
-      <LastState Value="1234567890123456789" RealAddress="7F4140A42EE8"/>
       <ShowAsSigned>0</ShowAsSigned>
       <VariableType>8 Bytes</VariableType>
-      <Address>"hollow_knight.x86_64"+020E41A8</Address>
+      <Address>"hollow_knight.x86_64"+02115D28</Address>
       <Offsets>
-        <Offset>28</Offset>
-        <Offset>8D8</Offset>
-        <Offset>A8</Offset>
+        <Offset>F48</Offset>
+        <Offset>238</Offset>
+        <Offset>60</Offset>
         <Offset>10</Offset>
-        <Offset>38</Offset>
+        <Offset>B8</Offset>
+        <Offset>28</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>47</ID>
+      <ID>49</ID>
       <Description>"Info 1432"</Description>
-      <LastState Value="0000000000000000" RealAddress="7F4140A42EF0"/>
-      <ShowAsHex>1</ShowAsHex>
-      <ShowAsSigned>0</ShowAsSigned>
-      <VariableType>8 Bytes</VariableType>
-      <Address>"hollow_knight.x86_64"+020E41A8</Address>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"hollow_knight.x86_64"+02115D28</Address>
       <Offsets>
-        <Offset>30</Offset>
-        <Offset>8D8</Offset>
-        <Offset>A8</Offset>
+        <Offset>F50</Offset>
+        <Offset>238</Offset>
+        <Offset>60</Offset>
         <Offset>10</Offset>
-        <Offset>38</Offset>
+        <Offset>B8</Offset>
+        <Offset>28</Offset>
       </Offsets>
     </CheatEntry>
   </CheatEntries>

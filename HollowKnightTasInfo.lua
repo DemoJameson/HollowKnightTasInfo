@@ -1,13 +1,21 @@
 local gameVersion
 
+local markAddresses = {
+    v1028 = { 0x400000 + 0x1B1CF60, 0x400, 0x18, 0x20, 0xF78 },
+    v1221 = { 0x400000 + 0x1B1CF60, 0x400, 0x18, 0x20, 0xF38 },
+    v1432 = { 0x400000 + 0x2115D28, 0x28, 0xB8, 0x10, 0x60, 0x238, 0xF48 }
+}
+
 function onStart()
-    gameVersion = nil
+    gameVersion = 1221
 end
 
 function onPaint()
     local infoAddress = getInfoAddress()
 
     if infoAddress == 0 then
+        local screenWidth, screenHeight = gui.resolution()
+        gui.text(screenWidth, 0, "Cant find the info address")
         return
     end
 
@@ -65,34 +73,20 @@ function splitString(text, sep)
 end
 
 function getInfoAddress()
-    local infoAddress = 0
-    local markOffset = 0
-    local matchedGameVersion = 0
-
-    if gameVersion == nil or gameVersion == 1028 then
-        infoAddress = getPointerAddress({ 0x400000 + 0x1B1CF60, 0x400, 0x18, 0x20 })
-        markOffset = 0xF78
-        matchedGameVersion = 1028
+    if gameVersion == nil then
+        for k, v in pairs(markAddresses) do
+            if getPointerAddress(v) == 1234567890123456789 then
+                gameVersion = k;
+                v[#v] = v[#v] + 0x8
+            end
+        end
     end
 
-    if gameVersion == nil or gameVersion == 1221 then
-        infoAddress = getPointerAddress({ 0x400000 + 0x1B1CF60, 0x400, 0x18, 0x20 })
-        markOffset = 0xF38
-        matchedGameVersion = 1221
+    if gameVersion ~= nil then
+        return getPointerAddress(markAddresses[gameVersion])
     end
 
-    if gameVersion == nil or gameVersion == 1432 then
-        infoAddress = getPointerAddress({ 0x400000 + 0x20E41A8, 0x38, 0x10, 0xA8, 0x8D8 })
-        markOffset = 0x28
-        matchedGameVersion = 1432
-    end
-
-    if infoAddress ~= 0 and memory.readu64(infoAddress + markOffset) == 1234567890123456789 then
-        gameVersion = matchedGameVersion
-        return memory.readu64(infoAddress + markOffset + 0x8)
-    else
-        return 0
-    end
+    return 0;
 end
 
 function getPointerAddress(offsets)
