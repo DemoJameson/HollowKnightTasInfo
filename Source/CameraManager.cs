@@ -2,7 +2,6 @@
 
 namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class CameraManager {
-        private static float? fieldOfView;
         private static Vector3? cameraControllerPosition;
         private static Vector3? cameraParentPosition;
 
@@ -15,22 +14,25 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                 return;
             }
 
-            if (ConfigManager.CameraFollow) {
-                if (gameManager.hero_ctrl is not { } heroCtrl) {
-                    return;
+            Transform cameraCtrlTransform = cameraCtrl.transform;
+
+            if (ConfigManager.IsCameraZoom || ConfigManager.CameraFollow) {
+                cameraControllerPosition = cameraCtrlTransform.position;
+
+                if (ConfigManager.IsCameraZoom) {
+                    Vector3 position = cameraCtrlTransform.position;
+                    cameraCtrlTransform.position = new Vector3(position.x, position.y, position.z * ConfigManager.CameraZoom);
                 }
 
-                cameraControllerPosition = cameraCtrl.transform.position;
-                Vector3 heroPosition = heroCtrl.transform.position;
-                cameraCtrl.transform.position = new Vector3(heroPosition.x, heroPosition.y, cameraCtrl.transform.position.z);
-            } else if (ConfigManager.DisableCameraShake && GameCameras.instance.cameraParent is {} cameraParent) {
-                cameraParentPosition = cameraParent.position;
-                cameraParent.position = Vector3.zero;
+                if (ConfigManager.CameraFollow && gameManager.hero_ctrl is {} heroCtrl) {
+                    Vector3 heroPosition = heroCtrl.transform.position;
+                    cameraCtrlTransform.position = new Vector3(heroPosition.x, heroPosition.y, cameraCtrlTransform.position.z);
+                }
             }
 
-            if (ConfigManager.IsCameraZoom) {
-                fieldOfView = cameraCtrl.cam.fieldOfView;
-                cameraCtrl.cam.fieldOfView *= ConfigManager.CameraZoom;
+            if (!ConfigManager.CameraFollow && ConfigManager.DisableCameraShake && GameCameras.instance.cameraParent is {} cameraParent) {
+                cameraParentPosition = cameraParent.position;
+                cameraParent.position = Vector3.zero;
             }
         }
 
@@ -47,11 +49,6 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             if (cameraParentPosition != null && GameCameras.instance.cameraParent is {} cameraParent) {
                 cameraParent.position = cameraParentPosition.Value;
                 cameraParentPosition = null;
-            }
-
-            if (fieldOfView != null) {
-                cameraCtrl.cam.fieldOfView = fieldOfView.Value;
-                fieldOfView = null;
             }
         }
     }

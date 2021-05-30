@@ -89,7 +89,11 @@ DisableCameraShake = false
                     return defaultValue;
                 }
 
-                return (T) Convert.ChangeType(value, typeof(T));
+                try {
+                    return (T) (typeof(T).IsEnum ? Enum.Parse(typeof(T), value, true) : Convert.ChangeType(value, typeof(T)));
+                } catch {
+                    return defaultValue;
+                }
             } else {
                 return defaultValue;
             }
