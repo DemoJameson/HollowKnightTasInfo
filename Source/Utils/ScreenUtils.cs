@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace Assembly_CSharp.TasInfo.mm.Source.Utils {
     internal static class ScreenUtils {
+        public static Vector2 WorldToScreenPoint(Camera camera, Transform transform, Vector2 point) {
+            return camera.WorldToScreenPoint(transform.TransformPoint(point));
+        }
+
         public static List<Vector2> GetIntersectionPoint(Vector2 start, Vector2 end) {
             int width = Screen.width;
             int height = Screen.height;

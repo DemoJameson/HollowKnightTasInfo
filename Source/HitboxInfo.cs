@@ -179,8 +179,8 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
 
                 List<string> result = new();
                 for (int i = 0; i < points.Count - 1; i++) {
-                    Vector2 point1 = WorldToScreenPoint(camera, transform, points[i] + offset);
-                    Vector2 point2 = WorldToScreenPoint(camera, transform, points[i + 1] + offset);
+                    Vector2 point1 = ScreenUtils.WorldToScreenPoint(camera, transform, points[i] + offset);
+                    Vector2 point2 = ScreenUtils.WorldToScreenPoint(camera, transform, points[i + 1] + offset);
 
                     List<Vector2> intersectionPoints = ScreenUtils.GetIntersectionPoint(point1, point2);
                     if (intersectionPoints.Count != 2) {
@@ -203,8 +203,8 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
 
             private string ToCircleInfo(CircleCollider2D circle, Camera camera) {
                 Vector2 offset = circle.offset;
-                Vector2 center = WorldToScreenPoint(camera, circle.transform, offset);
-                Vector2 centerRight = WorldToScreenPoint(camera, circle.transform, new Vector2(offset.x + circle.radius, offset.y));
+                Vector2 center = ScreenUtils.WorldToScreenPoint(camera, circle.transform, offset);
+                Vector2 centerRight = ScreenUtils.WorldToScreenPoint(camera, circle.transform, new Vector2(offset.x + circle.radius, offset.y));
                 int radius = (int) Math.Abs(Math.Round(centerRight.x - center.x));
                 int x = (int) Math.Round(center.x);
                 int y = Screen.height - (int) Math.Round(center.y);
@@ -215,10 +215,6 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                 }
 
                 return $"{x}|{y}|{radius}|{ColorValue}";
-            }
-
-            private static Vector2 WorldToScreenPoint(Camera camera, Transform transform, Vector2 point) {
-                return camera.WorldToScreenPoint(transform.WorldPosition(point));
             }
         }
     }

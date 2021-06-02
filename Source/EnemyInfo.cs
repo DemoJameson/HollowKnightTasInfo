@@ -104,7 +104,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                     return string.Empty;
                 }
 
-                Vector2 enemyPos = Camera.main.WorldToScreenPoint(gameObject.transform.WorldPosition());
+                Vector2 enemyPos = ScreenUtils.WorldToScreenPoint(Camera.main, gameObject.transform, Vector2.zero);
                 enemyPos.y = Screen.height - enemyPos.y;
 
                 int x = (int) enemyPos.x;
