@@ -57,7 +57,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Terrain));
                 } else if (gameObject == HeroController.instance.gameObject && !col.isTrigger) {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Knight));
-                } else if (gameObject.LocateMyFSM("damages_enemy")) {
+                } else if (gameObject.LocateMyFSM("damages_enemy") || gameObject.name == "Damager" && gameObject.LocateMyFSM("Damage")) {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Attack));
                 } else if (col.CompareTag("Geo") || !col.isTrigger && col.GetComponent<GeoRock>() || gameObject.LocateMyFSM("Chest Control")) {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Harmless));
