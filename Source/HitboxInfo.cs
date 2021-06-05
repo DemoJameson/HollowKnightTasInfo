@@ -59,6 +59,8 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Knight));
                 } else if (gameObject.LocateMyFSM("damages_enemy")) {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Attack));
+                } else if (col.CompareTag("Geo") || !col.isTrigger && col.GetComponent<GeoRock>() || gameObject.LocateMyFSM("Chest Control")) {
+                    Colliders.Add(col, new HitboxData(col, HitboxType.Harmless));
                 } else if (col.isTrigger && (
                         col.GetComponent<TransitionPoint>()
                         || col.GetComponent<HazardRespawnTrigger>()
@@ -66,6 +68,8 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                     )
                 ) {
                     Colliders.Add(col, new HitboxData(col, HitboxType.Trigger));
+                } else {
+                    Colliders.Add(col, new HitboxData(col, HitboxType.Other));
                 }
             }
         }
@@ -108,7 +112,8 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             Enemy,
             Harmless,
             Trigger,
-            Terrain
+            Terrain,
+            Other
         }
 
         private class HitboxData {
@@ -132,6 +137,10 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             public override string ToString() {
                 Camera camera = Camera.main;
                 if (camera == null || collider == null || !collider.isActiveAndEnabled || string.IsNullOrEmpty(ColorValue)) {
+                    return string.Empty;
+                }
+
+                if (!ConfigManager.ShowOtherHitbox && hitboxType == HitboxType.Other) {
                     return string.Empty;
                 }
 

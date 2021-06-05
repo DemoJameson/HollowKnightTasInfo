@@ -19,7 +19,9 @@ ShowRng = true
 ShowEnemyHp = true
 ShowEnemyPosition = true
 ShowEnemyVelocity = true
+
 ShowHitbox = true
+ShowOtherHitbox = false
 
 PositionPrecision = 5
 VelocityPrecision = 3
@@ -31,6 +33,7 @@ EnemyHitbox = 0xFFFF0000
 HarmlessHitbox = 0xFFFFFF00
 TriggerHitbox = 0xFFBB99FF
 TerrainHitbox = 0xFFFF8844
+OtherHitbox = 0xFFFFFFFF
 
 # 默认为 1，数值越大视野越广
 CameraZoom = 1
@@ -63,10 +66,11 @@ DisableCameraShake = false
         public static bool ShowSceneName => Enabled && GetSettingValue<bool>(nameof(ShowSceneName));
         public static bool ShowTime => Enabled && GetSettingValue<bool>(nameof(ShowTime));
         public static bool ShowRng => Enabled && GetSettingValue<bool>(nameof(ShowRng));
-        public static bool ShowHitbox => Enabled && GetSettingValue<bool>(nameof(ShowHitbox));
         public static bool ShowEnemyHp => Enabled && GetSettingValue<bool>(nameof(ShowEnemyHp));
         public static bool ShowEnemyPosition => Enabled && GetSettingValue<bool>(nameof(ShowEnemyPosition));
         public static bool ShowEnemyVelocity => Enabled && GetSettingValue<bool>(nameof(ShowEnemyVelocity));
+        public static bool ShowHitbox => Enabled && GetSettingValue<bool>(nameof(ShowHitbox));
+        public static bool ShowOtherHitbox => Enabled && GetSettingValue<bool>(nameof(ShowOtherHitbox));
         public static int PositionPrecision => GetSettingValue(nameof(PositionPrecision), 5);
         public static int VelocityPrecision => GetSettingValue(nameof(VelocityPrecision), 3);
         public static float CameraZoom => Enabled ? GetSettingValue(nameof(CameraZoom), 1f) : 1f;
