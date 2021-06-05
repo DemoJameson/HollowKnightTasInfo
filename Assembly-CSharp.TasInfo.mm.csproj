@@ -80,7 +80,7 @@
         <AllOutputDir>$(SolutionDir)bin\HK TAS Info Tool\</AllOutputDir>
         <TempOutputDir>$(SolutionDir)bin\temp\$(Configuration)</TempOutputDir>
         <OutputDir>$(AllOutputDir)\$(Configuration)</OutputDir>
-        <ZipFile>$(SolutionDir)bin\HK TAS Info Tool v$(AssemblyVersion).zip</ZipFile>
+        <ZipFile>$(SolutionDir)bin\HK_TAS_Info_Tool_v$(AssemblyVersion).zip</ZipFile>
     </PropertyGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
