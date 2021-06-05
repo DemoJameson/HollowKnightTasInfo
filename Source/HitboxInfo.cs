@@ -214,7 +214,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                 Vector2 offset = circle.offset;
                 Vector2 center = ScreenUtils.WorldToScreenPoint(camera, circle.transform, offset);
                 Vector2 centerRight = ScreenUtils.WorldToScreenPoint(camera, circle.transform, new Vector2(offset.x + circle.radius, offset.y));
-                int radius = (int) Math.Abs(Math.Round(centerRight.x - center.x));
+                int radius = (int) Math.Round(Vector2.Distance(center, centerRight));
                 int x = (int) Math.Round(center.x);
                 int y = Screen.height - (int) Math.Round(center.y);
 
