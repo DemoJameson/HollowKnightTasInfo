@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assembly_CSharp.TasInfo.mm.Source.Extensions;
 using Assembly_CSharp.TasInfo.mm.Source.Utils;
 using GlobalEnums;
 using UnityEngine;
@@ -11,18 +10,20 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class HitboxInfo {
         private static readonly Dictionary<Collider2D, HitboxData> Colliders = new();
 
-        public static void OnInit(GameManager gameManager) {
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (scene, nextScene) => {
-                Colliders.Clear();
+        public static void OnInit() {
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (_, _) => RefreshInfo();
+        }
 
-                if (gameManager.IsNonGameplayScene()) {
-                    return;
-                }
+        public static void RefreshInfo() {
+            Colliders.Clear();
 
-                foreach (Collider2D col in Resources.FindObjectsOfTypeAll<Collider2D>()) {
-                    TryAddHitbox(col);
-                }
-            };
+            if (GameManager.instance.IsNonGameplayScene()) {
+                return;
+            }
+
+            foreach (Collider2D col in Resources.FindObjectsOfTypeAll<Collider2D>()) {
+                TryAddHitbox(col);
+            }
         }
 
         public static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {

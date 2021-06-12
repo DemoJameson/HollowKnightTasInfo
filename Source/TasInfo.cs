@@ -56,10 +56,15 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             EnemyInfo.TryAddEnemy(gameObject);
         }
 
+        public static void AfterManualLevelStart() {
+            EnemyInfo.RefreshInfo();
+            HitboxInfo.RefreshInfo();
+        }
+
         private static void OnInit(GameManager gameManager) {
-            EnemyInfo.OnInit(gameManager);
+            EnemyInfo.OnInit();
             CustomInfo.OnInit();
-            HitboxInfo.OnInit(gameManager);
+            HitboxInfo.OnInit();
             RngInfo.OnInit();
         }
 

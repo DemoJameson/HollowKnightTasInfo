@@ -1,8 +1,12 @@
-﻿// ReSharper disable All
+﻿using Assembly_CSharp.TasInfo.mm.Source;
 
-#pragma warning disable CS0649, CS0414
+// ReSharper disable All
+public class patch_CameraController : CameraController {
+    private void OnPreRender() {
+        TasInfo.OnPreRender();
+    }
 
-public class patch_GameManager : GameManager {
-    private static readonly long TasInfoMark = 1234567890123456789;
-    public static string TasInfo;
+    private void OnPostRender() {
+        TasInfo.OnPostRender();
+    }
 }

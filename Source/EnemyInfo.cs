@@ -5,6 +5,7 @@ using Assembly_CSharp.TasInfo.mm.Source.Extensions;
 using Assembly_CSharp.TasInfo.mm.Source.Utils;
 using GlobalEnums;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class EnemyInfo {
@@ -18,16 +19,18 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             "Deep Spikes",
         };
 
-        public static void OnInit(GameManager gameManager) {
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (scene, nextScene) => {
-                EnemyPool.Clear();
+        public static void OnInit() {
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (_, _) => RefreshInfo();
+        }
 
-                if (gameManager.IsNonGameplayScene()) {
-                    return;
-                }
+        public static void RefreshInfo() {
+            EnemyPool.Clear();
 
-                TryAddEnemy(Resources.FindObjectsOfTypeAll<Transform>().Select(transform => transform.gameObject));
-            };
+            if (GameManager.instance.IsNonGameplayScene()) {
+                return;
+            }
+
+            TryAddEnemy(Resources.FindObjectsOfTypeAll<Transform>().Select(transform => transform.gameObject));
         }
 
         public static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {
