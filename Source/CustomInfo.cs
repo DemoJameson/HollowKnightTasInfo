@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Assembly_CSharp.TasInfo.mm.Source.Extensions;
@@ -18,13 +19,21 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
         private static readonly Type[] StringTypes = {typeof(string)};
 
         public static void OnInit() {
-            IEnumerable<Type> types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
+            IEnumerable<Type> types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(GetTypesSafe)
                 .Where(type => !type.IsGenericType && !type.IsAbstract);
 
             foreach (Type type in types) {
                 if (type.FullName != null) {
                     CachedTypes[type.Name] = type;
                 }
+            }
+        }
+
+        private static Type[] GetTypesSafe(Assembly asm) {
+            try {
+                return asm.GetTypes();
+            } catch (ReflectionTypeLoadException e) {
+                return e.Types.Where(t => t != null).ToArray();
             }
         }
 

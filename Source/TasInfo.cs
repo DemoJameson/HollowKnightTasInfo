@@ -56,10 +56,13 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             EnemyInfo.TryAddEnemy(gameObject);
         }
 
+        // 重叠房间加载后重新采集数据
+#if V1028
         public static void AfterManualLevelStart() {
             EnemyInfo.RefreshInfo();
             HitboxInfo.RefreshInfo();
         }
+#endif
 
         private static void OnInit(GameManager gameManager) {
             EnemyInfo.OnInit();
