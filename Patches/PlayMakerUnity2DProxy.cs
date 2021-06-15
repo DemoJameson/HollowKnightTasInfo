@@ -1,20 +1,40 @@
-﻿using Assembly_CSharp.TasInfo.mm.Source;
+﻿using System;
+using Assembly_CSharp.TasInfo.mm.Source;
+using Modding;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 using MonoMod;
-using UnityEngine;
+using MonoMod.Utils;
 
 // ReSharper disable All
 
 public class patch_PlayMakerUnity2DProxy : PlayMakerUnity2DProxy {
-    [MonoModReplace]
-    public new void Start() {
+    [MonoModIgnore]
+    [PatchStart]
+    public extern new void Start();
+
+    private void OnColliderCreate() {
         if (PlayMakerUnity2d.isAvailable()) {
             TasInfo.OnColliderCreate(gameObject);
-            RefreshImplementation();
-        } else {
-            Debug.LogError(
-                "PlayMakerUnity2DProxy requires the 'PlayMaker Unity 2D' Prefab in the Scene.\nUse the menu 'PlayMaker/Addons/Unity 2D/Components/Add PlayMakerUnity2D to Scene' to correct the situation",
-                this);
-            enabled = false;
+        }
+    }
+}
+
+namespace Modding {
+    [MonoModCustomAttribute(nameof(MonoModRules.PatchStart))]
+    internal class PatchStartAttribute : Attribute { }
+}
+
+namespace MonoMod {
+    static partial class MonoModRules {
+        public static void PatchStart(MethodDefinition method, CustomAttribute attrib) {
+            MethodDefinition methodDefinition = method.DeclaringType.FindMethod("System.Void OnColliderCreate()");
+            
+            Mono.Collections.Generic.Collection<Instruction> instrs = method.Body.Instructions;
+            ILProcessor il = method.Body.GetILProcessor();
+            
+            instrs.Insert(0, il.Create(OpCodes.Ldarg_0));
+            instrs.Insert(1, il.Create(OpCodes.Call, methodDefinition));
         }
     }
 }
