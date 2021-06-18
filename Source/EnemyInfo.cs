@@ -5,11 +5,11 @@ using Assembly_CSharp.TasInfo.mm.Source.Extensions;
 using Assembly_CSharp.TasInfo.mm.Source.Utils;
 using GlobalEnums;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class EnemyInfo {
         private static readonly Dictionary<GameObject, EnemyData> EnemyPool = new();
+        private static int lastRefreshFrames = 0;
 
         private static readonly string[] IgnoreObjectNames = {
             "Hornet Barb",
@@ -20,23 +20,35 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
         };
 
         public static void OnInit() {
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (_, _) => RefreshInfo();
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (_, _) => RefreshInfo(true);
         }
 
-        public static void RefreshInfo() {
+        public static void RefreshInfo(bool refreshAgain) {
             EnemyPool.Clear();
 
             if (GameManager.instance.IsNonGameplayScene()) {
                 return;
             }
 
+            if (refreshAgain) {
+                lastRefreshFrames = Time.frameCount;
+            }
+
             TryAddEnemy(Resources.FindObjectsOfTypeAll<Transform>().Select(transform => transform.gameObject));
+        }
+
+        private static void TryRefreshInfoAgain() {
+            if (Time.frameCount - lastRefreshFrames == 50) {
+                RefreshInfo(false);
+            }
         }
 
         public static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {
             if (gameManager.IsNonGameplayScene()) {
                 return;
             }
+
+            TryRefreshInfoAgain();
 
             string enemyInfo = GetInfo();
             if (!string.IsNullOrEmpty(enemyInfo)) {

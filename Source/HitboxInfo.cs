@@ -9,16 +9,21 @@ using UnityEngine;
 namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class HitboxInfo {
         private static readonly Dictionary<Collider2D, HitboxData> Colliders = new();
+        private static int lastRefreshFrames = 0;
 
         public static void OnInit() {
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (_, _) => RefreshInfo();
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (_, _) => RefreshInfo(true);
         }
 
-        public static void RefreshInfo() {
+        public static void RefreshInfo(bool refreshAgain) {
             Colliders.Clear();
 
             if (GameManager.instance.IsNonGameplayScene()) {
                 return;
+            }
+
+            if (refreshAgain) {
+                lastRefreshFrames = Time.frameCount;
             }
 
             foreach (Collider2D col in Resources.FindObjectsOfTypeAll<Collider2D>()) {
@@ -26,10 +31,18 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             }
         }
 
+        private static void TryRefreshInfoAgain() {
+            if (Time.frameCount - lastRefreshFrames == 50) {
+                RefreshInfo(false);
+            }
+        }
+
         public static void OnPreRender(GameManager gameManager, StringBuilder infoBuilder) {
             if (gameManager.IsNonGameplayScene() || !ConfigManager.ShowHitbox) {
                 return;
             }
+
+            TryRefreshInfoAgain();
 
             string hitboxInfo = GetAllInfo();
             if (!string.IsNullOrEmpty(hitboxInfo)) {

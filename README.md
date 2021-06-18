@@ -24,8 +24,9 @@
 ## 使用说明
 
 1. 复制 `hollow_knight_Data/Manager/Assembly-CSharp.dll` 文件到 `游戏目录/hollow_knight_Data/Manager` 目录中进行覆盖。`original/Assembly-CSharp.dll` 是未经修改的原版文件
-2. libTAS 中使用菜单 `Tools -> Lua -> Execute lua script` 打开 `HollowKnightTasInfo.lua` 即可在读取存档后显示辅助信息。
-3. 编辑`游戏目录/HollowKnightTasInfo.config`文件，可以实时开关各项功能以及定制需要获取的数据。
+2. libTAS 菜单 `Video -> OSD -> Lua` 勾选
+3. libTAS 菜单 `Tools -> Lua -> Execute lua script` 打开 `HollowKnightTasInfo.lua` 即可在读取存档后显示辅助信息
+4. 编辑`游戏目录/HollowKnightTasInfo.config`文件，可以实时开关各项功能以及定制需要获取的数据
 
 ## 致谢
 
