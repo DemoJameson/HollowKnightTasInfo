@@ -5,8 +5,8 @@
         <LangVersion>9</LangVersion>
         <Configurations>v1028;v1221;v1432</Configurations>
         <Platforms>AnyCPU</Platforms>
-        <AssemblyVersion>0.2.3</AssemblyVersion>
-        <FileVersion>0.2.3</FileVersion>
+        <AssemblyVersion>0.2.4</AssemblyVersion>
+        <FileVersion>0.2.4</FileVersion>
         <AssemblyName>Assembly-CSharp.TasInfo.mm</AssemblyName>
         <RootNamespace>Assembly_CSharp.TasInfo.mm</RootNamespace>
         <Company>Assembly-CSharp.TasInfo.mm</Company>
@@ -26,40 +26,40 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="lib-stripped\**" />
+        <Compile Remove="lib\**" />
         <Compile Remove="bin\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Remove="lib-stripped\**" />
+        <EmbeddedResource Remove="lib\**" />
         <EmbeddedResource Remove="bin\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="lib-stripped\**" />
+        <None Remove="lib\**" />
         <None Remove="bin\**" />
     </ItemGroup>
 
     <ItemGroup>
         <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
-            <HintPath>lib-stripped\$(Configuration)\Assembly-CSharp.dll</HintPath>
+            <HintPath>lib\$(Configuration)\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
-            <HintPath>lib-stripped\$(Configuration)\PlayMaker.dll</HintPath>
+            <HintPath>lib\$(Configuration)\PlayMaker.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <Private>False</Private>
-            <HintPath>lib-stripped\$(Configuration)\UnityEngine.dll</HintPath>
+            <HintPath>lib\$(Configuration)\UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" Condition="$(Configuration) == v1432">
             <Private>False</Private>
-            <HintPath>lib-stripped\v1432\UnityEngine.CoreModule.dll</HintPath>
+            <HintPath>lib\v1432\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.Physics2DModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" Condition="$(Configuration) == v1432">
             <Private>False</Private>
-            <HintPath>lib-stripped\v1432\UnityEngine.Physics2DModule.dll</HintPath>
+            <HintPath>lib\v1432\UnityEngine.Physics2DModule.dll</HintPath>
         </Reference>
     </ItemGroup>
 
@@ -72,7 +72,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Files Include="$(SolutionDir)lib-stripped\$(Configuration)\*" />
+        <Files Include="$(SolutionDir)lib\$(Configuration)\*" />
         <BuildDir Include="$(TargetDir)" />
     </ItemGroup>
 

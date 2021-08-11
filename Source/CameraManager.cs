@@ -3,7 +3,6 @@
 namespace Assembly_CSharp.TasInfo.mm.Source {
     internal static class CameraManager {
         private static Vector3? cameraControllerPosition;
-        private static Vector3? cameraParentPosition;
 
         public static void OnPreRender(GameManager gameManager) {
             if (gameManager.IsNonGameplayScene()) {
@@ -16,7 +15,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
 
             Transform cameraCtrlTransform = cameraCtrl.transform;
 
-            if (ConfigManager.IsCameraZoom || ConfigManager.CameraFollow) {
+            if (ConfigManager.IsCameraZoom || ConfigManager.CameraFollow || ConfigManager.DisableCameraShake) {
                 cameraControllerPosition = cameraCtrlTransform.position;
 
                 if (ConfigManager.IsCameraZoom) {
@@ -28,11 +27,10 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                     Vector3 heroPosition = heroCtrl.transform.position;
                     cameraCtrlTransform.position = new Vector3(heroPosition.x, heroPosition.y, cameraCtrlTransform.position.z);
                 }
-            }
-
-            if (!ConfigManager.CameraFollow && ConfigManager.DisableCameraShake && GameCameras.instance.cameraParent is {} cameraParent) {
-                cameraParentPosition = cameraParent.position;
-                cameraParent.position = Vector3.zero;
+                
+                if (!ConfigManager.CameraFollow && ConfigManager.DisableCameraShake && GameCameras.instance.cameraParent is {} cameraParent) {
+                    cameraCtrlTransform.position -= cameraParent.position;
+                }
             }
         }
 
@@ -44,11 +42,6 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
             if (cameraControllerPosition != null) {
                 cameraCtrl.transform.position = cameraControllerPosition.Value;
                 cameraControllerPosition = null;
-            }
-
-            if (cameraParentPosition != null && GameCameras.instance.cameraParent is {} cameraParent) {
-                cameraParent.position = cameraParentPosition.Value;
-                cameraParentPosition = null;
             }
         }
     }
