@@ -28,16 +28,19 @@
     <ItemGroup>
         <Compile Remove="lib\**" />
         <Compile Remove="bin\**" />
+        <Compile Remove="Preview\**" />
     </ItemGroup>
 
     <ItemGroup>
         <EmbeddedResource Remove="lib\**" />
         <EmbeddedResource Remove="bin\**" />
+        <EmbeddedResource Remove="Preview\**" />
     </ItemGroup>
 
     <ItemGroup>
         <None Remove="lib\**" />
         <None Remove="bin\**" />
+        <None Remove="Preview\**" />
     </ItemGroup>
 
     <ItemGroup>

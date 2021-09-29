@@ -5,6 +5,10 @@
 支持 Hollow Knight 1028/1221/1432/1432_Mod Linux 版本
 需要最低 libtas_1.4.1_amd64_hk_v9 版本
 
+## 预览
+
+![preview](./Preview/screenshot.png)
+
 ## Assembly-CSharp.dll 修改的内容
 
 * GameManager 中新增字段 `private static readonly long TasInfoMark = 1234567890123456789` 字段用于辅助内存查找时定位
@@ -30,7 +34,7 @@
 
 ## 致谢
 
-* Shout out ot Kilaye for HK 特供版 [libTAS](https://github.com/clementgallet/libTAS/tree/hollowknight) 以及增加了画线的 lua api
+* Shout out to Kilaye for HK 特供版 [libTAS](https://github.com/clementgallet/libTAS/tree/hollowknight) 以及增加了画线的 lua api
 * 参考 [LiveSplit.HollowKnight](https://github.com/ShootMe/LiveSplit.HollowKnight) 的游戏时间计算方式
 * 参考 [HollowKnight.Modding](https://github.com/HollowKnight-Modding/HollowKnight.Modding) MonoMod 的使用
 * 参考 [HollowKnight.HitboxDraw](https://github.com/seresharp/HollowKnight.HitboxDraw) 绘制 hitbox
