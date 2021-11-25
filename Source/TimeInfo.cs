@@ -23,12 +23,12 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                 } else if (inGameTime < 60) {
                     return inGameTime.ToString("F2");
                 } else if (inGameTime < 3600) {
-                    int minute = (int) (inGameTime / 60);
+                    int minute = (int)(inGameTime / 60);
                     float second = inGameTime - minute * 60;
                     return $"{minute}:{second.ToString("F2").PadLeft(5, '0')}";
                 } else {
-                    int hour = (int) (inGameTime / 3600);
-                    int minute = (int) ((inGameTime - hour * 3600) / 60);
+                    int hour = (int)(inGameTime / 3600);
+                    int minute = (int)((inGameTime - hour * 3600) / 60);
                     float second = inGameTime - hour * 3600 - minute * 60;
                     return $"{hour}:{minute.ToString().PadLeft(2, '0')}:{second.ToString("F2").PadLeft(5, '0')}";
                 }
@@ -64,7 +64,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                     lookForTeleporting = true;
                 }
 
-                bool teleporting = (bool) TeleportingFieldInfo.GetValue(gameManager.cameraCtrl);
+                bool teleporting = (bool)TeleportingFieldInfo.GetValue(gameManager.cameraCtrl);
                 if (lookForTeleporting && (teleporting || gameState != GameState.PLAYING && gameState != GameState.ENTERING_LEVEL)) {
                     lookForTeleporting = false;
                 }
@@ -79,7 +79,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                     || uiState != UIState.PLAYING &&
                     (loadingMenu || uiState != UIState.PAUSED && (!string.IsNullOrEmpty(nextScene) || currentScene == "_test_charms")) &&
                     nextScene != currentScene
-                    || (bool) TilemapDirtyFieldInfo.GetValue(gameManager);
+                    || (bool)TilemapDirtyFieldInfo.GetValue(gameManager);
             } catch {
                 // ignore
             }
@@ -90,20 +90,18 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                 inGameTime += Time.unscaledDeltaTime;
             }
 
-            if (inGameTime > 0) {
-                List<string> result = new();
-                if (!string.IsNullOrEmpty(gameManager.sceneName) && ConfigManager.ShowSceneName) {
-                    result.Add(gameManager.sceneName);
-                }
+            List<string> result = new();
+            if (!string.IsNullOrEmpty(gameManager.sceneName) && ConfigManager.ShowSceneName) {
+                result.Add(gameManager.sceneName);
+            }
 
-                if (ConfigManager.ShowTime) {
-                    result.Add(FormattedTime);
-                }
+            if (inGameTime > 0 && ConfigManager.ShowTime) {
+                result.Add(FormattedTime);
+            }
 
-                string resultString = StringUtils.Join("  ", result);
-                if (!string.IsNullOrEmpty(resultString)) {
-                    infoBuilder.AppendLine(resultString);
-                }
+            string resultString = StringUtils.Join("  ", result);
+            if (!string.IsNullOrEmpty(resultString)) {
+                infoBuilder.AppendLine(resultString);
             }
         }
     }
