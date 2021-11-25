@@ -15,6 +15,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
         private static bool timeStart = false;
         private static bool timeEnd = false;
         private static float inGameTime = 0f;
+        private static readonly int minorVersion = int.Parse(Constants.GAME_VERSION.Substring(2, 1));
 
         private static string FormattedTime {
             get {
@@ -79,7 +80,7 @@ namespace Assembly_CSharp.TasInfo.mm.Source {
                     || uiState != UIState.PLAYING &&
                     (loadingMenu || uiState != UIState.PAUSED && (!string.IsNullOrEmpty(nextScene) || currentScene == "_test_charms")) &&
                     nextScene != currentScene
-                    || (bool)TilemapDirtyFieldInfo.GetValue(gameManager);
+                    || minorVersion < 3 && (bool)TilemapDirtyFieldInfo.GetValue(gameManager);
             } catch {
                 // ignore
             }
